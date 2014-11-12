@@ -1,5 +1,49 @@
 extends layout
 
 block content
+
+  nav.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
+    div.container-fluid 
+      //- Brand and toggle
+      .navbar-header
+        button.navbar-toggle.collapsed(type="button",data-toggle="collapse",data-target="#navbar-content")
+          span.sr-only Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        a.navbar-brand(href="#") 
+          span.glyphicon.glyphicon-home.text-right 
+          |  BootJL
+
+      //- Collapsable-Part der NavBar
+      .collapse.navbar-collapse#navbar-content
+        ul.nav.navbar-nav
+          li: a(href="#") Link
+          li.dropdown
+            a.dropdown-toggle(href="#",data-toggle="dropdown") Dropdown 
+              span.caret
+            ul.dropdown-menu(role="menu")
+              li: a(href="#") Action
+              li.divider
+              li: a(href="#") Separated link
+              li.divider
+              li: a(href="#") One more separated link
+        //- rechts
+        ul.nav.navbar-nav.navbar-right
+          li.dropdown
+            a.dropdown-toggle(href="#",data-toggle="dropdown") Dropdown
+              span.caret
+            ul.dropdown-menu(role="menu")
+              li: a(href="#") Action
+        form.navbar-form.navbar-right(role="search")
+          .form-group
+            .input-group
+              input.form-control.input-sm(type="text",placeholder="Suche")
+              span.input-group-btn 
+                button.btn.btn-primary.btn-sm(type="submit"): span.glyphicon.glyphicon-search
+  
   h1= title
   p Welcome to #{title}
+  
+  - for (var x = 0; x < 30; x++)
+    p item#{x}
