@@ -1,8 +1,8 @@
 doctype html
 html
   head
-    title= title
-    //- title #{AppConfig.title}
+    //title= title
+    title #{AppConfig.title}
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1") 
     meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
@@ -22,8 +22,11 @@ html
 
     link(rel='stylesheet', href='/stylesheets/style.css')
 
-    script(type='text/javascript', src='/bower_components/jquery/dist/jquery.min.js')
-    script(type='text/javascript', src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
+    if AppConfig.productional
+      script(type='text/javascript', src='/javascripts/j.min.js')
+    else 
+      script(type='text/javascript', src='/bower_components/jquery/dist/jquery.min.js')
+      script(type='text/javascript', src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
 
   body
     block content

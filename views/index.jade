@@ -42,8 +42,13 @@ block content
               span.input-group-btn 
                 button.btn.btn-primary.btn-sm(type="submit"): span.glyphicon.glyphicon-search
   
-  h1= title
-  p Welcome to #{title}
+  h1= AppConfig.title
+  p Welcome to #{AppConfig.title}
+  
+  if AppConfig.productional
+    h1 PRD
+  else 
+    h1 TRN
   
   - for (var x = 0; x < 30; x++)
     p item#{x}

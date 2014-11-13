@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
-var AppConfig= require("../AppConfig")
+var AppConfig = require("../AppConfig");
 
 
 /* GET home page. */
 router.get('/', function(req, res) {
   //res.render('index', { title: 'Bootstrap Template' });
-  res.render('index', { title: AppConfig.title });
+  res.render('index', { AppConfig: AppConfig });
 });
 
 module.exports = router;
