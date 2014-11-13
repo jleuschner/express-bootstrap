@@ -17,14 +17,14 @@ html
     meta(name="apple-mobile-web-app-capable",content="yes")
     meta(name="apple-mobile-web-app-status-bar-style",content="black")
 
-    link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
-    link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.min.css')
-
-    link(rel='stylesheet', href='/stylesheets/style.css')
 
     if AppConfig.productional
-      script(type='text/javascript', src='/javascripts/j.min.js')
+      link(rel='stylesheet', href='dist/css/j.css')
+      script(type='text/javascript', src='dist/js/j.min.js')
     else 
+      link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+      link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.min.css')
+      link(rel='stylesheet', href='/stylesheets/style.css')
       script(type='text/javascript', src='/bower_components/jquery/dist/jquery.min.js')
       script(type='text/javascript', src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
 

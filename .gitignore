@@ -1,4 +1,5 @@
 *.log
 node_modules/
 public/bower_components/
-public/js
+public/dist
+_tmp

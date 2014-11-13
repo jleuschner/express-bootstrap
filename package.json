@@ -7,6 +7,8 @@
   },
   "devDependencies": {
     "grunt": "",
+    "grunt-contrib-copy": "",
+    "grunt-contrib-cssmin": "",
     "grunt-contrib-concat": "",
     "grunt-contrib-jshint": "",
     "grunt-contrib-nodeunit": "",
