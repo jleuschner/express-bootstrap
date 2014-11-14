@@ -23,14 +23,15 @@ html
       script(type='text/javascript', src='dist/js/j.min.js')
     else 
       link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
-      link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.min.css')
-      link(rel='stylesheet', href='/stylesheets/style.css')
+      //link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.min.css')
+      link(rel='stylesheet', href='/css/style.css')
       script(type='text/javascript', src='/bower_components/jquery/dist/jquery.min.js')
       script(type='text/javascript', src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
+      script(type='text/javascript', src='/js/navigation.js')
 
   body
 
-    nav.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
+    nav#MainNavbar.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
       div.container-fluid 
         //- Brand and toggle
         .navbar-header
@@ -59,7 +60,7 @@ html
           //- rechts
           ul.nav.navbar-nav.navbar-right
             li.dropdown
-              a.dropdown-toggle(href="#",data-toggle="dropdown") 
+              a.dropdown-toggle(href="#",data-toggle="dropdown")
                 span.glyphicon.glyphicon-cog
                 span.caret
               ul.dropdown-menu(role="menu")
@@ -73,7 +74,8 @@ html
   
     h1= AppConfig.title
     p Welcome to #{AppConfig.title}
-  
+    button.btn.btn-default(type="button",data-toggle="tooltip",data-placement="right",title="Tooltip on left") test
+    button.btn.btn-default(type="button",data-toggle="popover",data-placement="right",title="Tooltip on left") test
     if AppConfig.productional
       h1 PRD
     else 
@@ -81,6 +83,7 @@ html
     .container-fluid
       .row
         .col-md-4
+          button#btntest.btn.btn-danger(type="button") test
           div
           - for (var x = 0; x < 30; x++)
             | item#{x} 

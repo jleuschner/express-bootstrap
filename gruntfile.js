@@ -15,7 +15,7 @@ module.exports = function (grunt) {
       },
       all: [
         'routes/*.js',
-        'public/javascripts/test.js'
+        'public/js/*.js'
         ]
     },
     concat: {
@@ -24,7 +24,8 @@ module.exports = function (grunt) {
       },
       build: {
         src: ['public/bower_components/jquery/dist/jquery.min.js',
-              'public/bower_components/bootstrap/dist/js/bootstrap.min.js'
+              'public/bower_components/bootstrap/dist/js/bootstrap.min.js',
+              'public/*.js'
               ],
         dest: '_tmp/j.js'
       }
@@ -44,7 +45,7 @@ module.exports = function (grunt) {
           'public/dist/css/j.css': [
                   'public/bower_components/bootstrap/dist/css/bootstrap.min.css',
                   'public/bower_components/bootstrap/dist/css/bootstrap-theme.min.css',
-                  'public/stylesheets/style.css'
+                  'public/css/style.css'
               ]
         }
       }
