@@ -44,7 +44,7 @@ module.exports = function (grunt) {
         files: {
           'public/dist/css/j.css': [
                   'public/bower_components/bootstrap/dist/css/bootstrap.min.css',
-                  'public/bower_components/bootstrap/dist/css/bootstrap-theme.min.css',
+                  //'public/bower_components/bootstrap/dist/css/bootstrap-theme.min.css',
                   'public/css/style.css'
               ]
         }
