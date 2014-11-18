@@ -1,4 +1,7 @@
 $(function () {
+  $.ajaxSetup({ cache: false });
+
+
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
 
@@ -13,18 +16,22 @@ $(function () {
   });
 
   // ------------------ MainNavbar -----------------------
-  function MainWorkspace(url) {
+  function MainWorkspace(url, cb) {
     $.get(url, function (data) {
       $('#MainWorkspace').html(data);
+      if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
+        $('#MainNavbar .navbar-toggle').click();
+      }
+      cb();
     });
-    if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
-      $('#MainNavbar .navbar-toggle').click();
-    }
   }
 
   $('#MainNavbar a').on('click', function () {
     switch ($(this).attr('id')) {
-      case "TopNav_DokuSys": MainWorkspace('DokuSys');
+      case "TopNav_DokuSys": 
+        MainWorkspace('DokuSys', function(){ 
+          $('#DokuSys_Edit').summernote(); 
+        });
     }
 
   });
