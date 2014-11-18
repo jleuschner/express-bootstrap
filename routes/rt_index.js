@@ -14,9 +14,9 @@ router.post('/login', function (req, res) {
   var post = req.body;
   if (post.user === "jens") {
     req.session.user = post.user;
-    res.send({ err: "OK" });
+    res.send({ err: "" });
   } else {
-    res.send({ err: "ERR" })
+    res.send({ err: "ERR" });
   }
 });
 

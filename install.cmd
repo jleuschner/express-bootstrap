@@ -1,4 +1,4 @@
 cmd /c npm install
 cd public
-bower install
-cd..
+cmd /c bower install
+cd ..

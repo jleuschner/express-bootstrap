@@ -11,7 +11,8 @@ module.exports = function (grunt) {
         browser: true,
         forin: true,
         undef:true,
-        unused: true
+        unused: true,
+        laxbreak: true
       },
       all: [
         'routes/*.js',

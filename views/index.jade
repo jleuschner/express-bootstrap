@@ -92,7 +92,8 @@ html
                 label(for='MainLoginPasswd') Passwort
                 input.form-control#MainLoginPasswd(name='passwd',type='password',required='required',placeholder='Passwort')
           .modal-footer
-            button.btn.btn-submit(type='button') Login
+            p#MainLoginErr.text-danger.pull-left
+            button.btn.btn-primary(type='button') Login
 
     #MainWorkspace.container-fluid
       .row

@@ -47,17 +47,36 @@ $(function () {
   });
 
   // ------------------ MainLogin -----------------------
+  $('#MainLogin').on('shown.bs.modal', function () {
+    $('#MainLoginErr').text("");
+    $('#MainLoginUser').focus();
+  });
   $('#MainLogin button').click(function () {
-    //alert($('#MainLoginUser').val());
-    //$('#MainNav_Login').parent().replaceWith("<li><a href='#'>Jens</a></li>");
     $('#MainLogin form').submit();
   });
   $('#MainLogin form').on('submit', function () {
-    console.log("Submit!");
-    $.post('/login',{ user: $('#MainLoginUser').val() }, function(data) {
-      alert(data.err)
-    })
-    $('#MainLogin').modal('hide');
+    $('#MainLogin input').each(function () {
+      console.log($(this).val().length);
+      if ($(this).val().length < 1) {
+        $(this).focus();
+        $('#MainLoginErr').text("Username/Passwort erforderlich");
+        return false;
+      }
+    });
+    $.post('/login', { user: $('#MainLoginUser').val() }, function (data) {
+      if (!data.err) {
+        $('#MainLogin').modal('hide');
+        $('#MainNav_Login').parent()
+          .replaceWith("<li class='dropdown'>"
+              + "<a href='#' class='dropdown-toggle' data-toggle='dropdown'>" + $('#MainLoginUser').val()
+              + "<span class='caret'></span></a>"
+              + "<ul class='dropdown-menu' role='menu'>"
+              + "<li><a href='#'>Logout</a></li>"
+              + "</ul></li>");
+      } else {
+        $('#MainLoginErr').text("Fehler: " + data.err);
+      }
+    });
     return false;
   });
 
