@@ -1,5 +1,12 @@
 $(function () {
   $.ajaxSetup({ cache: false });
+  $('#MainNavbar').bind("contextmenu", function () {
+    return false;
+  });
+  $('#MainLogin').bind("contextmenu", function () {
+    return false;
+  });
+
 
 
   $('[data-toggle="tooltip"]').tooltip();
@@ -28,12 +35,30 @@ $(function () {
 
   $('#MainNavbar a').on('click', function () {
     switch ($(this).attr('id')) {
-      case "TopNav_DokuSys": 
-        MainWorkspace('DokuSys', function(){ 
-          $('#DokuSys_Edit').summernote(); 
+      case "MainNav_DokuSys":
+        MainWorkspace('DokuSys', function () {
+          $('#DokuSys_Edit').summernote();
         });
+        break;
+      case "MainNav_Login":
+        $('#MainLogin').modal();
+        break;
     }
+  });
 
+  // ------------------ MainLogin -----------------------
+  $('#MainLogin button').click(function () {
+    //alert($('#MainLoginUser').val());
+    //$('#MainNav_Login').parent().replaceWith("<li><a href='#'>Jens</a></li>");
+    $('#MainLogin form').submit();
+  });
+  $('#MainLogin form').on('submit', function () {
+    console.log("Submit!");
+    $.post('/login',{ user: $('#MainLoginUser').val() }, function(data) {
+      alert(data.err)
+    })
+    $('#MainLogin').modal('hide');
+    return false;
   });
 
   console.log("ready!");

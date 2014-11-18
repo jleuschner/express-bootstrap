@@ -52,7 +52,7 @@ html
         //- Collapsable-Part der NavBar
         .collapse.navbar-collapse#navbar-content
           ul.nav.navbar-nav
-            li: a#TopNav_DokuSys(href="#") DokuSys
+            li: a#MainNav_DokuSys(href="#") DokuSys
             li.dropdown
               a.dropdown-toggle(href="#",data-toggle="dropdown") Dropdown 
                 span.caret
@@ -64,6 +64,7 @@ html
                 li: a(href="#") One more separated link
           //- rechts
           ul.nav.navbar-nav.navbar-right
+            li: a#MainNav_Login(href="#") Login
             li.dropdown
               a.dropdown-toggle(href="#",data-toggle="dropdown")
                 span.glyphicon.glyphicon-cog
@@ -76,7 +77,23 @@ html
                 input.form-control.input-sm(type="text",placeholder="Suche")
                 span.input-group-btn 
                   button.btn.btn-primary.btn-sm(type="submit"): span.glyphicon.glyphicon-search
-  
+
+    #MainLogin.modal.fade
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h3 Login
+          .modal-body
+            form(role='form',action='/login',method='post')
+              .form-group
+                label(for='MainLoginUser') Benutzer
+                input.form-control#MainLoginUser(name='user',type='text',required='required',placeholder='Benutzer-Login')
+              .form-group
+                label(for='MainLoginPasswd') Passwort
+                input.form-control#MainLoginPasswd(name='passwd',type='password',required='required',placeholder='Passwort')
+          .modal-footer
+            button.btn.btn-submit(type='button') Login
+
     #MainWorkspace.container-fluid
       .row
         .col-md-4
