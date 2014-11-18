@@ -47,7 +47,7 @@ html
         //- Collapsable-Part der NavBar
         .collapse.navbar-collapse#navbar-content
           ul.nav.navbar-nav
-            li: a(href="#") Link
+            li: a#TopNav_DokuSys(href="#") DokuSys
             li.dropdown
               a.dropdown-toggle(href="#",data-toggle="dropdown") Dropdown 
                 span.caret
@@ -72,18 +72,14 @@ html
                 span.input-group-btn 
                   button.btn.btn-primary.btn-sm(type="submit"): span.glyphicon.glyphicon-search
   
-    h1= AppConfig.title
-    p Welcome to #{AppConfig.title}
-    button.btn.btn-default(type="button",data-toggle="tooltip",data-placement="right",title="Tooltip on left") test
-    button.btn.btn-default(type="button",data-toggle="popover",data-placement="right",title="Tooltip on left") test
-    if AppConfig.productional
-      h1 PRD
-    else 
-      h1 TRN
-    .container-fluid
+    #MainWorkspace.container-fluid
       .row
         .col-md-4
-          button#btntest.btn.btn-danger(type="button") test
+          h1= AppConfig.title
+          if AppConfig.productional
+            h1 PRD
+          else 
+            h1 TRN
           div
           - for (var x = 0; x < 30; x++)
             | item#{x} 

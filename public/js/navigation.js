@@ -12,8 +12,21 @@ $(function () {
     }
   });
 
+  // ------------------ MainNavbar -----------------------
+  function MainWorkspace(url) {
+    $.get(url, function (data) {
+      $('#MainWorkspace').html(data);
+    });
+    if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
+      $('#MainNavbar .navbar-toggle').click();
+    }
+  }
+
   $('#MainNavbar a').on('click', function () {
-    console.log("click: " + $(this).text());
+    switch ($(this).attr('id')) {
+      case "TopNav_DokuSys": MainWorkspace('DokuSys');
+    }
+
   });
 
   console.log("ready!");
