@@ -1,3 +1,4 @@
+/* global bootbox */
 $(function () {
   $.ajaxSetup({ cache: false });
   $('#MainNavbar').bind("contextmenu", function () {
@@ -41,43 +42,36 @@ $(function () {
         });
         break;
       case "MainNav_Login":
-        $('#MainLogin').modal();
+        bootbox
+          .dialog({ title: 'Login', message: $('#MainLogin'), show: false })
+          .on('shown.bs.modal', function () {
+            $('#MainLogin').show().bootstrapValidator('resetForm', true);
+            $('#MainLoginUser').focus();
+          })
+          .on('hide.bs.modal', function () {
+            $('#MainLogin').hide().appendTo('body');
+          })
+          .on('success.form.bv', function (e) {
+            e.preventDefault();
+            var $form = $(e.target);
+            $.post('/login', $form.serialize(), function (data) {
+              if (!data.err) {
+                $('#MainNav_Login').parent()
+                  .replaceWith("<li class='dropdown'>"
+                      + "<a href='#' class='dropdown-toggle' data-toggle='dropdown'>" + $('#MainLoginUser').val()
+                      + "<span class='caret'></span></a>"
+                      + "<ul class='dropdown-menu' role='menu'>"
+                      + "<li><a href='#'>Logout</a></li>"
+                      + "</ul></li>");
+                $form.parents('.bootbox').modal('hide');
+              } else {
+                $('#MainLoginErr').text("Fehler: " + data.err);
+              }
+            });
+          })
+          .modal('show');
         break;
     }
-  });
-
-  // ------------------ MainLogin -----------------------
-  $('#MainLogin').on('shown.bs.modal', function () {
-    $('#MainLoginErr').text("");
-    $('#MainLoginUser').focus();
-  });
-  $('#MainLogin button').click(function () {
-    $('#MainLogin form').submit();
-  });
-  $('#MainLogin form').on('submit', function () {
-    $('#MainLogin input').each(function () {
-      console.log($(this).val().length);
-      if ($(this).val().length < 1) {
-        $(this).focus();
-        $('#MainLoginErr').text("Username/Passwort erforderlich");
-        return false;
-      }
-    });
-    $.post('/login', { user: $('#MainLoginUser').val() }, function (data) {
-      if (!data.err) {
-        $('#MainLogin').modal('hide');
-        $('#MainNav_Login').parent()
-          .replaceWith("<li class='dropdown'>"
-              + "<a href='#' class='dropdown-toggle' data-toggle='dropdown'>" + $('#MainLoginUser').val()
-              + "<span class='caret'></span></a>"
-              + "<ul class='dropdown-menu' role='menu'>"
-              + "<li><a href='#'>Logout</a></li>"
-              + "</ul></li>");
-      } else {
-        $('#MainLoginErr').text("Fehler: " + data.err);
-      }
-    });
-    return false;
   });
 
   console.log("ready!");

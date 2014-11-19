@@ -24,15 +24,21 @@ html
     else 
       link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
       //link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.min.css')
+      link(rel='stylesheet', href='/bower_components/bootstrapvalidator/dist/css/bootstrapValidator.min.css')
       link(rel='stylesheet', href='/css/style.css')
+
       script(type='text/javascript', src='/bower_components/jquery/dist/jquery.min.js')
       script(type='text/javascript', src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
-      script(type='text/javascript', src='/js/navigation.js')
+
+      script(type='text/javascript', src='/bower_components/bootbox/bootbox.js')
+      script(type='text/javascript', src='/bower_components/bootstrapvalidator/dist/js/bootstrapValidator.min.js')
+      script(type='text/javascript', src='/bower_components/bootstrapvalidator/dist/js/language/de_DE.js')
 
       link(rel='stylesheet',scoped="scoped",href='/bower_components/fontawesome/css/font-awesome.min.css')
       link(rel='stylesheet',scoped="scoped",href='/bower_components/summernote/dist/summernote.css')
       script(type='text/javascript', src='/bower_components/summernote/dist/summernote.min.js')
 
+      script(type='text/javascript', src='/js/navigation.js')
 
   body
 
@@ -78,22 +84,20 @@ html
                 span.input-group-btn 
                   button.btn.btn-primary.btn-sm(type="submit"): span.glyphicon.glyphicon-search
 
-    #MainLogin.modal.fade
-      .modal-dialog
-        .modal-content
-          .modal-header
-            h3 Login
-          .modal-body
-            form(role='form',action='/login',method='post')
-              .form-group
-                label(for='MainLoginUser') Benutzer
-                input.form-control#MainLoginUser(name='user',type='text',required='required',placeholder='Benutzer-Login')
-              .form-group
-                label(for='MainLoginPasswd') Passwort
-                input.form-control#MainLoginPasswd(name='passwd',type='password',required='required',placeholder='Passwort')
-          .modal-footer
-            p#MainLoginErr.text-danger.pull-left
-            button.btn.btn-primary(type='button') Login
+    form.form-horizontal#MainLogin(style='display:none;')
+      .form-group
+        label.col-sm-3.control-label Benutzer
+        .col-sm-6
+          input.form-control#MainLoginUser(name='user',type='text',required='required',placeholder='Benutzer-Login',data-bv-message='Benutzername angeben!')
+      .form-group
+        label.col-sm-3.control-label Passwort
+        .col-sm-6
+          input.form-control#MainLoginPwd(name='pwd',type='password',required='required',placeholder='Passwort',data-bv-message='Passwort angeben!')
+      p.col-sm-10.col-sm-offset-1.text-danger#MainLoginErr
+      .form-group
+        .col-sm-10.col-sm-offset-1
+          button.btn.btn-primary.btn-block(type='submit') Login
+      
 
     #MainWorkspace.container-fluid
       .row

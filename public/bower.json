@@ -15,6 +15,8 @@
   ],
   "dependencies": {
     "bootstrap": "",
-    "summernote": "~0.5.10"
+    "summernote": "~0.5.10",
+    "bootbox" : "~4.3.0",
+    "bootstrapvalidator" : "~0.5.3"
   }
 }

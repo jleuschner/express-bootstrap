@@ -26,6 +26,9 @@ module.exports = function (grunt) {
       build: {
         src: ['public/bower_components/jquery/dist/jquery.min.js',
               'public/bower_components/bootstrap/dist/js/bootstrap.min.js',
+              'public/bower_components/bootbox/bootbox.js',
+              'public/bower_components/bootstrapvalidator/dist/js/bootstrapValidator.min.js',
+              'public/bower_components/bootstrapvalidator/dist/js/language/de_DE.js',
               'public/bower_components/summernote/dist/summernote.min.js',
               'public/js/*.js'
               ],
@@ -47,6 +50,7 @@ module.exports = function (grunt) {
           'public/dist/css/j.css': [
                   'public/bower_components/bootstrap/dist/css/bootstrap.min.css',
                   //'public/bower_components/bootstrap/dist/css/bootstrap-theme.min.css',
+                  'public/bower_components/bootstrapvalidator/dist/css/bootstrapValidator.min.css',
                   'public/bower_components/fontawesome/css/font-awesome.min.css',
                   'public/bower_components/summernote/dist/summernote.css',
                   'public/css/style.css'
