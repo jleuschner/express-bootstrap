@@ -34,11 +34,17 @@ $(function () {
     });
   }
 
-  $('#MainNavbar a').on('click', function () {
-    switch ($(this).attr('id')) {
+  $('#MainNavbar a').on('click', function () { MainNav($(this).attr('id')); });
+  function MainNav(id) {
+    switch (id) {
       case "MainNav_DokuSys":
         MainWorkspace('DokuSys', function () {
           $('#DokuSys_Edit').summernote();
+        });
+        break;
+      case "MainNav_Logout":
+        $.get('/logout', function (data) {
+
         });
         break;
       case "MainNav_Login":
@@ -61,8 +67,9 @@ $(function () {
                       + "<a href='#' class='dropdown-toggle' data-toggle='dropdown'>" + $('#MainLoginUser').val()
                       + "<span class='caret'></span></a>"
                       + "<ul class='dropdown-menu' role='menu'>"
-                      + "<li><a href='#'>Logout</a></li>"
+                      + "<li><a href='#' id='MainNav_Logout'>Logout</a></li>"
                       + "</ul></li>");
+                $('#MainNavbar a').on('click', function () { MainNav($(this).attr('id')); });
                 $form.parents('.bootbox').modal('hide');
               } else {
                 $('#MainLoginErr').text("Fehler: " + data.err);
@@ -72,7 +79,7 @@ $(function () {
           .modal('show');
         break;
     }
-  });
+  }
 
   console.log("ready!");
 });

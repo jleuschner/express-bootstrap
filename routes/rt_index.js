@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var AppConfig = require("../AppConfig");
+var DBCon = require('../lib/dbconnection');
 
 
 /* GET home page. */
@@ -12,12 +13,25 @@ router.get('/', function(req, res) {
 
 router.post('/login', function (req, res) {
   var post = req.body;
+  DBCon.connect(post.user, post.passwd, function (data) {
+    console.log(data);
+  });
+  /*
   if (post.user === "jens") {
-    req.session.user = post.user;
-    res.send({ err: "" });
+  req.session.user = post.user;
+  req.session.passwd = post.passwd;
+  res.send({ err: "" });
   } else {
-    res.send({ err: "ERR" });
+  res.send({ err: "ERR" });
   }
+  */
+});
+
+router.get('/logout', function (req, res) {
+  console.log(req.session.user + " / " + req.session.passwd);
+  delete req.session.user;
+  delete req.session.passwd;
+  res.send({ err: "" });
 });
 
 module.exports = router;
