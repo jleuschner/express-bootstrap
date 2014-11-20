@@ -6,7 +6,7 @@ module.exports = {
   productional : false,
   login : {
     required : true,
-    MySQLServer : "thorin.kl.kdo.int",
-    MySQLDatabase : "satan"
+    MySQLServer : "gandalf.shire.local",
+    MySQLDatabase : "test"
   }
 };

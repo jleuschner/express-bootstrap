@@ -36,15 +36,24 @@ $(function () {
 
   $('#MainNavbar a').on('click', function () { MainNav($(this).attr('id')); });
   function MainNav(id) {
+    //$('#' + id).parent().addClass('active');
     switch (id) {
       case "MainNav_DokuSys":
         MainWorkspace('DokuSys', function () {
           $('#DokuSys_Edit').summernote();
         });
         break;
+      case "MainNav_DBtest":
+        MainWorkspace('dbtest', function () {
+        });
+        break;
       case "MainNav_Logout":
-        $.get('/logout', function (data) {
-
+        $.get('/logout', function () {
+          $('#MainNav_Logout').parents('.dropdown').replaceWith("<li><a href='#' id='MainNav_Login'>Login</a></li>");
+          $('#MainNavbar a').on('click', function () { MainNav($(this).attr('id')); });
+          if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
+            $('#MainNavbar .navbar-toggle').click();
+          }
         });
         break;
       case "MainNav_Login":
@@ -71,14 +80,18 @@ $(function () {
                       + "</ul></li>");
                 $('#MainNavbar a').on('click', function () { MainNav($(this).attr('id')); });
                 $form.parents('.bootbox').modal('hide');
+                if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
+                  $('#MainNavbar .navbar-toggle').click();
+                }
               } else {
-                $('#MainLoginErr').text("Fehler: " + data.err);
+                $('#MainLoginErr').text("Fehler: " + data.err.text);
               }
             });
           })
           .modal('show');
         break;
     }
+    
   }
 
   console.log("ready!");

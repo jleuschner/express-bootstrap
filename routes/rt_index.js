@@ -14,21 +14,21 @@ router.get('/', function(req, res) {
 router.post('/login', function (req, res) {
   var post = req.body;
   DBCon.connect(post.user, post.passwd, function (data) {
-    console.log(data);
+    //console.log(data);
+    if (data.err) {
+      delete req.session.user;
+      delete req.session.passwd;
+    } else {
+      console.log("OK");
+      req.session.user = post.user;
+      req.session.passwd = post.passwd;
+    }
+    res.send( {err: data.err} );
   });
-  /*
-  if (post.user === "jens") {
-  req.session.user = post.user;
-  req.session.passwd = post.passwd;
-  res.send({ err: "" });
-  } else {
-  res.send({ err: "ERR" });
-  }
-  */
 });
 
 router.get('/logout', function (req, res) {
-  console.log(req.session.user + " / " + req.session.passwd);
+  //console.log(req.session.user + " / " + req.session.passwd);
   delete req.session.user;
   delete req.session.passwd;
   res.send({ err: "" });

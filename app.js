@@ -10,6 +10,7 @@ var mysql = require('mysql');
 var routes = require('./routes/rt_index');
 var dokusys = require('./routes/rt_dokusys');
 var users = require('./routes/rt_users');
+var dbtest= require('./routes/rt_dbtest');
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use(session({secret: '1f2g3h4j5k67890QWERTY'}));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/dokusys', dokusys);
+app.use('/dbtest', dbtest);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
