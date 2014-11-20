@@ -38,7 +38,9 @@ html
       link(rel='stylesheet',scoped="scoped",href='/bower_components/summernote/dist/summernote.css')
       script(type='text/javascript', src='/bower_components/summernote/dist/summernote.min.js')
 
+      script(type='text/javascript', src='/bower_components/jquery-ui/ui/minified/widget.min.js')
       script(type='text/javascript', src='/js/navigation.js')
+      script(type='text/javascript', src='/js/dokusys.js')
 
   body
 
@@ -58,7 +60,7 @@ html
         //- Collapsable-Part der NavBar
         .collapse.navbar-collapse#navbar-content
           ul.nav.navbar-nav
-            li: a#MainNav_DokuSys(href="#") DokuSys
+            li.hidden: a#MainNav_DokuSys(href="#") DokuSys
             li: a#MainNav_DBtest(href="#") DB-Test
             li.dropdown.hidden
               a.dropdown-toggle(href="#",data-toggle="dropdown") Dropdown 

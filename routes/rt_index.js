@@ -19,9 +19,9 @@ router.post('/login', function (req, res) {
       delete req.session.user;
       delete req.session.passwd;
     } else {
-      console.log("OK");
       req.session.user = post.user;
       req.session.passwd = post.passwd;
+      //console.log(req.session);
     }
     res.send( {err: data.err} );
   });
