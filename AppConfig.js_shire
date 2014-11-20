@@ -1,6 +1,7 @@
 module.exports = {
   title: "BootStrap Template",
   title_short: "BootJL",
+  title_short_version: "1/4vor2",
   description: "Ein Template für Bootstrap",
   version: "1.0",
   productional : false,

@@ -54,8 +54,10 @@ html
             span.icon-bar
             span.icon-bar
           a.navbar-brand(href="#") 
-            span.glyphicon.glyphicon-home.text-right 
-            |  BootJL
+            //span.glyphicon.glyphicon-home.text-right 
+            span.glyphicon.glyphicon-star-empty.text-right 
+            //span: image(src='/images/pent80.png', style='position:relative;top:-10px;height:200%;')
+            | #{AppConfig.title_short}<sup>#{AppConfig.title_short_version}</sup>
 
         //- Collapsable-Part der NavBar
         .collapse.navbar-collapse#navbar-content
@@ -107,6 +109,7 @@ html
         .row
           .col-md-4
             h1= AppConfig.title
+
             if AppConfig.productional
               h1 PRD
             else 
