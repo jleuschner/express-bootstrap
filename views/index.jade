@@ -77,6 +77,12 @@ html
           //- rechts
           ul.nav.navbar-nav.navbar-right
             li: a#MainNav_Login(href="#") Login
+            li.dropdown.hidden
+              a#MainNav_LogoutDD.dropdown-toggle(href='#', data-toggle='dropdown') Username
+                span.caret
+              ul.dropdown-menu(role='menu')
+                li: a#MainNav_Logout(href='#') Logout 
+ 
             li.dropdown
               a.dropdown-toggle(href="#",data-toggle="dropdown")
                 span.glyphicon.glyphicon-cog

@@ -37,26 +37,19 @@ $(function () {
   function MainNavbar() {
     $.post('/check', function (data) {
       if (data.err) {
-        $('#MainNav_Logout').parents('.dropdown').replaceWith("<li><a href='#' id='MainNav_Login'>Login</a></li>");
-        $('#MainNav_Login').click(function () { MainNav($(this).attr('id')); });
-        if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
-          $('#MainNavbar .navbar-toggle').click();
-        }
+        $('#MainNav_Login').parent().removeClass('hidden');
+        $('#MainNav_LogoutDD').parent().addClass('hidden');
         $('#MainNav_DokuSys').parent().addClass('hidden');
       } else {
-        $('#MainNav_Login').parent()
-          .replaceWith("<li class='dropdown'>"
-              + "<a href='#' class='dropdown-toggle' data-toggle='dropdown'>" + data.user
-              + "<span class='caret'></span></a>"
-              + "<ul class='dropdown-menu' role='menu'>"
-              + "<li><a href='#' id='MainNav_Logout'>Logout</a></li>"
-              + "</ul></li>");
-        $('#MainNav_Logout').click(function () { MainNav($(this).attr('id')); });
-        if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
-          $('#MainNavbar .navbar-toggle').click();
-        }
+        $('#MainNav_Login').parent().addClass('hidden');
+        $('#MainNav_LogoutDD').html(data.user + "<span class='caret'></span>");
+        $('#MainNav_LogoutDD').parent().removeClass('hidden');
         $('#MainNav_DokuSys').parent().removeClass('hidden');
       }
+      if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
+        $('#MainNavbar .navbar-toggle').click();
+      }
+
     });
 
   }
@@ -70,6 +63,7 @@ $(function () {
       })
       .on('hide.bs.modal', function () {
         $('#MainLogin').hide().appendTo('body');
+        //MainNavbar();
       })
       .on('success.form.bv', function (e) {
         e.preventDefault();
@@ -80,6 +74,7 @@ $(function () {
             MainNavbar();
           } else {
             $('#MainLoginErr').text("Fehler: " + data.err.text);
+            //e.preventDefault();
           }
         });
       })
