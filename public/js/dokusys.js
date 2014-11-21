@@ -7,6 +7,8 @@ $.widget("JL.topicTree", {
     dberror_func: ""
   },
   _create: function () {
+    //bootbox.alert(this.element.attr('id')) 
+    //var $tree = $("<div style='border:1px solid #000;'>test</div>").appendTo(this.element);
     this._update();
     this.getTree();
   },

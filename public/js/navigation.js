@@ -34,6 +34,33 @@ $(function () {
     });
   }
 
+  function MainNavbar() {
+    $.post('/check', function (data) {
+      if (data.err) {
+        $('#MainNav_Logout').parents('.dropdown').replaceWith("<li><a href='#' id='MainNav_Login'>Login</a></li>");
+        $('#MainNav_Login').click(function () { MainNav($(this).attr('id')); });
+        if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
+          $('#MainNavbar .navbar-toggle').click();
+        }
+        $('#MainNav_DokuSys').parent().addClass('hidden');
+      } else {
+        $('#MainNav_Login').parent()
+          .replaceWith("<li class='dropdown'>"
+              + "<a href='#' class='dropdown-toggle' data-toggle='dropdown'>" + data.user
+              + "<span class='caret'></span></a>"
+              + "<ul class='dropdown-menu' role='menu'>"
+              + "<li><a href='#' id='MainNav_Logout'>Logout</a></li>"
+              + "</ul></li>");
+        $('#MainNav_Logout').click(function () { MainNav($(this).attr('id')); });
+        if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
+          $('#MainNavbar .navbar-toggle').click();
+        }
+        $('#MainNav_DokuSys').parent().removeClass('hidden');
+      }
+    });
+
+  }
+
   function MainLogin() {
     bootbox
       .dialog({ title: 'Login', message: $('#MainLogin'), show: false })
@@ -49,19 +76,8 @@ $(function () {
         var $form = $(e.target);
         $.post('/login', $form.serialize(), function (data) {
           if (!data.err) {
-            $('#MainNav_Login').parent()
-              .replaceWith("<li class='dropdown'>"
-                  + "<a href='#' class='dropdown-toggle' data-toggle='dropdown'>" + $('#MainLoginUser').val()
-                  + "<span class='caret'></span></a>"
-                  + "<ul class='dropdown-menu' role='menu'>"
-                  + "<li><a href='#' id='MainNav_Logout'>Logout</a></li>"
-                  + "</ul></li>");
-            $('#MainNav_Logout').click(function () { MainNav($(this).attr('id')); });
             $form.parents('.bootbox').modal('hide');
-            if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
-              $('#MainNavbar .navbar-toggle').click();
-            }
-            $('#MainNav_DokuSys').parent().removeClass('hidden');
+            MainNavbar();
           } else {
             $('#MainLoginErr').text("Fehler: " + data.err.text);
           }
@@ -72,12 +88,7 @@ $(function () {
 
   function MainLogout() {
     $.get('/logout', function () {
-      $('#MainNav_Logout').parents('.dropdown').replaceWith("<li><a href='#' id='MainNav_Login'>Login</a></li>");
-      $('#MainNav_Login').click(function () { MainNav($(this).attr('id')); });
-      if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
-        $('#MainNavbar .navbar-toggle').click();
-      }
-      $('#MainNav_DokuSys').parent().addClass('hidden');
+      MainNavbar();
     });
   }
 
@@ -113,6 +124,10 @@ $(function () {
     bootbox.alert("<h3>" + err.code + "</h3><p>" + err.text + "</p>");
     if (err.code === "NOSESSION") { MainLogout(); }
   }
+
+  // ---------------- Main ------------------
+
+  MainNavbar();
 
   console.log("ready!");
 });
