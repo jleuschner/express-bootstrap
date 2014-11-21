@@ -91,15 +91,19 @@ $(function () {
           $('#DokuSys_Edit').summernote();
         });
         break;
-      case "MainNav_DBtest":
-        MainWorkspace('dbtest', function () {
-        });
-        break;
       case "MainNav_Logout":
         MainLogout();
         break;
       case "MainNav_Login":
         MainLogin();
+        break;
+      case "MainNav_DBtest":
+        MainWorkspace('dbtest', function () {
+        });
+        break;
+      case "MainNav_Config":
+        MainWorkspace('config', function () {
+        });
         break;
     }
 

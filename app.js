@@ -11,6 +11,7 @@ var routes = require('./routes/rt_index');
 var dokusys = require('./routes/rt_dokusys');
 var users = require('./routes/rt_users');
 var dbtest= require('./routes/rt_dbtest');
+var config= require('./routes/rt_config');
 
 var app = express();
 
@@ -35,6 +36,7 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/dokusys', dokusys);
 app.use('/dbtest', dbtest);
+app.use('/config', config);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
