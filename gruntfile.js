@@ -54,7 +54,7 @@ module.exports = function (grunt) {
                   'public/bower_components/bootstrapvalidator/dist/css/bootstrapValidator.min.css',
                   'public/bower_components/fontawesome/css/font-awesome.min.css',
                   'public/bower_components/summernote/dist/summernote.css',
-                  'public/css/style.css'
+                  'public/css/*.css'
               ]
         }
       }
