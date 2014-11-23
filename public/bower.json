@@ -18,6 +18,7 @@
     "summernote": "~0.5.10",
     "bootbox" : "~4.3.0",
     "bootstrapvalidator" : "~0.5.3",
-    "jquery-ui" : "~1.11.2"
+    "jquery-ui" : "~1.11.2",
+    "jQuery-Mask-Plugin": "~1.10.13"
   }
 }

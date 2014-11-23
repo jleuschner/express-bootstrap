@@ -46,6 +46,9 @@ $.widget("JL.topicTree", {
   _load: function (div) {
     var _this = this;
     $.getJSON(this.options.datasource, function (data) {
+      if (data.err && _this.options.dberror_func) {
+        _this.options.dberror_func(data.err);
+      }
       var tree = $("<ul></ul>");
       $.each(data.rows, function (key, obj) {
         var ntopic = $("<li id=topic" + obj.id + " data-json='" + JSON.stringify(obj) + "'><span><i class='glyphicon text-info'></i> " + obj.topic + "</span></li>");

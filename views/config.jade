@@ -1,11 +1,20 @@
-.container-fluid
+.container-fluid.JL
   .row
     .col-sm-4
-      h2 Konfiguration
-      div
-        - for (var x = 100; x < 130; x++)
-          | item#{x} 
-    .col-sm-8
-      #DokuSys_Edit
-        - for (var x = 100; x < 130; x++)
-          | item#{x} 
+      h4 IO-Devices
+  .row
+    .col-sm-4
+      div#configList
+    .col-sm-4
+      #DokuSys_Edit.configDlg
+        form#configForm
+          .form-group
+            label Hostname
+            input.form-control(name='hostname',type='text',required='required',placeholder='Hostname',data-bv-message='Benutzername angeben!')
+          .form-group
+            label IP-Adresse
+            input#configIP.form-control(name='ip',type='text',required='required',data-mask='099.099.099.099',placeholder='IP-Adresse')
+          .form-group
+            .row
+              .col-xs-4.col-xs-offset-8
+                button.btn.btn-primary.btn-block(type='submit') OK

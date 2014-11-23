@@ -87,6 +87,8 @@ $(function () {
     });
   }
 
+
+
   $('#MainNavbar a').click(function () { MainNav($(this).attr('id')); });
   function MainNav(id) {
     //$('#' + id).parent().addClass('active');
@@ -109,6 +111,11 @@ $(function () {
         break;
       case "MainNav_Config":
         MainWorkspace('config', function () {
+          $('#configList').configList({ dberror_func: function (err) { DBErr(err); } });
+          $('#configForm').configDlg();
+          $('#xconfigForm').bootstrapValidator({ fields: { ip: { validators: {
+            ip: { message: 'Ip-Adresse!'}}}}});
+          $('#configIP').mask('099.099.099.099', { placeholder: "___.___.___.___" });
         });
         break;
     }
@@ -116,7 +123,7 @@ $(function () {
   }
 
   function DBErr(err) {
-    bootbox.alert("<h3>" + err.code + "</h3><p>" + err.text + "</p>");
+    bootbox.alert("<h3 class='text-danger'>" + err.code + "</h3><p>" + err.text + "</p>");
     if (err.code === "NOSESSION") { MainLogout(); }
   }
 
