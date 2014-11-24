@@ -96,7 +96,7 @@ $(function () {
       case "MainNav_DokuSys":
         MainWorkspace('DokuSys', function () {
           $('#DokuSys_TopicTree').topicTree({ dberror_func: function (err) { DBErr(err); } });
-          $('#DokuSys_Edit').summernote();
+          $('#DokuSys_TopicDlg').topicDlg({ dberror_func: function (err) { DBErr(err); } });
         });
         break;
       case "MainNav_Logout":

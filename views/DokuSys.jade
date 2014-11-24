@@ -1,8 +1,34 @@
-.container-fluid
+.container-fluid.JL
   .row
-    .col-md-4
+    .col-sm-4
       #DokuSys_TopicTree
-    .col-md-8
-      #DokuSys_Edit
-        - for (var x = 100; x < 130; x++)
-          | item#{x} 
+    .col-sm-8
+      #DokuSys_TopicDlg
+        ol.breadcrumb
+          li: a(href='#') Root
+          li: a(href='#') Child
+          li.active Grantchild
+        
+        form#topicForm
+          .row
+            .col-xs-10
+              h1.topicShow(name='topic') Topic
+            .col-xs-2
+              button#btnEdit.btn.btn-primary.topicShow.pull-right(type='button') Edit
+
+          .form-group.topicEdit.hidden
+            label Topic
+            input.form-control(name='topic',type='text',required='required',placeholder='Topic',data-bv-message='Topic angeben')
+          .form-group.topicEdit.hidden
+            label Tags
+            input.form-control(name='keywords',type='text',required='required',placeholder='Schlagworte')
+          div.topicShow(name='topictext', style='background-color:#fbfbfb;')
+          .form-group.topicEdit.hidden
+            label Beschreibung
+            div.form-control.topicEditor(name='topictext', style='background-color:#fbfbfb;')
+          .form-group
+            .col-xs-3.col-xs-offset-1
+              button#btnEdit.btn.btn-primary.btn-block.topicShow(type='button') Edit
+              button#btnCancel.btn.btn-danger.btn-block.topicEdit.hidden(type='button') Abbrechen
+            .col-xs-2.col-xs-offset-4
+              button.btn.btn-primary.btn-block(type='submit') OK

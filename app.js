@@ -30,7 +30,38 @@ app.use(session({secret: '1f2g3h4j5k67890QWERTY'}));
 
 
 // Config laden
-//var AppConfig= require("./AppConfig")
+var AppConfig= require("./AppConfig")
+
+global.DB = mysql.createConnection({
+      host: AppConfig.login.MySQLServer,
+      database: AppConfig.login.MySQLDatabase,
+      user: "root",
+      password: "auenland"
+    });
+DB.connect(function (err) {
+  if (err) {
+    switch (err.code) {
+      case 'ENOTFOUND':
+        err.text = "DNS: " + AppConfig.login.MySQLServer + " nicht auflösbar!";
+        break;
+      case 'ETIMEDOUT':
+        err.text = "TimeOut: " + AppConfig.login.MySQLServer + " reagiert nicht!";
+        break;
+      case 'ER_ACCESS_DENIED_ERROR':
+        err.text = "Zugriff verweigert - Username/Passwort falsch?";
+        break;
+      case 'ER_DBACCESS_DENIED_ERROR':
+        err.text = "Kein Zugriff auf Datenbank '" + AppConfig.login.MySQLDatabase + "@" + AppConfig.login.MySQLServer + "'";
+        break;
+      default:
+        err.text = "Error_Code: " + err.code;
+        break;
+    }
+    console.log("FATAL: "+err.code);
+    console.log("FATAL: "+err.text);
+    process.exit(1);
+  }
+});
 
 app.use('/', routes);
 app.use('/users', users);
