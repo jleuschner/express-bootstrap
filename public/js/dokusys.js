@@ -5,7 +5,7 @@
     options: {
       datasource: "/DokuSys/getList",
       dberror_func: "",
-      targetForm: '#DokuSys_TopicDlg',
+      targetForm: "#DokuSys_TopicDlg"
     },
     _create: function () {
       var _this = this;
@@ -99,6 +99,12 @@
       $(this.element).bind("contextmenu", function () {
         return false;
       });
+      
+      $(".breadcrumbs",_this.element).find("a").click( function(){ 
+        _this.load( $(this).data("id")); 
+      });
+      $(".breadcrumbs",_this.element).find("li").tooltip(); 
+
 
       $('#btnEdit', this.element).click(function () {
         $('.topicShow', _this.element).addClass('hidden');
@@ -112,7 +118,7 @@
       });
 
       this._update();
-      this.load(1);
+      this.load(0);
     },
     _setOption: function (key, value) {
       this.options[key] = value;
@@ -121,8 +127,32 @@
     _update: function () {
       //this.element.html("<h1>" + this.options.text + "</h1>");
     },
+    _editMode: function(enable) {
+      var _this = this;
+      if (enable) {
+        $('.topicShow', _this.element).addClass('hidden');
+        $('.topicEdit', _this.element).removeClass('hidden');
+        $('.topicEditor', _this.element).summernote();
+      } else {
+        $('.topicEdit', _this.element).addClass('hidden');
+        $('.topicShow', _this.element).removeClass('hidden');
+        $('.topicEditor', _this.element).destroy();
+      }
+    },
     load: function (id) {
       var _this = this;
+      if (id === 0) {
+        $('.topicRoot',this.element).removeClass('hidden');
+        $('.topicWorkspace',this.element).addClass('hidden');
+        return;
+      } else {
+        $('.topicRoot',this.element).addClass('hidden');
+        $('.topicWorkspace',this.element).removeClass('hidden');
+        if (id === -1) { 
+          _this._editMode(true);
+          return; 
+        }
+      }
       $('#btnCancel', this.element).click();
       $.getJSON(this.options.datasource, { id: id }, function (data) {
         if (data.err && _this.options.dberror_func) {

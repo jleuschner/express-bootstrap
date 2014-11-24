@@ -4,12 +4,19 @@
       #DokuSys_TopicTree
     .col-sm-8
       #DokuSys_TopicDlg
-        ol.breadcrumb
-          li: a(href='#') Root
-          li: a(href='#') Child
-          li.active Grantchild
-        
-        form#topicForm
+        nav.breadcrumbs.small
+          ul
+            li(data-toggle="tooltip",data-placement="bottom",title='Wurzel (Kurzanleitung)'): a(href='#',data-id='0'): i.fa.fa-home
+            li(data-toggle="tooltip",data-placement="bottom",title='Neuer Artikel'): a(href='#',data-id='-1'): i.fa.fa-plus-square
+        div.topicRoot
+          h1 Doku-Management
+          h3 Artikel anlegen
+          blockquote.small
+            p Neue Artikel werden unterhalb des aktuellen Artikels mit Click auf das 
+              span.fa.fa-plus-square.text-primary
+              | -Symbol am Ende der Pfadanzeige erzeugt.
+
+        form.topicWorkspace
           .row
             .col-xs-10
               h1.topicShow(name='topic') Topic
@@ -21,11 +28,11 @@
             input.form-control(name='topic',type='text',required='required',placeholder='Topic',data-bv-message='Topic angeben')
           .form-group.topicEdit.hidden
             label Tags
-            input.form-control(name='keywords',type='text',required='required',placeholder='Schlagworte')
+            input.form-control(name='keywordsxx',type='text',required='required',placeholder='Schlagworte')
           div.topicShow(name='topictext', style='background-color:#fbfbfb;')
           .form-group.topicEdit.hidden
             label Beschreibung
-            div.form-control.topicEditor(name='topictext', style='background-color:#fbfbfb;')
+            div.form-group.summernote.topicEditor(name='topictext')
           .form-group
             .col-xs-3.col-xs-offset-1
               button#btnEdit.btn.btn-primary.btn-block.topicShow(type='button') Edit

@@ -1,7 +1,7 @@
 body {
   margin-top: 50px;
   font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
-  background-color: #eee;
+  background-color: #f8f8f8;
 }
 .JL label {
   font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
@@ -12,4 +12,121 @@ body {
 
 h1,h2,h3,h4,h5,h6 {
   color: #555555 !important;
+}
+
+/* Fix Summernote */
+.note-editable {
+  background-color: #ffffff !important;
+}
+
+.JL .breadcrumbs {
+  margin: 0.2em;
+}
+.JL .breadcrumbs ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+  width: 100%;
+}
+.JL .breadcrumbs ul li {
+  float: left;
+  margin: 0 .2em 0 1em;
+}
+.JL .breadcrumbs ul li:first-child {
+  margin-left: 0 !important;
+}
+.JL .breadcrumbs ul li:first-child a:before {
+  content: normal;
+}
+.JL .breadcrumbs ul li:last-child {
+  background: none;
+}
+.JL .xbreadcrumbs ul li:last-child a {
+  color: #1d1d1d;
+}
+.JL .breadcrumbs ul li:last-child:after,
+.JL .breadcrumbs ul li:last-child:before {
+  content: normal;
+}
+.JL .breadcrumbs ul a {
+  background: #d9d9d9;
+  padding: .3em 1em;
+  float: left;
+  text-decoration: none;
+  color: #2e92cf;
+  position: relative;
+}
+.JL .breadcrumbs ul a:hover {
+  background: #1ba1e2;
+  color: #ffffff;
+}
+.JL .breadcrumbs ul a:hover:before {
+  border-color: #1ba1e2 #1ba1e2 #1ba1e2 transparent;
+}
+.JL .breadcrumbs ul a:hover:after {
+  border-left-color: #1ba1e2;
+}
+.JL .breadcrumbs ul a:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  margin-top: -1.5em;
+  border-width: 1.5em 0 1.5em 1em;
+  border-style: solid;
+  border-color: #ddd #ddd #ddd transparent;
+  left: -1em;
+  margin-left: 1px;
+}
+.JL .breadcrumbs ul a:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  margin-top: -1.5em;
+  border-top: 1.5em solid transparent;
+  border-bottom: 1.5em solid transparent;
+  border-left: 1em solid #ddd;
+  right: -1em;
+  margin-right: 1px;
+}
+.JL .breadcrumbs ul li:last-child a:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  margin-top: -1.5em;
+  border-top: 1.5em solid transparent;
+  border-bottom: 1.5em solid transparent;
+  border-left: 0em solid #ddd;
+  right: -1em;
+  margin-right: 1px;
+}
+
+.JL .breadcrumbs ul .active,
+.JL .breadcrumbs ul .active:hover {
+  background: none;
+}
+.JL .breadcrumbs ul .active a,
+.JL .breadcrumbs ul .active:hover a {
+  color: #1d1d1d;
+}
+.JL .breadcrumbs ul .active:hover a {
+  color: #ffffff;
+}
+.JL .breadcrumbs ul .active:after,
+.JL .breadcrumbs ul .active:before {
+  content: normal;
+}
+.JL .breadcrumbs.small li {
+  margin: 0 .2em 0 .8em;
+}
+.JL .breadcrumbs.small a {
+  padding: .2em 1em;
+  font-size: 11.9px;
+}
+.JL .breadcrumbs.mini li {
+  margin: 0 .2em 0 .6em;
+}
+.JL .breadcrumbs.mini a {
+  padding: .1em 1em;
+  font-size: 10.5px;
 }

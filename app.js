@@ -33,10 +33,10 @@ app.use(session({secret: '1f2g3h4j5k67890QWERTY'}));
 var AppConfig= require("./AppConfig")
 
 global.DB = mysql.createConnection({
-      host: AppConfig.login.MySQLServer,
-      database: AppConfig.login.MySQLDatabase,
-      user: "root",
-      password: "auenland"
+      host: AppConfig.DB.server,
+      database: AppConfig.DB.instance,
+      user: AppConfig.DB.user,
+      password: AppConfig.DB.password
     });
 DB.connect(function (err) {
   if (err) {

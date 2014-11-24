@@ -8,6 +8,16 @@ module.exports = {
   login : {
     required : true,
     MySQLServer : "gandalf.shire.local",
-    MySQLDatabase : "test"
+    MySQLDatabase : "athome"
+  },
+  DB: {
+    server : "gandalf.shire.local",
+    instance : "athome",
+    user: "srv_athome",
+    password: "ServiceAtHome"
+    
+  },
+  tables: {
+    dokusys_topics: "dokusys_topic"
   }
 };
