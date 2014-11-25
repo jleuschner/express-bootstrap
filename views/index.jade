@@ -61,14 +61,14 @@ html
             //span.glyphicon.glyphicon-home.text-right 
             span.glyphicon.glyphicon-star-empty.text-right 
             //span: image(src='/images/pent80.png', style='position:relative;top:-10px;height:200%;')
-            | #{AppConfig.title_short}<sup>#{AppConfig.title_short_version}</sup>
+            | #{AppConfig.title_short}<sup>!{AppConfig.title_short_version}</sup>
 
         //- Collapsable-Part der NavBar
         .collapse.navbar-collapse#navbar-content
           ul.nav.navbar-nav
             li.hidden: a#MainNav_DokuSys(href="#") DokuSys
-            li: a#MainNav_DBtest(href="#") DB-Test
-            li: a#MainNav_Config(href="#") Config
+            li.hidden: a#MainNav_DBtest(href="#") DB-Test
+            li.hidden: a#MainNav_Config(href="#") Config
             li.dropdown.hidden
               a.dropdown-toggle(href="#",data-toggle="dropdown") Dropdown 
                 span.caret
@@ -87,13 +87,13 @@ html
               ul.dropdown-menu(role='menu')
                 li: a#MainNav_Logout(href='#') Logout 
  
-            li.dropdown
+            li.dropdown.hidden
               a.dropdown-toggle(href="#",data-toggle="dropdown")
                 span.glyphicon.glyphicon-cog
                 span.caret
               ul.dropdown-menu(role="menu")
                 li: a(href="#") Action
-          form.navbar-form.navbar-right(role="search")
+          form.navbar-form.navbar-right.hidden(role="search")
             .form-group
               .input-group
                 input.form-control.input-sm(type="text",placeholder="Suche")
@@ -116,7 +116,7 @@ html
       
 
     #MainWorkspace
-      .container-fluid
+      .container-fluid.hidden
         .row
           .col-md-4
             h1= AppConfig.title
