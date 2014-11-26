@@ -1,7 +1,7 @@
 module.exports = {
   title: "BootStrap Template",
   title_short: "Satan",
-  title_short_version: "1/4vor2",
+  title_short_version: "&#188;vor2",
   description: "Ein Template für Bootstrap",
   version: "1.0",
   productional : false,
@@ -18,7 +18,7 @@ module.exports = {
     
   },
   tables: {
-    dokusys_topics: "doc_topics"
+    dokusys_topics: "dokusys_topics"
   }
 
 };

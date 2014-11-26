@@ -95,7 +95,10 @@ $(function () {
     switch (id) {
       case "MainNav_DokuSys":
         MainWorkspace('DokuSys', function () {
-          $('#DokuSys_TopicTree').topicTree({ dberror_func: function (err) { DBErr(err); } });
+          $('#DokuSys_TopicTree').topicTree({ dberror_func: function (err) { DBErr(err); } })
+            .bind("topictreehallo", function (e, data) {
+              bootbox.alert(data.msg);
+            });
           $('#DokuSys_TopicDlg').topicDlg({ dberror_func: function (err) { DBErr(err); } });
         });
         break;
@@ -114,7 +117,11 @@ $(function () {
           $('#configList').configList({ dberror_func: function (err) { DBErr(err); } });
           $('#configForm').configDlg();
           $('#xconfigForm').bootstrapValidator({ fields: { ip: { validators: {
-            ip: { message: 'Ip-Adresse!'}}}}});
+            ip: { message: 'Ip-Adresse!' }
+          }
+          }
+          }
+          });
           $('#configIP').mask('099.099.099.099', { placeholder: "___.___.___.___" });
         });
         break;
@@ -130,6 +137,7 @@ $(function () {
   // ---------------- Main ------------------
 
   MainNavbar();
-
   console.log("ready!");
+  $('#MainNav_DokuSys').click();
+
 });

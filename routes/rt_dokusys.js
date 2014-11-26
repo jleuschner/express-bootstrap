@@ -49,4 +49,21 @@ router.get('/get', function (req, res) {
     });
 });
 
+router.post('/set', function (req, res) {
+  var post = req.body;
+  console.log(post);
+  DBCon.query(req.session, "update " + AppConfig.tables.dokusys_topics 
+    + " set parent=" +post.parent
+    + ",topic='" + post.topic +"'"
+    + ",keywords='" + post.keywords + "'"
+    + ",topictext='" + post.topictext + "'"
+    //+ , dokustatus, user, time 
+    + " where id=" + post.id,
+    function (data) {
+      send(res, { err: "" });
+    }
+  );
+
+});
+
 module.exports = router;

@@ -14,17 +14,18 @@
       });
 
       $('#btnTest').click(function () {
-        _this.expandTopic('#topic219');
+        //_this.expandTopic('#topic219');
+        console.log("Click");
+        _this._trigger("hallo", null, { msg: "Hallo" });
       });
 
       var $treeHead = $("<div class='clearfix'><button class='btn btn-default btn-xs pull-right' data-toggle='tooltip' data-placement='bottom' title='Alle schliessen'><span class='fa fa-angle-double-right'></span></button><button class='btn btn-default btn-xs pull-right'data-toggle='tooltip' data-placement='bottom' title='Alle öffnen'><span class='fa fa-angle-double-down'></span></button></div>").appendTo(this.element);
       $('button:first', $treeHead).tooltip().click(function () { _this.collapseAll(); });
       $('button:nth-child(2)', $treeHead).tooltip().click(function () { _this.expandAll(); });
-      var $tree = $("<div class='topicTree'></div>");
-      $tree.appendTo(this.element);
+      $("<div class='topicTree'></div>").appendTo(this.element);
 
       this._update();
-      this._load($tree);
+      this.load();
     },
     _setOption: function (key, value) {
       this.options[key] = value;
@@ -35,16 +36,17 @@
     },
     _tree: function (div) {
       var _this = this;
-      $('.topicTree li:has(ul)').find(' > ul > li').hide(); //Alle zu
-      $('.topicTree li:has(ul)').find('i:first').addClass('glyphicon-plus-sign').attr('title', 'Zweig öffnen');
-      $('.topicTree li:has(ul)').addClass('parent_li').find(' > span');
+      $('.topicTree li:has(ul)', _this.element).find(' > ul > li').hide(); //Alle zu
+      $('.topicTree li:has(ul)', _this.element).find('i:first').addClass('glyphicon-plus-sign').attr('title', 'Zweig öffnen');
+      $('.topicTree li:has(ul)', _this.element).addClass('parent_li').find(' > span');
 
-      $('.topicTree li > span').click(function () {
-        console.log($(this).parent().attr('id').replace(/topic/, ""));
+      // Click!!!
+      $('.topicTree li > span', _this.element).click(function () {
+        //console.log($(this).parent().attr('id').replace(/topic/, ""));
         $(_this.options.targetForm).topicDlg('load', $(this).parent().attr('id').replace(/topic/, ""));
       });
 
-      $('.topicTree li.parent_li > span i').on('click', function (e) {
+      $('.topicTree li.parent_li > span i', _this.element).on('click', function (e) {
         var children = $(this).parent().parent('li.parent_li').find(' > ul > li');
         if (children.is(":visible")) {
           children.hide('fast');
@@ -56,7 +58,7 @@
         e.stopPropagation();
       });
     },
-    _load: function (div) {
+    load: function () {
       var _this = this;
       $.getJSON(this.options.datasource, function (data) {
         if (data.err && _this.options.dberror_func) {
@@ -83,7 +85,7 @@
           }
         } while (arr.length);
 
-        div.html(tree);
+        $('.topicTree', _this.element).html(tree);
         _this._tree();
       })
       .fail(function () {
@@ -110,6 +112,7 @@
       id: 0,
       datasource: "/DokuSys/get",
       dberror_func: ""
+
     },
     _create: function () {
       var _this = this;
@@ -120,8 +123,9 @@
       var $crumbs = $("<nav class='breadcrumbs small'><ul><li data-toggle='tooltip' data-placement='bottom' title='Wurzel (Kurzanleitung)' bcfix='1'><a href='#' data-id='0'><i class='fa fa-home'></i></a></li><li data-toggle='tooltip' data-placement='bottom' title='Neuer Artikel' bcfix='1'><a href='#' data-id='-1'><i class='fa fa-plus-square'></i></a></li></ul></nav>")
         .prependTo(_this.element);
       $crumbs.find("li").tooltip();
-      $crumbs.find("a").click( function(){ _this.load($(this).data("id")); })
+      $crumbs.find("a").click(function () { _this.load($(this).data("id")); })
 
+      _this._createForm();
 
       $('#btnCancel', this.element).click(function () {
         _this._editMode(false);
@@ -129,6 +133,45 @@
 
       this._update();
       this.load(0);
+    },
+    _createForm: function () {
+      var _this = this;
+      $('form', this.element).bootstrapValidator({
+        fields: {
+          topic: { validators: {
+            notEmpty: { message: "Artikel-Überschrift muss angegeben werden!" }
+          }
+          },
+          keywords: { validators: {
+            callback: { message: "-", callback: function () { return true } }
+          }
+          },
+          topictext: { validators: {
+            callback: { message: "-", callback: function () { return true } }
+          }
+          }
+        }
+      })
+      .bootstrapValidator('revalidateField', 'topictext')
+      .on('success.form.bv', function (e) {
+        e.preventDefault();
+        var $form = $(e.target);
+        $.each($form.find(".summernote"), function () {
+          $(this).val($(this).code());
+        });
+
+        var id = $form.find("[name='id']").val()
+        $.post('DokuSys/set', $form.serialize(), function (data) {
+          if (data.err) {
+            bootbox.alert("FEHLER!");
+          } else {
+            _this.load(id);
+
+          }
+        });
+      });
+
+
     },
     _setOption: function (key, value) {
       this.options[key] = value;
@@ -160,6 +203,7 @@
     },
     load: function (id) {
       var _this = this;
+      _this._editMode(false);
       if (id === 0) {
         $('.topicRoot', this.element).removeClass('hidden');
         $('.topicWorkspace', this.element).addClass('hidden');
@@ -168,6 +212,7 @@
         $('.topicRoot', this.element).addClass('hidden');
         $('.topicWorkspace', this.element).removeClass('hidden');
         if (id === -1) {
+          $("form", _this.element).bootstrapValidator('resetForm', true);
           _this._editMode(true);
           return;
         }
@@ -191,7 +236,6 @@
         $(".breadcrumbs li.active", _this.element).find("a").click(function () {
           _this._editMode(true);
         });
-
 
         $.each(data.fields, function (key, fieldDef) {
           $.each($('[name=' + fieldDef.name + ']', this.element), function (key, obj) {
