@@ -12,6 +12,11 @@ router.get('/', function(req, res) {
 });
 
 router.post('/check', function (req, res) {
+  if (!req.session.user) {
+    delete req.session.passwd;
+    res.send({ err: { code: "NOUSER", text: "Nicht angemeldet"} });
+    return;
+  }
   DBCon.connect(req.session.user, req.session.passwd, function (data) {
     if (data.err) {
       delete req.session.user;
@@ -26,7 +31,6 @@ router.post('/check', function (req, res) {
 router.post('/login', function (req, res) {
   var post = req.body;
   DBCon.connect(post.user, post.passwd, function (data) {
-    //console.log(data);
     if (data.err) {
       delete req.session.user;
       delete req.session.passwd;

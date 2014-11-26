@@ -10,7 +10,7 @@
       dberror_func: ""
     },
     _create: function () {
-      var _this = this;
+      //var _this = this;
       var $tree = $("<div ></div>");
       $tree.appendTo(this.element);
 
@@ -45,7 +45,7 @@
             ntopic.appendTo(tree);
           });
           div.html(tree);
-          div.bind("contextmenu", function (e) {
+          div.bind("contextmenu", function () {
             return false;
           });
           $('a', div).click(function () {

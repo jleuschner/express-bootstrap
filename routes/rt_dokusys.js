@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var mysql = require('mysql');
 var AppConfig = require("../AppConfig");
 var DBCon = require('../lib/dbconnection');
 
@@ -15,7 +16,7 @@ function send(res,data) {
 }
 
 router.get('/getList', function (req, res) {
-  DBCon.query(req.session, "select id, parent, topic,keywords from "+AppConfig.tables.dokusys_topics+" order by parent,topic",
+  DBCon.query(req.session, "select id, parent, topic,keywords from "+AppConfig.tables.dokusys_topics+" where id > 0 order by parent,topic",
     function (data) {
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('charset', 'utf-8');
@@ -51,19 +52,24 @@ router.get('/get', function (req, res) {
 
 router.post('/set', function (req, res) {
   var post = req.body;
-  console.log(post);
-  DBCon.query(req.session, "update " + AppConfig.tables.dokusys_topics 
-    + " set parent=" +post.parent
-    + ",topic='" + post.topic +"'"
-    + ",keywords='" + post.keywords + "'"
-    + ",topictext='" + post.topictext + "'"
-    //+ , dokustatus, user, time 
-    + " where id=" + post.id,
-    function (data) {
-      send(res, { err: "" });
-    }
-  );
-
+  var qry = mysql.format(" set ?", [{
+    parent: post.parent,
+    topic: post.topic,
+    keywords: post.keywords,
+    topictext: post.topictext
+  }]);
+  if (post.id < 0) {
+    qry = "insert into " + AppConfig.tables.dokusys_topics + qry;
+    DBCon.query(req.session, qry, function (data) {
+      send(res, { err: "", id: data.rows.insertId });
+    });
+  } else {
+    qry = "update " + AppConfig.tables.dokusys_topics + qry+ " where id=" + post.id;
+    DBCon.query(req.session, qry, function () {
+      send(res, { err: "", id: post.id });
+    });
+  }
 });
+
 
 module.exports = router;

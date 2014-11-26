@@ -96,10 +96,15 @@ $(function () {
       case "MainNav_DokuSys":
         MainWorkspace('DokuSys', function () {
           $('#DokuSys_TopicTree').topicTree({ dberror_func: function (err) { DBErr(err); } })
-            .bind("topictreehallo", function (e, data) {
+            .on("topictreehallo", function (e, data) {
               bootbox.alert(data.msg);
             });
-          $('#DokuSys_TopicDlg').topicDlg({ dberror_func: function (err) { DBErr(err); } });
+          $('#DokuSys_TopicDlg')
+            .topicDlg({ dberror_func: function (err) { DBErr(err); } })
+            .on("topicdlg_change", function(){ 
+                $('#DokuSys_TopicTree').topicTree("load"); 
+                });
+
         });
         break;
       case "MainNav_Logout":
@@ -131,7 +136,7 @@ $(function () {
 
   function DBErr(err) {
     bootbox.alert("<h3 class='text-danger'>" + err.code + "</h3><p>" + err.text + "</p>");
-    if (err.code === "NOSESSION") { MainLogout(); }
+    if (err.code === "NOUSER") { MainLogout(); }
   }
 
   // ---------------- Main ------------------

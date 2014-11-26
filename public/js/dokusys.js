@@ -34,7 +34,7 @@
     _update: function () {
       //this.element.html("<h1>" + this.options.text + "</h1>");
     },
-    _tree: function (div) {
+    _tree: function () {
       var _this = this;
       $('.topicTree li:has(ul)', _this.element).find(' > ul > li').hide(); //Alle zu
       $('.topicTree li:has(ul)', _this.element).find('i:first').addClass('glyphicon-plus-sign').attr('title', 'Zweig öffnen');
@@ -99,7 +99,6 @@
       $('.topicTree li:has(ul)').find(' > ul > li').show("fast");
     },
     expandTopic: function (sel) {
-      console.log("expand: " + $(sel).text())
       $(sel).parents('li').find(' > ul > li').show().addClass('text-danger');
     }
 
@@ -109,10 +108,11 @@
   //------------------- topicDlg -------------------------
   $.widget("JL.topicDlg", {
     options: {
-      id: 0,
       datasource: "/DokuSys/get",
       dberror_func: ""
-
+    },
+    _var: {
+      id: 0
     },
     _create: function () {
       var _this = this;
@@ -123,12 +123,15 @@
       var $crumbs = $("<nav class='breadcrumbs small'><ul><li data-toggle='tooltip' data-placement='bottom' title='Wurzel (Kurzanleitung)' bcfix='1'><a href='#' data-id='0'><i class='fa fa-home'></i></a></li><li data-toggle='tooltip' data-placement='bottom' title='Neuer Artikel' bcfix='1'><a href='#' data-id='-1'><i class='fa fa-plus-square'></i></a></li></ul></nav>")
         .prependTo(_this.element);
       $crumbs.find("li").tooltip();
-      $crumbs.find("a").click(function () { _this.load($(this).data("id")); })
+      $crumbs.find("a").click(function () { _this.load($(this).data("id")); });
+
+      //$("<a href='#'>Edit</a>").click(function () { _this._editMode(true); }).appendTo(_this.element);
+
 
       _this._createForm();
 
       $('#btnCancel', this.element).click(function () {
-        _this._editMode(false);
+        _this.load(_this._var.id);
       });
 
       this._update();
@@ -143,11 +146,11 @@
           }
           },
           keywords: { validators: {
-            callback: { message: "-", callback: function () { return true } }
+            callback: { message: "-", callback: function () { return true; } }
           }
           },
           topictext: { validators: {
-            callback: { message: "-", callback: function () { return true } }
+            callback: { message: "-", callback: function () { return true; } }
           }
           }
         }
@@ -159,13 +162,13 @@
         $.each($form.find(".summernote"), function () {
           $(this).val($(this).code());
         });
-
-        var id = $form.find("[name='id']").val()
+        //var id = $form.find("[name='id']").val()
         $.post('DokuSys/set', $form.serialize(), function (data) {
           if (data.err) {
             bootbox.alert("FEHLER!");
           } else {
-            _this.load(id);
+            _this._trigger("_change", null, {});
+            _this.load(data.id);
 
           }
         });
@@ -204,39 +207,36 @@
     load: function (id) {
       var _this = this;
       _this._editMode(false);
-      if (id === 0) {
-        $('.topicRoot', this.element).removeClass('hidden');
-        $('.topicWorkspace', this.element).addClass('hidden');
+      if (id === -1) {
+        _this._var.id = $("[name=id]", _this.element).val();
+        $("[name=parent]", _this.element).val(_this._var.id);
+        $("[name=id]", _this.element).val(id);
+        $("form", _this.element).bootstrapValidator('resetForm', true);
+        _this._editMode(true);
         return;
-      } else {
-        $('.topicRoot', this.element).addClass('hidden');
-        $('.topicWorkspace', this.element).removeClass('hidden');
-        if (id === -1) {
-          $("form", _this.element).bootstrapValidator('resetForm', true);
-          _this._editMode(true);
-          return;
-        }
       }
+      _this._var.id = id;
       $.getJSON(this.options.datasource, { id: id }, function (data) {
         if (data.err && _this.options.dberror_func) {
           _this.options.dberror_func(data.err);
           return;
         }
         $(".breadcrumbs ul li[bcfix!=1]", _this.element).remove();
-        var crumbs = $(".breadcrumbs ul li", _this.element);
-        $.each(data.rows[0].parents, function (key, obj) {
-          //$("<li><a href='#' data-id='" + obj.id + "' >" + obj.topic + "</a></li>").prependTo($(".breadcrumbs ul", _this.element));
-          $(".breadcrumbs ul li:first", _this.element).after($("<li><a href='#' data-id='" + obj.id + "' >" + obj.topic + "</a></li>"));
-        });
-        $(".breadcrumbs ul li:last", _this.element).before($("<li class='active' data-toggle='tooltip' data-placement='bottom' title='Artikel bearbeiten'><a href='#'><span class='fa fa-pencil-square-o'></span> " + data.rows[0].topic + "</a></li>"));
-        $(".breadcrumbs ul li.active", _this.element).tooltip();
-        $(".breadcrumbs li:not(.active)", _this.element).find("a").click(function () {
-          _this.load($(this).data("id"));
-        });
-        $(".breadcrumbs li.active", _this.element).find("a").click(function () {
-          _this._editMode(true);
-        });
-
+        if (id > 0) {
+          //var crumbs = $(".breadcrumbs ul li", _this.element);
+          $.each(data.rows[0].parents, function (key, obj) {
+            //$("<li><a href='#' data-id='" + obj.id + "' >" + obj.topic + "</a></li>").prependTo($(".breadcrumbs ul", _this.element));
+            $(".breadcrumbs ul li:first", _this.element).after($("<li><a href='#' data-id='" + obj.id + "' >" + obj.topic + "</a></li>"));
+          });
+          $(".breadcrumbs ul li:last", _this.element).before($("<li class='active' data-toggle='tooltip' data-placement='bottom' title='Artikel bearbeiten'><a href='#'><span class='fa fa-pencil-square-o'></span> " + data.rows[0].topic + "</a></li>"));
+          $(".breadcrumbs ul li.active", _this.element).tooltip();
+          $(".breadcrumbs li:not(.active)[bcfix!=1]", _this.element).find("a").click(function () {
+            _this.load($(this).data("id"));
+          });
+          $(".breadcrumbs li.active", _this.element).find("a").click(function () {
+            _this._editMode(true);
+          });
+        }
         $.each(data.fields, function (key, fieldDef) {
           $.each($('[name=' + fieldDef.name + ']', this.element), function (key, obj) {
             switch ($(obj).prop('tagName')) {
@@ -252,7 +252,9 @@
             }
           });
         });
-
+        $("form", _this.element).bootstrapValidator('disableSubmitButtons', false);
+        //$("form", _this.element).bootstrapValidator();
+        //$('[type=submit]', _this.element).enable;
       })
       .fail(function () {
         bootbox.alert("<h4 class='text-danger'>FATAL: Datenquelle " + _this.options.datasource + " antwortet nicht!</h4>");

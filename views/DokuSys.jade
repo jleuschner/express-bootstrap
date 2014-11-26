@@ -9,23 +9,9 @@
       #DokuSys_TopicTree
     .col-sm-8
       #DokuSys_TopicDlg
-        div.topicRoot
-          h1 Doku-Management
-          h3 Artikel anlegen
-          blockquote
-            p Neue Artikel werden unterhalb des aktuellen Artikels mit Klick auf das 
-              span.fa.fa-plus-square.text-primary
-              | -Symbol am Ende der Pfadanzeige erzeugt.
-          h3 Artikel bearbeiten
-          blockquote
-            p Zum Bearbeiten den mit 
-              span.fa.fa-pencil-square-o.text-primary
-              |  markierten Artikel in der Pfadanzeige anklicken.
-
-        //- .topicWorkspace, .topicRoot nur Pseudoclass für Anzeige ID0-Topic
-        form.topicWorkspace
-          input(name='id')
-          input(name='parent')
+        form
+          input.hidden(name='id')
+          input.hidden(name='parent')
           h1.topicShow(name='topic') Thema
           .form-group.topicEdit.hidden
             label Topic

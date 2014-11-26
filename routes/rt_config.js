@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var AppConfig = require("../AppConfig");
+//var AppConfig = require("../AppConfig");
 var DBCon = require('../lib/dbconnection');
 
 
