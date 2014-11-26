@@ -9,10 +9,6 @@
       #DokuSys_TopicTree
     .col-sm-8
       #DokuSys_TopicDlg
-        nav.breadcrumbs.small
-          ul
-            li(data-toggle="tooltip",data-placement="bottom",title='Wurzel (Kurzanleitung)',bcfix='1'): a(href='#',data-id='0'): i.fa.fa-home
-            li(data-toggle="tooltip",data-placement="bottom",title='Neuer Artikel',bcfix='1'): a(href='#',data-id='-1'): i.fa.fa-plus-square
         div.topicRoot
           h1 Doku-Management
           h3 Artikel anlegen
@@ -27,13 +23,13 @@
               |  markierten Artikel in der Pfadanzeige anklicken.
 
         form.topicWorkspace
-          h1.topicShow(name='topic') Topic
+          h1.topicShow(name='topic') Thema
           .form-group.topicEdit.hidden
             label Topic
             input.form-control(name='topic',type='text',required='required',placeholder='Topic',data-bv-message='Topic angeben')
           .form-group.topicEdit.hidden
-            label Tags
-            input.form-control(name='keywordsxx',type='text',required='required',placeholder='Schlagworte')
+            label Schlagworte
+            input.form-control(name='keywords',type='text',placeholder='Schlagworte')
           div.topicShow(name='topictext', style='background-color:#fbfbfb;')
           .form-group.topicEdit.hidden
             label Beschreibung

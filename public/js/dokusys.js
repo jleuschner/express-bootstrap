@@ -117,10 +117,10 @@
         return false;
       });
 
-      $(".breadcrumbs", _this.element).find("a").click(function () {
-        _this.load($(this).data("id"));
-      });
-      $(".breadcrumbs", _this.element).find("li").tooltip();
+      var $crumbs = $("<nav class='breadcrumbs small'><ul><li data-toggle='tooltip' data-placement='bottom' title='Wurzel (Kurzanleitung)' bcfix='1'><a href='#' data-id='0'><i class='fa fa-home'></i></a></li><li data-toggle='tooltip' data-placement='bottom' title='Neuer Artikel' bcfix='1'><a href='#' data-id='-1'><i class='fa fa-plus-square'></i></a></li></ul></nav>")
+        .prependTo(_this.element);
+      $crumbs.find("li").tooltip();
+      $crumbs.find("a").click( function(){ _this.load($(this).data("id")); })
 
 
       $('#btnCancel', this.element).click(function () {
@@ -142,7 +142,16 @@
       if (enable) {
         $('.topicShow', _this.element).addClass('hidden');
         $('.topicEdit', _this.element).removeClass('hidden');
-        $('.topicEditor', _this.element).summernote();
+        $('.topicEditor', _this.element).summernote({
+          toolbar: [
+              ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'clear']],
+              ['misc', ['undo', 'redo']],
+              ['color', ['color']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['insert', ['table', 'picture', 'link']],
+              ['misc', ['fullscreen', 'codeview']]
+              ]
+        });
       } else {
         $('.topicEdit', _this.element).addClass('hidden');
         $('.topicShow', _this.element).removeClass('hidden');
