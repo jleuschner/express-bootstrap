@@ -32,6 +32,7 @@ module.exports = function (grunt) {
               'public/bower_components/summernote/dist/summernote.min.js',
               'public/bower_components/jquery-ui/ui/minified/widget.min.js',
               'public/bower_components/jQuery-Mask-Plugin/dist/jquery.mask.min.js',
+              'public/bower_components/tagsinput/dist/bootstrap-tagsinput.min.js',
               'public/js/*.js'
               ],
         dest: '_tmp/j.js'
@@ -55,6 +56,7 @@ module.exports = function (grunt) {
                   'public/bower_components/bootstrapvalidator/dist/css/bootstrapValidator.min.css',
                   'public/bower_components/fontawesome/css/font-awesome.min.css',
                   'public/bower_components/summernote/dist/summernote.css',
+                  'public/bower_components/tagsinput/dist/bootstrap-tagsinput.css',
                   'public/css/*.css'
               ]
         }

@@ -28,6 +28,10 @@ blockquote {
   background-color: #ffffff !important;
 }
 
+/* Fix tagsinput */
+.bootstrap-tagsinput {
+  display: block;
+}
 
 /* .JL .breadcrumbs */
 .JL .breadcrumbs {

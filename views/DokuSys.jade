@@ -9,22 +9,3 @@
       #DokuSys_TopicTree
     .col-sm-8
       #DokuSys_TopicDlg
-        form
-          input.hidden(name='id')
-          input.hidden(name='parent')
-          h1.topicShow(name='topic') Thema
-          .form-group.topicEdit.hidden
-            label Topic
-            input.form-control(name='topic',type='text',placeholder='Topic')
-          .form-group.topicEdit.hidden
-            label Schlagworte
-            input.form-control(name='keywords',type='text',placeholder='Schlagworte',data-bv-message='Schlagworte')
-          div.topicShow(name='topictext', style='background-color:#fbfbfb;')
-          .form-group.topicEdit.hidden
-            label Beschreibung
-            textarea.form-group.summernote.topicEditor.hidden(name='topictext')
-          .form-group.topicEdit.hidden
-            .col-xs-3.col-xs-offset-1
-              button.btn.btn-primary.btn-block(type='submit') OK
-            .col-xs-3.col-xs-offset-4
-              button#btnCancel.btn.btn-danger.btn-block(type='button') Abbrechen

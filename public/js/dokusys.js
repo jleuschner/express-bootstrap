@@ -139,7 +139,21 @@
     },
     _createForm: function () {
       var _this = this;
-      $('form', this.element).bootstrapValidator({
+      //$form = $('#topicDlgForm', this.element);
+      var $form = $("<form id='topicDlgForm'></form>").appendTo(_this.element);
+      $("<input name='id' class='hidden'></input>").appendTo($form);
+      $("<input name='parent' class='hidden'></input>").appendTo($form);
+      $("<h1 class='topicShow' name='topic'>Thema</h1>").appendTo($form);
+      $("<div class='form-group topicEdit hidden'><label>Thema</label><input class='form-control' name='topic' type='text' placeholder='Thema-Überschrift'></input></div>").appendTo($form);
+      $("<div class='form-group topicEdit hidden'><label>Schlagworte</label><input class='form-control' name='keywords' type='text' data-role='tagsinput'></input></div>").appendTo($form);
+      $("<div class='topicShow' name='topictext' style='background-color:#fbfbfb;'></div>").appendTo($form);
+      $("<div class='form-group topicEdit hidden'><label>Text</label><textarea class='form-control summernote topicEditor' name='topictext'></textarea></div>").appendTo($form);
+      $("<div class='form-group topicEdit hidden'>"
+        + "<div class='col-xs-4 col-xs-offset-1'><button class='btn btn-primary btn-block' type='submit'>OK</button></div>"
+        + "<div class='col-xs-4 col-xs-offset-2'><button class='btn btn-danger btn-block' type='button'>Abbrechen</button></div>"
+        + "</div>").appendTo($form);
+
+      $form.bootstrapValidator({
         fields: {
           topic: { validators: {
             notEmpty: { message: "Artikel-Überschrift muss angegeben werden!" }
@@ -158,12 +172,12 @@
       .bootstrapValidator('revalidateField', 'topictext')
       .on('success.form.bv', function (e) {
         e.preventDefault();
-        var $form = $(e.target);
-        $.each($form.find(".summernote"), function () {
+        var $lform = $(e.target);
+        $.each($lform.find(".summernote"), function () {
           $(this).val($(this).code());
         });
-        //var id = $form.find("[name='id']").val()
-        $.post('DokuSys/set', $form.serialize(), function (data) {
+        //var id = $lform.find("[name='id']").val()
+        $.post('DokuSys/set', $lform.serialize(), function (data) {
           if (data.err) {
             bootbox.alert("FEHLER!");
           } else {
@@ -173,8 +187,6 @@
           }
         });
       });
-
-
     },
     _setOption: function (key, value) {
       this.options[key] = value;
@@ -188,6 +200,7 @@
       if (enable) {
         $('.topicShow', _this.element).addClass('hidden');
         $('.topicEdit', _this.element).removeClass('hidden');
+        $("[name=keywords]").tagsinput();
         $('.topicEditor', _this.element).summernote({
           toolbar: [
               ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'clear']],
