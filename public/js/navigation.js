@@ -87,23 +87,20 @@ $(function () {
     });
   }
 
-
-
   $('#MainNavbar a').click(function () { MainNav($(this).attr('id')); });
   function MainNav(id) {
     //$('#' + id).parent().addClass('active');
     switch (id) {
       case "MainNav_DokuSys":
         MainWorkspace('DokuSys', function () {
-          $('#DokuSys_TopicTree').topicTree({ dberror_func: function (err) { DBErr(err); } })
-            .on("topictreehallo", function (e, data) {
-              bootbox.alert(data.msg);
-            });
+          $('#DokuSys_TopicTree').topicTree({ dberror_func: function (err) { DBErr(err); } });
           $('#DokuSys_TopicDlg')
             .topicDlg({ dberror_func: function (err) { DBErr(err); } })
-            .on("topicdlg_change", function(){ 
-                $('#DokuSys_TopicTree').topicTree("load"); 
-                });
+            .on("topicdlg_change", function (e, topic) {
+              $('#DokuSys_TopicTree').topicTree("load", function () {
+                $('#DokuSys_TopicTree').topicTree("expandToTopic", topic.id);
+              });
+            });
 
         });
         break;

@@ -14,9 +14,9 @@
       });
 
       $('#btnTest').click(function () {
-        //_this.expandTopic('#topic219');
+        //_this.expandToTopic('#topic219');
+        _this.expandToTopic(219);
         console.log("Click");
-        _this._trigger("hallo", null, { msg: "Hallo" });
       });
 
       var $treeHead = $("<div class='clearfix'><button class='btn btn-default btn-xs pull-right' data-toggle='tooltip' data-placement='bottom' title='Alle schliessen'><span class='fa fa-angle-double-right'></span></button><button class='btn btn-default btn-xs pull-right'data-toggle='tooltip' data-placement='bottom' title='Alle öffnen'><span class='fa fa-angle-double-down'></span></button></div>").appendTo(this.element);
@@ -34,7 +34,7 @@
     _update: function () {
       //this.element.html("<h1>" + this.options.text + "</h1>");
     },
-    _tree: function () {
+    _tree: function (cb) {
       var _this = this;
       $('.topicTree li:has(ul)', _this.element).find(' > ul > li').hide(); //Alle zu
       $('.topicTree li:has(ul)', _this.element).find('i:first').addClass('glyphicon-plus-sign').attr('title', 'Zweig öffnen');
@@ -42,7 +42,6 @@
 
       // Click!!!
       $('.topicTree li > span', _this.element).click(function () {
-        //console.log($(this).parent().attr('id').replace(/topic/, ""));
         $(_this.options.targetForm).topicDlg('load', $(this).parent().attr('id').replace(/topic/, ""));
       });
 
@@ -57,8 +56,10 @@
         }
         e.stopPropagation();
       });
+      if (cb) { cb(); }
     },
-    load: function () {
+    load: function (cb) {
+      // cb wird an _tree(cb) durchgeleitet
       var _this = this;
       $.getJSON(this.options.datasource, function (data) {
         if (data.err && _this.options.dberror_func) {
@@ -86,7 +87,7 @@
         } while (arr.length);
 
         $('.topicTree', _this.element).html(tree);
-        _this._tree();
+        _this._tree(cb);
       })
       .fail(function () {
         bootbox.alert("<h4 class='text-danger'>FATAL: Datenquelle " + _this.options.datasource + " antwortet nicht!</h4>");
@@ -98,8 +99,9 @@
     expandAll: function () {
       $('.topicTree li:has(ul)').find(' > ul > li').show("fast");
     },
-    expandTopic: function (sel) {
-      $(sel).parents('li').find(' > ul > li').show().addClass('text-danger');
+    expandToTopic: function (sel) {
+      sel = "#topic" + sel;
+      $(sel).parents('li').find(' > ul > li').show();
     }
 
   });
@@ -130,9 +132,6 @@
 
       _this._createForm();
 
-      $('#btnCancel', this.element).click(function () {
-        _this.load(_this._var.id);
-      });
 
       this._update();
       this.load(0);
@@ -141,8 +140,8 @@
       var _this = this;
       //$form = $('#topicDlgForm', this.element);
       var $form = $("<form id='topicDlgForm'></form>").appendTo(_this.element);
-      $("<input name='id' class='hidden'></input>").appendTo($form);
-      $("<input name='parent' class='hidden'></input>").appendTo($form);
+      $("<input name='id' class='xhidden'></input>").appendTo($form);
+      $("<input name='parent' class='xhidden'></input>").appendTo($form);
       $("<h1 class='topicShow' name='topic'>Thema</h1>").appendTo($form);
       $("<div class='form-group topicEdit hidden'><label>Thema</label><input class='form-control' name='topic' type='text' placeholder='Thema-Überschrift'></input></div>").appendTo($form);
       $("<div class='form-group topicEdit hidden'><label>Schlagworte</label><input class='form-control' name='keywords' type='text' data-role='tagsinput'></input></div>").appendTo($form);
@@ -150,8 +149,12 @@
       $("<div class='form-group topicEdit hidden'><label>Text</label><textarea class='form-control summernote topicEditor' name='topictext'></textarea></div>").appendTo($form);
       $("<div class='form-group topicEdit hidden'>"
         + "<div class='col-xs-4 col-xs-offset-1'><button class='btn btn-primary btn-block' type='submit'>OK</button></div>"
-        + "<div class='col-xs-4 col-xs-offset-2'><button class='btn btn-danger btn-block' type='button'>Abbrechen</button></div>"
+        + "<div class='col-xs-4 col-xs-offset-2'><button id='btnCancel' class='btn btn-danger btn-block' type='button'>Abbrechen</button></div>"
         + "</div>").appendTo($form);
+
+      $('#btnCancel', $form).click(function () {
+        _this.load(_this._var.id);
+      });
 
       $form.bootstrapValidator({
         fields: {
@@ -181,7 +184,7 @@
           if (data.err) {
             bootbox.alert("FEHLER!");
           } else {
-            _this._trigger("_change", null, {});
+            _this._trigger("_change", null, { id: data.id });
             _this.load(data.id);
 
           }
@@ -250,24 +253,24 @@
             _this._editMode(true);
           });
         }
-        $.each(data.fields, function (key, fieldDef) {
-          $.each($('[name=' + fieldDef.name + ']', this.element), function (key, obj) {
-            switch ($(obj).prop('tagName')) {
-              case 'INPUT':
-                $(obj).val(data.rows[0][fieldDef.name]);
-                break;
-              case 'DIV':
-                $(obj).html(data.rows[0][fieldDef.name]);
-                break;
-              default:
-                $(obj).text(data.rows[0][fieldDef.name]);
-                break;
-            }
+        if (data.rows.length) {
+          $.each(data.fields, function (key, fieldDef) {
+            $.each($('[name=' + fieldDef.name + ']', this.element), function (key, obj) {
+              switch ($(obj).prop('tagName')) {
+                case 'INPUT':
+                  $(obj).val(data.rows[0][fieldDef.name]);
+                  break;
+                case 'DIV':
+                  $(obj).html(data.rows[0][fieldDef.name]);
+                  break;
+                default:
+                  $(obj).text(data.rows[0][fieldDef.name]);
+                  break;
+              }
+            });
           });
-        });
+        }
         $("form", _this.element).bootstrapValidator('disableSubmitButtons', false);
-        //$("form", _this.element).bootstrapValidator();
-        //$('[type=submit]', _this.element).enable;
       })
       .fail(function () {
         bootbox.alert("<h4 class='text-danger'>FATAL: Datenquelle " + _this.options.datasource + " antwortet nicht!</h4>");

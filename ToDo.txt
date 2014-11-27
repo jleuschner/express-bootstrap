@@ -1,0 +1,18 @@
+DoKuSys
+=======
+Features/Ideen
+  Sortierwert für Position innerhalb eines Zweiges
+
+Fehlt noch:
+  Topics verschieben
+  Links
+  Anhänge
+
+topicTree
+  expandTopic nach set aus Dlg
+
+
+Install
+=======
+Datenbank-Instanz anlegen
+  dokusys_topics: ID0 als Kurzanleitung

@@ -43,10 +43,14 @@ router.get('/get', function (req, res) {
         send(res, data);
         return;
       }
-      getParents(req.session,data.rows[0].parent,[], function(parents){
-        data.rows[0].parents = parents;
+      if (data.rows.length) {
+        getParents(req.session, data.rows[0].parent, [], function (parents) {
+          data.rows[0].parents = parents;
+          send(res, data);
+        });
+      } else {
         send(res, data);
-      });
+      }
     });
 });
 
@@ -61,12 +65,14 @@ router.post('/set', function (req, res) {
   if (post.id < 0) {
     qry = "insert into " + AppConfig.tables.dokusys_topics + qry;
     DBCon.query(req.session, qry, function (data) {
-      send(res, { err: "", id: data.rows.insertId });
+      //console.log(data.rows)
+      send(res, { err: "", id: data.rows.insertId, result: data.rows });
     });
   } else {
     qry = "update " + AppConfig.tables.dokusys_topics + qry+ " where id=" + post.id;
-    DBCon.query(req.session, qry, function () {
-      send(res, { err: "", id: post.id });
+    DBCon.query(req.session, qry, function (data) {
+      //console.log(data.rows)
+      send(res, { err: "", id: post.id, result: data.rows });
     });
   }
 });
