@@ -187,8 +187,8 @@
       $("<input name='parent' class='hidden'></input>").appendTo($form);
       $("<h1 class='topicShow' name='topic'>Thema</h1>").appendTo($form);
       $("<div class='form-group topicEdit hidden'><label>Thema</label><input class='form-control' name='topic' type='text' placeholder='Thema-Überschrift'></input></div>").appendTo($form);
-      //$("<div class='form-group topicEdit hidden'><label>Schlagworte</label><input class='form-control' name='keywords' type='text' data-role='tagsinput'></input></div>").appendTo($form);
-      $("<div class='form-group'><label>Schlagworte</label><input class='form-control' name='keywords' type='text' data-role='tagsinput'></input></div>").appendTo($form);
+      $("<div class='form-group topicEdit hidden'><label>Schlagworte</label><input class='form-control' name='keywords' type='text' data-role='tagsinput'></input></div>").appendTo($form);
+      //$("<div class='form-group'><label>Schlagworte</label><input class='form-control' name='keywords' type='text' data-role='tagsinput'></input></div>").appendTo($form);
       $("<div class='topicShow' name='topictext' style='background-color:#fbfbfb;'></div>").appendTo($form);
       $("<div class='form-group topicEdit hidden'><label>Text</label><textarea class='form-control summernote topicEditor' name='topictext'></textarea></div>").appendTo($form);
       $("<div class='form-group topicEdit hidden'>"
@@ -199,6 +199,8 @@
       $('#btnCancel', $form).click(function () {
         _this.load(_this._var.id);
       });
+
+      $("[name=keywords]").tagsinput();
 
       $form.bootstrapValidator({
         fields: {
@@ -247,7 +249,6 @@
       if (enable) {
         $('.topicShow', _this.element).addClass('hidden');
         $('.topicEdit', _this.element).removeClass('hidden');
-        $("[name=keywords]").tagsinput();
         $('.topicEditor', _this.element).summernote({
           toolbar: [
               ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'clear']],
@@ -261,7 +262,6 @@
       } else {
         $('.topicEdit', _this.element).addClass('hidden');
         $('.topicShow', _this.element).removeClass('hidden');
-        //$("[name=keywords]").tagsinput('destroy');
         $('.topicEditor', _this.element).destroy();
       }
     },
@@ -272,6 +272,7 @@
         _this._var.id = $("[name=id]", _this.element).val();
         $("[name=parent]", _this.element).val(_this._var.id);
         $("[name=id]", _this.element).val(id);
+        $('[name=keywords]').tagsinput('removeAll');
         $("form", _this.element).bootstrapValidator('resetForm', true);
         _this._editMode(true);
         return;
@@ -315,8 +316,9 @@
               }
             });
           });
-          //$('[name=keywords]').val(data.rows[0].keywords);
-          $('[name=keywords]').tagsinput("refresh");
+          $('[name=keywords]').tagsinput('removeAll');
+          $('[name=keywords]').tagsinput('add',data.rows[0].keywords);
+
         }
         $("form", _this.element).bootstrapValidator('disableSubmitButtons', false);
       })
