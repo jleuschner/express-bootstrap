@@ -187,7 +187,8 @@
       $("<input name='parent' class='hidden'></input>").appendTo($form);
       $("<h1 class='topicShow' name='topic'>Thema</h1>").appendTo($form);
       $("<div class='form-group topicEdit hidden'><label>Thema</label><input class='form-control' name='topic' type='text' placeholder='Thema-Überschrift'></input></div>").appendTo($form);
-      $("<div class='form-group topicEdit hidden'><label>Schlagworte</label><input class='form-control' name='keywords' type='text' data-role='tagsinput'></input></div>").appendTo($form);
+      //$("<div class='form-group topicEdit hidden'><label>Schlagworte</label><input class='form-control' name='keywords' type='text' data-role='tagsinput'></input></div>").appendTo($form);
+      $("<div class='form-group'><label>Schlagworte</label><input class='form-control' name='keywords' type='text' data-role='tagsinput'></input></div>").appendTo($form);
       $("<div class='topicShow' name='topictext' style='background-color:#fbfbfb;'></div>").appendTo($form);
       $("<div class='form-group topicEdit hidden'><label>Text</label><textarea class='form-control summernote topicEditor' name='topictext'></textarea></div>").appendTo($form);
       $("<div class='form-group topicEdit hidden'>"
@@ -260,6 +261,7 @@
       } else {
         $('.topicEdit', _this.element).addClass('hidden');
         $('.topicShow', _this.element).removeClass('hidden');
+        //$("[name=keywords]").tagsinput('destroy');
         $('.topicEditor', _this.element).destroy();
       }
     },
@@ -313,6 +315,8 @@
               }
             });
           });
+          //$('[name=keywords]').val(data.rows[0].keywords);
+          $('[name=keywords]').tagsinput("refresh");
         }
         $("form", _this.element).bootstrapValidator('disableSubmitButtons', false);
       })
