@@ -93,13 +93,20 @@ $(function () {
     switch (id) {
       case "MainNav_DokuSys":
         MainWorkspace('DokuSys', function () {
-          $('#DokuSys_TopicTree').topicTree({ dberror_func: function (err) { DBErr(err); } });
+          $('#DokuSys_TopicTree')
+            .topicTree({ dberror_func: function (err) { DBErr(err); } })
+            .on("topictree_click", function (e, topic) {
+              $('#DokuSys_TopicDlg').topicDlg("load", topic.id);
+            });
           $('#DokuSys_TopicDlg')
             .topicDlg({ dberror_func: function (err) { DBErr(err); } })
             .on("topicdlg_change", function (e, topic) {
               $('#DokuSys_TopicTree').topicTree("load", function () {
-                $('#DokuSys_TopicTree').topicTree("expandToTopic", topic.id);
+                $('#DokuSys_TopicTree').topicTree("selectTopic", topic.id);
               });
+            })
+            .on("topicdlg_crumbclick", function (e, topic) {
+              $('#DokuSys_TopicTree').topicTree("selectTopic", topic.id);
             });
 
         });

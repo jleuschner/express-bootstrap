@@ -1,27 +1,44 @@
 /* global bootbox */
 (function ($) {
-  //------------------- topicTree -------------------------
+  /*------------------- topicTree -------------------------
+  * Trigger:
+  *   _click({id:id} 
+  *
+  */
   $.widget("JL.topicTree", {
     options: {
       datasource: "/DokuSys/getList",
-      dberror_func: "",
-      targetForm: "#DokuSys_TopicDlg"
+      dberror_func: ""
     },
     _create: function () {
       var _this = this;
       $(this.element).bind("contextmenu", function () {
         return false;
       });
-
-      $('#btnTest').click(function () {
-        //_this.expandToTopic('#topic219');
-        _this.expandToTopic(219);
-        console.log("Click");
-      });
-
-      var $treeHead = $("<div class='clearfix'><button class='btn btn-default btn-xs pull-right' data-toggle='tooltip' data-placement='bottom' title='Alle schliessen'><span class='fa fa-angle-double-right'></span></button><button class='btn btn-default btn-xs pull-right'data-toggle='tooltip' data-placement='bottom' title='Alle öffnen'><span class='fa fa-angle-double-down'></span></button></div>").appendTo(this.element);
-      $('button:first', $treeHead).tooltip().click(function () { _this.collapseAll(); });
-      $('button:nth-child(2)', $treeHead).tooltip().click(function () { _this.expandAll(); });
+      var $flt = $("<div class='input-group'><div>").appendTo(_this.element);
+      $("<input id='inpTxt' class='form-control' type='text' placeholder='Suchbegriff'></input>")
+        .appendTo($flt)
+        .keyup(function () { _this.filterTopics($(this).val()); });
+      var $fltbtn = $("<div class='input-group-btn'></div>").appendTo($flt);
+      $("<button class='btn btn-default' type='button' tabindex='-1' data-toggle='tooltip' data-placement='bottom' title='Filter zurücksetzen'><i class='glyphicon glyphicon-remove text-danger'></i></button>")
+        .appendTo($fltbtn)
+        .tooltip()
+        .click(function () {
+          $('#inpTxt', _this.element).val("");
+          _this.filterTopics("");
+        });
+      $("<button class='btn btn-default' data-toggle='tooltip' data-placement='bottom' title='Alle schliessen'><span class='glyphicon glyphicon-folder-close'></span></button>")
+        .appendTo($fltbtn)
+        .tooltip()
+        .click(function () {
+          _this.collapseAll();
+        });
+      $("<button class='btn btn-default' data-toggle='tooltip' data-placement='bottom' title='Alle öffnen'><span class='glyphicon glyphicon-folder-open'></button>")
+        .appendTo($fltbtn)
+        .tooltip()
+        .click(function () {
+          _this.expandAll();
+        });
       $("<div class='topicTree'></div>").appendTo(this.element);
 
       this._update();
@@ -42,7 +59,8 @@
 
       // Click!!!
       $('.topicTree li > span', _this.element).click(function () {
-        $(_this.options.targetForm).topicDlg('load', $(this).parent().attr('id').replace(/topic/, ""));
+        _this.selectTopic($(this).parent());
+        _this._trigger("_click", null, { id: $(this).parent().attr('id').replace(/topic/, "") });
       });
 
       $('.topicTree li.parent_li > span i', _this.element).on('click', function (e) {
@@ -65,7 +83,7 @@
         if (data.err && _this.options.dberror_func) {
           _this.options.dberror_func(data.err);
         }
-        var tree = $("<ul></ul>");
+        var tree = $("<ul class='root'></ul>");
         var arr = data.rows;
         do {
           var obj = arr.shift();
@@ -94,20 +112,45 @@
       });
     },
     collapseAll: function () {
-      $('.topicTree li:has(ul)').find(' > ul > li').hide("fast");
+      $('.topicTree li:has(ul)', this.element).find(' > ul > li').hide();
     },
     expandAll: function () {
-      $('.topicTree li:has(ul)').find(' > ul > li').show("fast");
+      $('.topicTree li:has(ul)', this.element).find(' > ul > li').show();
     },
-    expandToTopic: function (sel) {
-      sel = "#topic" + sel;
+    selectTopic: function (sel) {
+      if ($.isNumeric(sel)) { sel = "#topic" + sel; }
+      $(".topicTree li.selected", this.element).removeClass("selected");
+      $(sel).addClass("selected");
       $(sel).parents('li').find(' > ul > li').show();
+    },
+    filterTopics: function (txt) {
+      if (!txt) {
+        $(".topicTree li", this.element).removeClass("filtered");
+      } else {
+        txt = txt.toLowerCase();
+        $(".topicTree li", this.element)
+          .addClass("filtered")
+          .filter(function () {
+            if ($(this).attr("title").toLowerCase().indexOf(txt) >= 0) { return true; }
+            if ($(this).find("span").text().toLowerCase().indexOf(txt) >= 0) { return true; }
+            return false;
+          })
+          .each(function () {
+            $(this).parents('li').find(' > ul > li').show();
+            $(this).parents("li.parent_li").removeClass("filtered").show();
+            $(this).removeClass("filtered").show();
+          });
+      }
     }
-
   });
 
 
-  //------------------- topicDlg -------------------------
+  /*------------------- topicDlg -------------------------
+  * Trigger:
+  *   _change({id:id} nach set
+  *   _crumbclick({id:id}) bei Click auf breadcrumbs 
+  *
+  */
   $.widget("JL.topicDlg", {
     options: {
       datasource: "/DokuSys/get",
@@ -140,8 +183,8 @@
       var _this = this;
       //$form = $('#topicDlgForm', this.element);
       var $form = $("<form id='topicDlgForm'></form>").appendTo(_this.element);
-      $("<input name='id' class='xhidden'></input>").appendTo($form);
-      $("<input name='parent' class='xhidden'></input>").appendTo($form);
+      $("<input name='id' class='hidden'></input>").appendTo($form);
+      $("<input name='parent' class='hidden'></input>").appendTo($form);
       $("<h1 class='topicShow' name='topic'>Thema</h1>").appendTo($form);
       $("<div class='form-group topicEdit hidden'><label>Thema</label><input class='form-control' name='topic' type='text' placeholder='Thema-Überschrift'></input></div>").appendTo($form);
       $("<div class='form-group topicEdit hidden'><label>Schlagworte</label><input class='form-control' name='keywords' type='text' data-role='tagsinput'></input></div>").appendTo($form);
@@ -248,6 +291,7 @@
           $(".breadcrumbs ul li.active", _this.element).tooltip();
           $(".breadcrumbs li:not(.active)[bcfix!=1]", _this.element).find("a").click(function () {
             _this.load($(this).data("id"));
+            _this._trigger("_crumbclick", null, { id: $(this).data("id") });
           });
           $(".breadcrumbs li.active", _this.element).find("a").click(function () {
             _this._editMode(true);

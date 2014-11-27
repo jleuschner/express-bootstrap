@@ -3,7 +3,7 @@
     padding:0px;
     margin-bottom:20px;
     background-color:#fbfbfb;
-    border:1px solid #999;
+    border:0px solid #999;
     -webkit-border-radius:4px;
     -moz-border-radius:4px;
     border-radius:4px;
@@ -15,6 +15,10 @@
 .topicTree ul {
   margin: 0px;
   padding-left:  5px;
+}
+.topicTree ul.root {
+  margin: 0px;
+  padding-left:  0px;
 }
 
 .topicTree li {
@@ -61,8 +65,20 @@
 .topicTree li:last-child::before {
     height:30px
 }
-.topicTree li.parent_li>span:hover, .topicTree li.parent_li>span:hover+ul li span {
-    background:#dee;
-    border:1px solid #94a0b4;
+
+.topicTree li >span:hover, .topicTree li.parent_li>span:hover {
+    background:#aee;
     color:#000
+}
+.topicTree li.parent_li>span:hover+ul li span {
+    background:#dee;
+    color:#000
+}
+.topicTree li.selected >span {
+    background:#6aa;
+    color:#fff
+}
+
+.topicTree li.filtered{
+  display: none!important;
 }
