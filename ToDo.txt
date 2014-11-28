@@ -4,9 +4,14 @@ Features/Ideen
   Sortierwert für Position innerhalb eines Zweiges
 
 Fehlt noch:
-  Topics verschieben
   Links
   Anhänge
+
+Edit schliesst bei collapseAll / expandAll
+
+Topics verschieben
+  - topicTree braucht 'ShowRoot' Option
+  - verhindern, dass Topic unterhalb sich selbst verschoben wird (children aus Tree entfernen?)
 
 
 Install

@@ -78,6 +78,10 @@
     background:#6aa;
     color:#fff
 }
+.topicTree li.marked >span {
+    background:#ec971f;
+    color:#fff
+}
 
 .topicTree li.filtered{
   display: none!important;

@@ -97,7 +97,8 @@ $(function () {
             .topicTree({ dberror_func: function (err) { DBErr(err); } })
             .on("topictree_click", function (e, topic) {
               $('#DokuSys_TopicDlg').topicDlg("load", topic.id);
-            });
+            })
+            .topicTree('load');
           $('#DokuSys_TopicDlg')
             .topicDlg({ dberror_func: function (err) { DBErr(err); } })
             .on("topicdlg_change", function (e, topic) {
