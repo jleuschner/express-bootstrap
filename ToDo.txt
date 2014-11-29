@@ -7,11 +7,9 @@ Fehlt noch:
   Links
   Anhänge
 
-Edit schliesst bei collapseAll / expandAll
 
-Topics verschieben
-  - topicTree braucht 'ShowRoot' Option
-  - verhindern, dass Topic unterhalb sich selbst verschoben wird (children aus Tree entfernen?)
+topicTree 
+ - ShowRoot = false darf Topic0 nur 'hidden' (wg.Clone in Dlg)
 
 
 Install

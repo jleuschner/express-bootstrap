@@ -8,7 +8,8 @@
   $.widget("JL.topicTree", {
     options: {
       datasource: "/DokuSys/getList",
-      showRoot: false,
+      showRoot: true,
+      keepRootOpen: true,
       dberror_func: ""
     },
     _create: function () {
@@ -54,7 +55,8 @@
     _tree: function (cb) {
       var _this = this;
       $('#inpTxt', _this.element).val(""); //Filter löschen
-      $('.topicTree li:has(ul)', _this.element).find(' > ul > li').hide(); //Alle zu
+      //$('.topicTree li:has(ul)', _this.element).find(' > ul > li').hide(); //Alle zu
+      _this.collapseAll();
       $('.topicTree li:has(ul)', _this.element).find('i:first').addClass('glyphicon-plus-sign').attr('title', 'Zweig öffnen');
       $('.topicTree li:has(ul)', _this.element).addClass('parent_li').find(' > span');
 
@@ -64,7 +66,11 @@
         _this._trigger("_click", null, { id: $(this).parent().attr('id').replace(/topic/, "") });
       });
 
-      $('.topicTree li.parent_li > span i', _this.element).on('click', function (e) {
+      var iSel = '.topicTree li.parent_li > span i';
+      if (this.options.showRoot && this.options.keepRootOpen) {
+        iSel = '.topicTree li.parent_li:not(#topic0) > span i';
+      }
+      $(iSel, _this.element).on('click', function (e) {
         var children = $(this).parent().parent('li.parent_li').find(' > ul > li');
         if (children.is(":visible")) {
           children.hide('fast');
@@ -119,7 +125,11 @@
       });
     },
     collapseAll: function () {
-      $('.topicTree li:has(ul)', this.element).find(' > ul > li').hide();
+      if (this.options.showRoot && this.options.keepRootOpen) {
+        $('.topicTree #topic0 li:has(ul)', this.element).find(' > ul > li').hide();
+      } else {
+        $('.topicTree li:has(ul)', this.element).find(' > ul > li').hide();
+      }
     },
     expandAll: function () {
       $('.topicTree li:has(ul)', this.element).find(' > ul > li').show();
@@ -142,7 +152,7 @@
         $(".topicTree li", this.element).removeClass("filtered");
       } else {
         txt = txt.toLowerCase();
-        $(".topicTree li", this.element)
+        $(".topicTree li:not(#topic0)", this.element)
           .addClass("filtered")
           .filter(function () {
             if ($(this).attr("title").toLowerCase().indexOf(txt) >= 0) { return true; }
@@ -179,14 +189,17 @@
         return false;
       });
 
-      var $crumbs = $("<nav class='breadcrumbs small topicShow'><ul><li data-toggle='tooltip' data-placement='bottom' title='Wurzel (Kurzanleitung)' bcfix='1'><a href='#' data-id='0'><i class='fa fa-home'></i></a></li><li data-toggle='tooltip' data-placement='bottom' title='Neuer Artikel' bcfix='1'><a href='#' data-id='-1'><i class='fa fa-plus-square'></i></a></li></ul></nav>")
-        .prependTo(_this.element);
+      // Normalanzeige
+      var $show=$("<div class='topicShow'></div>").appendTo(_this.element)
+      var $crumbs = $("<nav class='breadcrumbs small'><ul><li data-toggle='tooltip' data-placement='bottom' title='Wurzel (Kurzanleitung)' bcfix='1'><a href='#' data-id='0'><i class='fa fa-home'></i></a></li><li data-toggle='tooltip' data-placement='bottom' title='Neuer Artikel' bcfix='1'><a href='#' data-id='-1'><i class='fa fa-plus-square'></i></a></li></ul></nav>")
+        .prependTo($show);
       $crumbs.find("li").tooltip();
       $crumbs.find("a").click(function () { _this.load($(this).data("id")); });
+      $("<h1  name='topic'>Thema</h1>").appendTo($show);
+      $("<div name='topictext' style='background-color:#fbfbfb;'></div>").appendTo($show);
 
       // Editieren ID0: Kurzanleitung
-      //$("<a href='#'>Edit</a>").click(function () { _this._editMode(true); }).appendTo(_this.element);
-
+      //$("<a href='#'>Edit</a>").click(function () { _this._editMode(true); }).appendTo($show);
 
       _this._createForm();
       this._update();
@@ -194,35 +207,34 @@
     },
     _createForm: function () {
       var _this = this;
-      var $form = $("<form id='topicDlgForm'></form>").appendTo(_this.element);
-      $("<input name='id' class='xhidden'></input>").appendTo($form);
-      $("<input name='parent' class='xhidden'></input>").appendTo($form);
+      var $form = $("<form id='topicDlgForm' class='topicEdit hidden'></form>").appendTo(_this.element);
+      $("<input name='id' class='hidden'></input>").appendTo($form);
+      $("<input name='parent' class='hidden'></input>").appendTo($form);
 
-      var $ws = $("<div class='topicEdit hidden' role='tabpanel'></div").appendTo($form);
-      var $wstabs = $("<ul id='WsTabs' class='nav nav-tabs' role='tablist'></ul>").appendTo($ws);
-      $("<li role='presentation'><a href='#panel1' aria-controls='panel1' role='tab' data-toggle='tab'>Thema</a></li>").appendTo($wstabs).tab('show');
-      $("<li role='presentation'><a href='#panel2' aria-controls='panel2' role='tab' data-toggle='tab'>Position</a></li>").appendTo($wstabs);
-      $("<span class='pull-right'><button class='btn btn-success' type='submit'>Speichern</button> <button id='btnCancel' class='btn btn-danger' type='button'>Abbrechen</button></span>").appendTo($wstabs);
+      var $tabpanel = $("<div role='tabpanel'></div").appendTo($form);
+      var $tabpaneltabs = $("<ul id='WsTabs' class='nav nav-tabs' role='tablist'></ul>").appendTo($tabpanel);
+      $("<li role='presentation'><a href='#panel1' aria-controls='panel1' role='tab' data-toggle='tab'>Thema</a></li>").appendTo($tabpaneltabs).tab('show');
+      $("<li role='presentation'><a href='#panel2' aria-controls='panel2' role='tab' data-toggle='tab'>Position</a></li>").appendTo($tabpaneltabs);
+      $("<span class='pull-right'><button class='btn btn-success' type='submit'>Speichern</button> <button id='btnCancel' class='btn btn-danger' type='button'>Abbrechen</button></span>").appendTo($tabpaneltabs);
 
 
-      var $wscontent = $("<div class='tab-content'></div>").appendTo($ws);
+      var $wscontent = $("<div class='tab-content'></div>").appendTo($tabpanel);
       var $panel1 = $("<div role='tabpanel' id='panel1' class='tab-pane active'></div>").appendTo($wscontent);
-      $("<h1 class='topicShow' name='topic'>Thema</h1>").appendTo($form);
-      $("<div class='form-group topicEdit hidden'><label>Thema</label><input class='form-control' name='topic' type='text' placeholder='Thema-Überschrift'></input></div>").appendTo($panel1);
-      $("<div class='form-group topicEdit hidden'><label>Schlagworte</label><input class='form-control' name='keywords' type='text' data-role='tagsinput'></input></div>").appendTo($panel1);
-      $("<div class='topicShow' name='topictext' style='background-color:#fbfbfb;'></div>").appendTo($form);
-      $("<div class='form-group topicEdit hidden'><label>Text</label><textarea class='form-control summernote topicEditor' name='topictext'></textarea></div>").appendTo($panel1);
+      $("<div class='form-group'><label>Thema</label><input class='form-control' name='topic' type='text' placeholder='Thema-Überschrift'></input></div>").appendTo($panel1);
+      $("<div class='form-group'><label>Schlagworte</label><input class='form-control' name='keywords' type='text' data-role='tagsinput'></input></div>").appendTo($panel1);
+      $("<div class='form-group'><label>Text</label><textarea class='form-control summernote topicEditor' name='topictext'></textarea></div>").appendTo($panel1);
 
       var $panel2 = $("<div role='tabpanel' id='panel2' class='tab-pane'></div>").appendTo($wscontent);
       var $p2c = $("<div class='col-sm-8' style='margin-top:10px;'></div>").appendTo($panel2);
       $("<div id='parentTree'></div>")
-        .topicTree({ showRoot : true })
+        .topicTree({ showRoot: true })
         .on("topictree_click", function (e, topic) {
-          $('input[name=parent]', _this.element).val(topic.id);
+          if (topic.id != $("input[name=id]", _this.element).val()) {
+            $('input[name=parent]', _this.element).val(topic.id);
+            $('#parentTree',_this.element).topicTree("markTopic",topic.id);
+          }
         })
         .appendTo($p2c);
-
-
 
       $('#btnCancel', $form).click(function () {
         _this.load(_this._var.id);
@@ -270,7 +282,6 @@
       this._update();
     },
     _update: function () {
-      //this.element.html("<h1>" + this.options.text + "</h1>");
     },
     _editMode: function (enable) {
       var _this = this;
@@ -350,8 +361,8 @@
           //console.log(data.rows[0].parents[0].id);
           $('#parentTree', _this.element)
             .topicTree("setTree", $("#DokuSys_TopicTree .topicTree").clone(), function () {
-              $("<li id='topic0' class='parent_li'><span><i class='fa fa-home text-info'></i></span></li>").prependTo($('#parentTree .topicTree li:first', _this.element));
               $('#parentTree', _this.element).topicTree("markTopic", (data.rows[0].parents[0]) ? data.rows[0].parents[0].id : 0);
+              $('#parentTree #topic' + id + " ul", _this.element).remove();
             });
         }
         $("#WsTabs a:first", _this.element).tab("show");
