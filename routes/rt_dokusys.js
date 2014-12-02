@@ -77,5 +77,16 @@ router.post('/set', function (req, res) {
   }
 });
 
+router.post('/upload', function (req, res) {
+  //req.setBodyEncoding("binary");
+  console.log(req.body.id);
+  console.log(req.files);
+  send(res, { err: "", path: req.files.anhang.path });
+
+
+});
+
+
+
 
 module.exports = router;

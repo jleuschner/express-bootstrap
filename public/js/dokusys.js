@@ -190,7 +190,7 @@
       });
 
       // Normalanzeige
-      var $show=$("<div class='topicShow'></div>").appendTo(_this.element)
+      var $show = $("<div class='topicShow'></div>").appendTo(_this.element)
       var $crumbs = $("<nav class='breadcrumbs small'><ul><li data-toggle='tooltip' data-placement='bottom' title='Wurzel (Kurzanleitung)' bcfix='1'><a href='#' data-id='0'><i class='fa fa-home'></i></a></li><li data-toggle='tooltip' data-placement='bottom' title='Neuer Artikel' bcfix='1'><a href='#' data-id='-1'><i class='fa fa-plus-square'></i></a></li></ul></nav>")
         .prependTo($show);
       $crumbs.find("li").tooltip();
@@ -226,12 +226,13 @@
 
       var $panel2 = $("<div role='tabpanel' id='panel2' class='tab-pane'></div>").appendTo($wscontent);
       var $p2c = $("<div class='col-sm-8' style='margin-top:10px;'></div>").appendTo($panel2);
+      $("<h4>Thema verschieben</h4><p>Bitte neuen Elternknoten auswählen:</p>").appendTo($p2c);
       $("<div id='parentTree'></div>")
         .topicTree({ showRoot: true })
         .on("topictree_click", function (e, topic) {
           if (topic.id != $("input[name=id]", _this.element).val()) {
             $('input[name=parent]', _this.element).val(topic.id);
-            $('#parentTree',_this.element).topicTree("markTopic",topic.id);
+            $('#parentTree', _this.element).topicTree("markTopic", topic.id);
           }
         })
         .appendTo($p2c);
@@ -241,6 +242,25 @@
       });
 
       $("[name=keywords]").tagsinput();
+      $('.summernote', _this.element).summernote({
+        toolbar: [
+              ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'clear']],
+              ['misc', ['undo', 'redo']],
+              ['color', ['color']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['insert', ['table', 'picture', 'link']],
+              ['misc', ['fullscreen', 'codeview']]
+              ]
+      });
+
+      // Uploads
+      $("<hr>").appendTo(_this.element);
+      var $uploads = $("<form id='uploads' class='topicShow' action='DokuSys/upload' method='post' enctype='multipart/form-data'></form>").appendTo(_this.element);
+      $("<input type='text' name='id'></input>").appendTo($uploads);
+
+      $("<div class='form-group'><label>Datei</label><input class='form-control' name='anhang' type='file' placeholder='Datei-Anhang'></input></div>").appendTo($uploads);
+      $("<button type='submit' class='btn btn-primary'>Upload</button>").appendTo($uploads);
+
 
       $form.bootstrapValidator({
         fields: {
@@ -262,10 +282,12 @@
       .on('success.form.bv', function (e) {
         e.preventDefault();
         var $lform = $(e.target);
+
         $.each($lform.find(".summernote"), function () {
           $(this).val($(this).code());
         });
-        //var id = $lform.find("[name='id']").val()
+
+        console.log($lform.serialize());
         $.post('DokuSys/set', $lform.serialize(), function (data) {
           if (data.err) {
             bootbox.alert("FEHLER!");
@@ -288,20 +310,24 @@
       if (enable) {
         $('.topicShow', _this.element).addClass('hidden');
         $('.topicEdit', _this.element).removeClass('hidden');
+        /*
         $('.topicEditor', _this.element).summernote({
-          toolbar: [
-              ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'clear']],
-              ['misc', ['undo', 'redo']],
-              ['color', ['color']],
-              ['para', ['ul', 'ol', 'paragraph']],
-              ['insert', ['table', 'picture', 'link']],
-              ['misc', ['fullscreen', 'codeview']]
-              ]
+        toolbar: [
+        ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'clear']],
+        ['misc', ['undo', 'redo']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['insert', ['table', 'picture', 'link']],
+        ['misc', ['fullscreen', 'codeview']]
+        ]
         });
+        */
+        $("#WsTabs a:first", _this.element).tab("show");
+
       } else {
         $('.topicEdit', _this.element).addClass('hidden');
         $('.topicShow', _this.element).removeClass('hidden');
-        $('.topicEditor', _this.element).destroy();
+        //$('.topicEditor', _this.element).destroy();
       }
     },
     load: function (id) {
@@ -324,9 +350,7 @@
         }
         $(".breadcrumbs ul li[bcfix!=1]", _this.element).remove();
         if (id > 0) {
-          //var crumbs = $(".breadcrumbs ul li", _this.element);
           $.each(data.rows[0].parents, function (key, obj) {
-            //$("<li><a href='#' data-id='" + obj.id + "' >" + obj.topic + "</a></li>").prependTo($(".breadcrumbs ul", _this.element));
             $(".breadcrumbs ul li:first", _this.element).after($("<li><a href='#' data-id='" + obj.id + "' >" + obj.topic + "</a></li>"));
           });
           $(".breadcrumbs ul li:last", _this.element).before($("<li class='active' data-toggle='tooltip' data-placement='bottom' title='Artikel bearbeiten'><a href='#'><span class='fa fa-pencil-square-o'></span> " + data.rows[0].topic + "</a></li>"));
@@ -357,6 +381,7 @@
           });
           $('[name=keywords]').tagsinput('removeAll');
           $('[name=keywords]').tagsinput('add', data.rows[0].keywords);
+          $('.summernote[name=topictext]').code(data.rows[0].topictext);
           // tree
           //console.log(data.rows[0].parents[0].id);
           $('#parentTree', _this.element)
@@ -364,8 +389,12 @@
               $('#parentTree', _this.element).topicTree("markTopic", (data.rows[0].parents[0]) ? data.rows[0].parents[0].id : 0);
               $('#parentTree #topic' + id + " ul", _this.element).remove();
             });
+          if (id < 1) {
+            $("#uploads", _this.element).addClass('hidden');
+          }
+
         }
-        $("#WsTabs a:first", _this.element).tab("show");
+        //$("#WsTabs a:first", _this.element).tab("show");
         $("form", _this.element).bootstrapValidator('disableSubmitButtons', false);
       })
       .fail(function () {
