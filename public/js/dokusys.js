@@ -253,15 +253,6 @@
               ]
       });
 
-      // Uploads
-      $("<hr>").appendTo(_this.element);
-      var $uploads = $("<form id='uploads' class='topicShow' action='DokuSys/upload' method='post' enctype='multipart/form-data'></form>").appendTo(_this.element);
-      $("<input type='text' name='id'></input>").appendTo($uploads);
-
-      $("<div class='form-group'><label>Datei</label><input class='form-control' name='anhang' type='file' placeholder='Datei-Anhang'></input></div>").appendTo($uploads);
-      $("<button type='submit' class='btn btn-primary'>Upload</button>").appendTo($uploads);
-
-
       $form.bootstrapValidator({
         fields: {
           topic: { validators: {
@@ -298,6 +289,58 @@
           }
         });
       });
+
+      // Uploads
+      $("<hr>").appendTo(_this.element);
+      var $uploads = $("<form id='uploads' class='topicShow' action='DokuSys/upload' method='post' enctype='multipart/form-data'></form>").appendTo(_this.element);
+      $("<input type='text' name='id'></input>").appendTo($uploads);
+      $("<div class='form-group'><label>Titel</label><input class='form-control' name='titel' type='text' placeholder='Titel'></input></div>").appendTo($uploads);
+      $("<div class='form-group'><label>Datei</label><input id='anhang' class='form-control' name='anhang' type='file' placeholder='Datei-Anhang'></input></div>").appendTo($uploads);
+      $("<button type='submit' class='btn btn-primary'>Upload</button>").appendTo($uploads);
+
+      $uploads.bootstrapValidator({
+        fields: {
+          titel: { validators: {
+            notEmpty: { message: "Datei-Titel muss angegeben werden!" }
+          }
+          },
+          anhang: { validators: {
+            notEmpty: { message: "Datei muss angegeben werden!" }
+          }
+          }
+        }
+      })
+      .on('success.form.bv', function (e) {
+        e.preventDefault();
+        var $lform = $(e.target);
+        console.dir($lform.serialize());
+        var formdata = new FormData(e.target);
+        /*
+        $.each($('#anhang')[0].files, function (i, file) {
+          console.log(i);
+          formdata.append("file" + i, file);
+        });
+        */
+        $.ajax({
+          type: "POST",
+          url: "DokuSys/upload",
+          data: formdata,
+          contentType: false,
+          processData: false,
+          success: function (data) {
+            console.log(data);
+            if (data.err) {
+              bootbox.alert("FEHLER!");
+            } else {
+              //_this._trigger("_change", null, { id: data.id });
+              //_this.load(data.id);
+            }
+          }
+        });
+      });
+
+
+
     },
     _setOption: function (key, value) {
       this.options[key] = value;

@@ -3,6 +3,9 @@ var router = express.Router();
 var mysql = require('mysql');
 var AppConfig = require("../AppConfig");
 var DBCon = require('../lib/dbconnection');
+var multer = require('multer');
+var fs = require('fs');
+require('../lib/functions');
 
 
 router.get('/', function (req, res) {
@@ -77,13 +80,16 @@ router.post('/set', function (req, res) {
   }
 });
 
-router.post('/upload', function (req, res) {
+router.post('/upload', multer({ dest: "./_upload" }), function (req, res) {
   //req.setBodyEncoding("binary");
   console.log(req.body.id);
+  console.log(req.body.titel);
   console.log(req.files);
-  send(res, { err: "", path: req.files.anhang.path });
-
-
+  var ts = new Date();
+  var filename = AppConfig.path.dokusys_files + "T" + req.body.id.lpad(0, 8) + "_" + ts.getTime() + "." + req.files.anhang.extension;
+  console.log(filename)
+  fs.rename(req.files.anhang.path, ".\doc_up\T" + req.body.id.lpad(0, 8) + "_" + ts.getTime() + "." + req.files.anhang.extension);
+  send(res, { err: "", path: req.files });
 });
 
 

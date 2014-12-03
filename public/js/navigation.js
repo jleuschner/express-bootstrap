@@ -148,6 +148,13 @@ $(function () {
 
   MainNavbar();
   console.log("ready!");
-  $('#MainNav_DokuSys').click();
+
+  $.post('/check', function (data) {
+    if (data.err) {
+      MainLogin();
+    } else {
+      $('#MainNav_DokuSys').click();
+    }
+  });
 
 });
