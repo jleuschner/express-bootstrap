@@ -80,15 +80,21 @@ router.post('/set', function (req, res) {
   }
 });
 
-router.post('/upload', multer({ dest: "./_upload" }), function (req, res) {
+router.post('/upload', multer({ dest: "./upload" }), function (req, res) {
   //req.setBodyEncoding("binary");
   console.log(req.body.id);
   console.log(req.body.titel);
   console.log(req.files);
   var ts = new Date();
-  var filename = AppConfig.path.dokusys_files + "T" + req.body.id.lpad(0, 8) + "_" + ts.getTime() + "." + req.files.anhang.extension;
+  var filename = AppConfig.path.dokusys_files + "T" + req.body.id.lpad(0, 8) + "_" + ts.getTime() + "." + req.files.anhang.extension.replace(/\\/, "\\\\");
   console.log(filename)
-  fs.rename(req.files.anhang.path, ".\doc_up\T" + req.body.id.lpad(0, 8) + "_" + ts.getTime() + "." + req.files.anhang.extension);
+  //fs.unlink(req.files.anhang.path);
+
+  fs.rename(req.files.anhang.path, filename, function (err) {
+    console.log(err);
+    //if (err) throw err;
+  });
+
   send(res, { err: "", path: req.files });
 });
 

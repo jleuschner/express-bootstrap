@@ -34,9 +34,6 @@ app.use(multer({
 }))
 */
 
-var jetzt = new Date();
-console.log( jetzt.getTime() )
-
 // Config laden
 var AppConfig= require("./AppConfig")
 
