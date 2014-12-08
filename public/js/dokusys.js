@@ -290,6 +290,12 @@
         });
       });
 
+      // Links
+      $("<hr>").appendTo(_this.element);
+      var $linksDIV = $("<div><h4>Anhänge</h4></div>").appendTo(_this.element);
+      var $links = $("<div id='links' class='JLDiv'></div>").appendTo($linksDIV);
+
+
       // Uploads
       $("<hr>").appendTo(_this.element);
       var $uploads = $("<form id='uploads' class='topicShow' action='DokuSys/upload' method='post' enctype='multipart/form-data'></form>").appendTo(_this.element);
@@ -317,8 +323,8 @@
         var formdata = new FormData(e.target);
         /*
         $.each($('#anhang')[0].files, function (i, file) {
-          console.log(i);
-          formdata.append("file" + i, file);
+        console.log(i);
+        formdata.append("file" + i, file);
         });
         */
         $.ajax({
@@ -436,6 +442,12 @@
             $("#uploads", _this.element).addClass('hidden');
           }
 
+          // Links:
+          //console.log(JSON.stringify(data.rows[0].links));
+          $("#links", _this.element).html("");
+          $.each(data.rows[0].links, function (key, obj) {
+            $("<p>" + obj.bez + "</p>").appendTo("#links", _this.element);
+          });
         }
         //$("#WsTabs a:first", _this.element).tab("show");
         $("form", _this.element).bootstrapValidator('disableSubmitButtons', false);

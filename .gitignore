@@ -4,5 +4,6 @@ node_modules/
 public/bower_components/
 public/dist
 _tmp
+upload/
 uploads/
 _uploads/

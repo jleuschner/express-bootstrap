@@ -47,10 +47,26 @@ router.get('/get', function (req, res) {
         return;
       }
       if (data.rows.length) {
-        getParents(req.session, data.rows[0].parent, [], function (parents) {
-          data.rows[0].parents = parents;
-          send(res, data);
-        });
+        // Links:
+        var ltab = AppConfig.tables.dokusys_links;
+        var ftab = AppConfig.tables.dokusys_uploads;
+        var qry = "select "+ltab+".id, bez, link, target, typ, sort from " + ltab
+              + " left join "+ ftab + " on " + ltab + ".id = " + ftab + ".link_id where topic_id=" + req.query.id;
+        DBCon.query(req.session, qry,
+          function (lnkdata) {
+            for (i = 0; i < lnkdata.rows.length; i++) {
+              if (lnkdata.rows[i].typ === "FILE") {
+                console.log(lnkdata.rows[i]);
+              }
+            }
+            data.rows[0].links = lnkdata.rows;
+
+            //parents:
+            getParents(req.session, data.rows[0].parent, [], function (parents) {
+              data.rows[0].parents = parents;
+              send(res, data);
+            });
+          });
       } else {
         send(res, data);
       }
@@ -91,11 +107,24 @@ router.post('/upload', multer({ dest: "./upload" }), function (req, res) {
   //fs.unlink(req.files.anhang.path);
 
   fs.rename(req.files.anhang.path, filename, function (err) {
-    console.log(err);
-    //if (err) throw err;
+    if (err) {
+      console.log(err);
+      send(res, {err: err});
+      return;
+    } else{
+        /*
+        var qry = mysql.format(" set ?", [{
+          link_id: req.body.id,
+          topic: post.topic,
+          keywords: post.keywords,
+          topictext: post.topictext
+        }]);
+      qry = "insert into "+ AppConfig.tables.dokusys_uploads 
+      */
+      send(res, { err: "", path: req.files });
+      
+    }
   });
-
-  send(res, { err: "", path: req.files });
 });
 
 

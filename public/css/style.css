@@ -1,7 +1,7 @@
 body {
   margin-top: 50px;
   font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
-  background-color: #f3f3f3;
+  background-color: #f0f0f0;
 }
 .JL label {
   font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
@@ -13,6 +13,16 @@ body {
 h1,h2,h3,h4,h5,h6 {
   color: #555555 !important;
 }
+
+.JLDiv {
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border:1px solid #999;
+    border-radius:5px;
+    width: 100%;
+    background-color: #fff;
+}
+
 
 /* blockquote Color linker Streifen */
 blockquote {
