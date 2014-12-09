@@ -50,11 +50,12 @@ router.get('/get', function (req, res) {
         // Links:
         var ltab = AppConfig.tables.dokusys_links;
         var ftab = AppConfig.tables.dokusys_uploads;
-        var qry = "select "+ltab+".id, bez, link, target, typ, sort from " + ltab
-              + " left join "+ ftab + " on " + ltab + ".id = " + ftab + ".link_id where topic_id=" + req.query.id;
+        var qry = "select " + ltab + ".id, bez, link, target, typ, sort, " + ftab + ".version, filename from " + ltab
+              + " left join " + ftab + " on " + ltab + ".id = " + ftab + ".link_id where topic_id=" + req.query.id
+              + " order by sort, link_id, " + ftab + ".version desc";
         DBCon.query(req.session, qry,
           function (lnkdata) {
-            for (i = 0; i < lnkdata.rows.length; i++) {
+            for (var i = 0; i < lnkdata.rows.length; i++) {
               if (lnkdata.rows[i].typ === "FILE") {
                 console.log(lnkdata.rows[i]);
               }
@@ -103,26 +104,26 @@ router.post('/upload', multer({ dest: "./upload" }), function (req, res) {
   console.log(req.files);
   var ts = new Date();
   var filename = AppConfig.path.dokusys_files + "T" + req.body.id.lpad(0, 8) + "_" + ts.getTime() + "." + req.files.anhang.extension.replace(/\\/, "\\\\");
-  console.log(filename)
+  console.log(filename);
   //fs.unlink(req.files.anhang.path);
 
   fs.rename(req.files.anhang.path, filename, function (err) {
     if (err) {
       console.log(err);
-      send(res, {err: err});
+      send(res, { err: err });
       return;
-    } else{
-        /*
-        var qry = mysql.format(" set ?", [{
-          link_id: req.body.id,
-          topic: post.topic,
-          keywords: post.keywords,
-          topictext: post.topictext
-        }]);
+    } else {
+      /*
+      var qry = mysql.format(" set ?", [{
+      link_id: req.body.id,
+      topic: post.topic,
+      keywords: post.keywords,
+      topictext: post.topictext
+      }]);
       qry = "insert into "+ AppConfig.tables.dokusys_uploads 
       */
       send(res, { err: "", path: req.files });
-      
+
     }
   });
 });

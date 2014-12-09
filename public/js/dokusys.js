@@ -9,6 +9,7 @@
     options: {
       datasource: "/DokuSys/getList",
       showRoot: true,
+      searchTools: true,
       keepRootOpen: true,
       dberror_func: ""
     },
@@ -17,31 +18,43 @@
       $(this.element).bind("contextmenu", function () {
         return false;
       });
-      var $flt = $("<div class='input-group'><div>").appendTo(_this.element);
-      $("<input id='inpTxt' class='form-control' type='text' placeholder='Suchbegriff'></input>")
+
+      var notempty = true;
+      if (this.element.html().length === 0) {
+        $("<div class='topicTree'></div>").appendTo(this.element);
+        notempty = false;
+      } else {
+        this.element.wrap("<div class='topicTree'></div>");
+      }
+
+      if (_this.options.searchTools) {
+        var $flt = $("<div class='input-group'><div>").prependTo(_this.element);
+        $("<input id='inpTxt' class='form-control' type='text' placeholder='Suchbegriff'></input>")
         .appendTo($flt)
         .keyup(function () { _this.filterTopics($(this).val()); });
-      var $fltbtn = $("<div class='input-group-btn'></div>").appendTo($flt);
-      $("<button class='btn btn-default' type='button' tabindex='-1' data-toggle='tooltip' data-placement='bottom' title='Filter zurücksetzen'><i class='glyphicon glyphicon-remove text-danger'></i></button>")
+        var $fltbtn = $("<div class='input-group-btn'></div>").appendTo($flt);
+        $("<button class='btn btn-default' type='button' tabindex='-1' data-toggle='tooltip' data-placement='bottom' title='Filter zurücksetzen'><i class='glyphicon glyphicon-remove text-danger'></i></button>")
         .appendTo($fltbtn)
         .tooltip()
         .click(function () {
           $('#inpTxt', _this.element).val("");
           _this.filterTopics("");
         });
-      $("<button class='btn btn-default' type='button' data-toggle='tooltip' data-placement='bottom' title='Alle schliessen'><span class='glyphicon glyphicon-folder-close'></span></button>")
+        $("<button class='btn btn-default' type='button' data-toggle='tooltip' data-placement='bottom' title='Alle schliessen'><span class='glyphicon glyphicon-folder-close'></span></button>")
         .appendTo($fltbtn)
         .tooltip()
         .click(function () {
           _this.collapseAll();
         });
-      $("<button class='btn btn-default' type='button' data-toggle='tooltip' data-placement='bottom' title='Alle öffnen'><span class='glyphicon glyphicon-folder-open'></button>")
+        $("<button class='btn btn-default' type='button' data-toggle='tooltip' data-placement='bottom' title='Alle öffnen'><span class='glyphicon glyphicon-folder-open'></button>")
         .appendTo($fltbtn)
         .tooltip()
         .click(function () {
           _this.expandAll();
         });
-      $("<div class='topicTree'></div>").appendTo(this.element);
+      }
+
+      if (notempty) { _this._tree();  }
 
       this._update();
     },
@@ -191,8 +204,7 @@
 
       // Normalanzeige
       var $show = $("<div class='topicShow'></div>").appendTo(_this.element)
-      var $crumbs = $("<nav class='breadcrumbs small'><ul><li data-toggle='tooltip' data-placement='bottom' title='Wurzel (Kurzanleitung)' bcfix='1'><a href='#' data-id='0'><i class='fa fa-home'></i></a></li><li data-toggle='tooltip' data-placement='bottom' title='Neuer Artikel' bcfix='1'><a href='#' data-id='-1'><i class='fa fa-plus-square'></i></a></li></ul></nav>")
-        .prependTo($show);
+      var $crumbs = $("<nav class='breadcrumbs small'><ul><li data-toggle='tooltip' data-placement='bottom' title='Wurzel (Kurzanleitung)' bcfix='1'><a href='#' data-id='0'><i class='fa fa-home'></i></a></li><li data-toggle='tooltip' data-placement='bottom' title='Neuer Artikel' bcfix='1'><a href='#' data-id='-1'><i class='fa fa-plus-square'></i></a></li></ul></nav>").prependTo($show);
       $crumbs.find("li").tooltip();
       $crumbs.find("a").click(function () { _this.load($(this).data("id")); });
       $("<h1  name='topic'>Thema</h1>").appendTo($show);
@@ -230,7 +242,7 @@
       $("<div id='parentTree'></div>")
         .topicTree({ showRoot: true })
         .on("topictree_click", function (e, topic) {
-          if (topic.id != $("input[name=id]", _this.element).val()) {
+          if (topic.id !== $("input[name=id]", _this.element).val()) {
             $('input[name=parent]', _this.element).val(topic.id);
             $('#parentTree', _this.element).topicTree("markTopic", topic.id);
           }
@@ -293,7 +305,7 @@
       // Links
       $("<hr>").appendTo(_this.element);
       var $linksDIV = $("<div><h4>Anhänge</h4></div>").appendTo(_this.element);
-      var $links = $("<div id='links' class='JLDiv'></div>").appendTo($linksDIV);
+      $("<div id='links'></div>").appendTo($linksDIV);
 
 
       // Uploads
@@ -446,8 +458,15 @@
           //console.log(JSON.stringify(data.rows[0].links));
           $("#links", _this.element).html("");
           $.each(data.rows[0].links, function (key, obj) {
-            $("<p>" + obj.bez + "</p>").appendTo("#links", _this.element);
+            if (obj.typ === "FILE") {
+              if ($("#lnk" + obj.id, _this.element).length < 1) {
+                //$("<div id='lnk" + obj.id + "' class='topicTree'><span>" + obj.bez + " : " + obj.version + "</span><ul></ul></div>").appendTo("#links", _this.element);
+                $("<ul id='lnk" + obj.id + "' class='topicTree'><li><span>" + obj.bez + " : " + obj.version + "</span></li><ul></ul></ul>").appendTo("#links", _this.element);
+              }
+              $("<li><span>Version " + obj.version + "</span></li>").appendTo($("#lnk" + obj.id + " ul", _this.element));
+            }
           });
+          $("#links", _this.element).find(".topicTree").topicTree();
         }
         //$("#WsTabs a:first", _this.element).tab("show");
         $("form", _this.element).bootstrapValidator('disableSubmitButtons', false);
