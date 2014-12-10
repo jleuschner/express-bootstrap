@@ -54,7 +54,7 @@
         });
       }
 
-      if (notempty) { _this._tree();  }
+      if (notempty) { _this._tree(); }
 
       this._update();
     },
@@ -305,7 +305,7 @@
       // Links
       $("<hr>").appendTo(_this.element);
       var $linksDIV = $("<div><h4>Anhänge</h4></div>").appendTo(_this.element);
-      $("<div id='links'></div>").appendTo($linksDIV);
+      $("<div id='links' style='background:#fff'></div>").appendTo($linksDIV);
 
 
       // Uploads
@@ -460,13 +460,18 @@
           $.each(data.rows[0].links, function (key, obj) {
             if (obj.typ === "FILE") {
               if ($("#lnk" + obj.id, _this.element).length < 1) {
-                //$("<div id='lnk" + obj.id + "' class='topicTree'><span>" + obj.bez + " : " + obj.version + "</span><ul></ul></div>").appendTo("#links", _this.element);
-                $("<ul id='lnk" + obj.id + "' class='topicTree'><li><span>" + obj.bez + " : " + obj.version + "</span></li><ul></ul></ul>").appendTo("#links", _this.element);
+                $("<ul id='lnk" + obj.id + "'><li><span> " + obj.bez + "<span class='badge pull-right toggle'>Ver." + obj.version + "</span></span><ul></ul></li></ul>").appendTo("#links", _this.element);
               }
-              $("<li><span>Version " + obj.version + "</span></li>").appendTo($("#lnk" + obj.id + " ul", _this.element));
+              var ft = new Date(obj.filetime * 1000);
+              var filetime = ft.toLocaleString();
+              $("<li><span><span>Version " + obj.version + "</span><span>" + obj.fileuser + "</span><span>" + filetime + "</span>"
+                + "<span class='pull-right'><button class='btn btn-xs btn-danger' title='Anhang löschen'><i class='glyphicon glyphicon-trash'></i></button></span></span></li>").appendTo($("#lnk" + obj.id + " ul", _this.element));
             }
           });
-          $("#links", _this.element).find(".topicTree").topicTree();
+          $("#links", _this.element).find(" > ul").uniTree({
+            ExpandedIcon: '',
+            CollapsedIcon: ''
+          });
         }
         //$("#WsTabs a:first", _this.element).tab("show");
         $("form", _this.element).bootstrapValidator('disableSubmitButtons', false);

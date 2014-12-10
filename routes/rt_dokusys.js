@@ -50,7 +50,9 @@ router.get('/get', function (req, res) {
         // Links:
         var ltab = AppConfig.tables.dokusys_links;
         var ftab = AppConfig.tables.dokusys_uploads;
-        var qry = "select " + ltab + ".id, bez, link, target, typ, sort, " + ftab + ".version, filename from " + ltab
+        var qry = "select " + ltab + ".id, bez, link, target, typ, sort, " + ftab + ".version, filename, "
+              + ftab + ".user as fileuser, " + ftab + ".time as filetime "
+              + " from " + ltab
               + " left join " + ftab + " on " + ltab + ".id = " + ftab + ".link_id where topic_id=" + req.query.id
               + " order by sort, link_id, " + ftab + ".version desc";
         DBCon.query(req.session, qry,

@@ -149,12 +149,15 @@ $(function () {
   MainNavbar();
   console.log("ready!");
 
+  $('#testList').uniTree();
+
+
   $.post('/check', function (data) {
-    if (data.err) {
-      MainLogin();
-    } else {
-      $('#MainNav_DokuSys').click();
-    }
+  if (data.err) {
+  MainLogin();
+  } else {
+  $('#MainNav_DokuSys').click();
+  }
   });
 
 });

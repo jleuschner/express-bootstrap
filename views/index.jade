@@ -28,6 +28,8 @@ html
       link(rel='stylesheet', href='/bower_components/tagsinput/dist/bootstrap-tagsinput.css')
       link(rel='stylesheet', href='/css/style.css')
       link(rel='stylesheet', href='/css/topicTree.css')
+      link(rel='stylesheet', href='/css/uniTree.css')
+      link(rel='stylesheet', href='/css/dokusys.css')
       link(rel='stylesheet', href='/css/configList.css')
 
       script(type='text/javascript', src='/bower_components/jquery/dist/jquery.min.js')
@@ -46,6 +48,7 @@ html
       script(type='text/javascript', src='/bower_components/tagsinput/dist/bootstrap-tagsinput.min.js')
       script(type='text/javascript', src='/js/navigation.js')
       script(type='text/javascript', src='/js/dokusys.js')
+      script(type='text/javascript', src='/js/unitree.js')
       script(type='text/javascript', src='/js/configList.js')
 
   body
@@ -118,19 +121,34 @@ html
       
 
     #MainWorkspace
-      .container-fluid.hidden
+      .container-fluid
         .row
           .col-md-4
-            h1= AppConfig.title
+            //- h1= AppConfig.title
 
             if AppConfig.productional
               h1 PRD
             else 
               h1 TRN
             div
-            - for (var x = 0; x < 30; x++)
-              | item#{x} 
-          .col-md-8
-            div
-            - for (var x = 0; x < 30; x++)
-              | item#{x} 
+              ul#testList
+                li
+                  span 
+                    span
+                      | Root
+                      //i.toggle.glyphicon.glyphicon-home
+                  ul
+                    li(data-id=666)
+                      span Child1
+                    li
+                      span 
+                        //i.toggle.glyphicon.glyphicon-home
+                        | Child2
+                      ul
+                        li
+                          span GrandChicld          
+          //-
+            .col-md-8
+              div
+              - for (var x = 0; x < 30; x++)
+                | item#{x} 
