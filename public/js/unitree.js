@@ -43,7 +43,7 @@
           e.stopPropagation();
         });
 
-      $('li', _this.element).find("span:first").click(function (e) {
+      $('li', _this.element).find("span:first").click(function () {
         console.log($(this).parent().data("id"));
         //_this._trigger("_click", null, { id: $(this).parent().attr('id').replace(/topic/, "") });
       });

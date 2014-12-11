@@ -182,6 +182,16 @@
   });
 
 
+  /*------------------- topicFileDlg -------------------------
+  */
+  $.widget("JL.topicFileDlg", {
+    options: {
+    },
+    _create: function () {
+      var _this = this;
+    }
+  });
+
   /*------------------- topicDlg -------------------------
   * Trigger:
   *   _change({id:id} nach set
@@ -203,7 +213,7 @@
       });
 
       // Normalanzeige
-      var $show = $("<div class='topicShow'></div>").appendTo(_this.element)
+      var $show = $("<div class='topicShow'></div>").appendTo(_this.element);
       var $crumbs = $("<nav class='breadcrumbs small'><ul><li data-toggle='tooltip' data-placement='bottom' title='Wurzel (Kurzanleitung)' bcfix='1'><a href='#' data-id='0'><i class='fa fa-home'></i></a></li><li data-toggle='tooltip' data-placement='bottom' title='Neuer Artikel' bcfix='1'><a href='#' data-id='-1'><i class='fa fa-plus-square'></i></a></li></ul></nav>").prependTo($show);
       $crumbs.find("li").tooltip();
       $crumbs.find("a").click(function () { _this.load($(this).data("id")); });
@@ -304,17 +314,23 @@
 
       // Links
       $("<hr>").appendTo(_this.element);
-      var $linksDIV = $("<div><h4>Anhänge</h4></div>").appendTo(_this.element);
+      var $linksDIV = $("<div id='topicDlgAnhang' class='hidden'><div class='hr-xs'><h4 class='inline'>Anhänge</h4>"
+        + "<span class='pull-right'><button id='btnAddFile' class='btn btn-xs btn-primary' title='Anhang hinzufügen'><i class='fa fa-plus'></i> <i class='fa fa-file-o'></i></button></span>"
+        + "</div></div>").appendTo(_this.element);
+      var $uploads = $("<form id='uploads' class='well well-sm' action='DokuSys/upload' method='post' enctype='multipart/form-data' style='display:none'></form>").appendTo($linksDIV);
+      $("<input type='text' name='id' hidden></input>").appendTo($uploads);
+      $("<div class='form-group'><label>Titel</label><input class='form-control' name='titel' type='text' placeholder='Titel'></input></div>").appendTo($uploads);
+      $("<div class='form-group'><label>Datei</label><div class='input-group'><input id='anhang' class='form-control' name='anhang' type='file' placeholder='Datei-Anhang'></input>"
+          + "<span class='input-group-btn'><button type='submit' class='btn btn-primary' title='Upload'><i class='fa fa-upload'></i></button>"
+          + "<button id='btnAddFileCancel' type='button' class='btn btn-danger' title='Abbrechen'><i class='fa fa-remove'></i></button></span></div>").appendTo($uploads);
       $("<div id='links' style='background:#fff'></div>").appendTo($linksDIV);
 
-
-      // Uploads
-      $("<hr>").appendTo(_this.element);
-      var $uploads = $("<form id='uploads' class='topicShow' action='DokuSys/upload' method='post' enctype='multipart/form-data'></form>").appendTo(_this.element);
-      $("<input type='text' name='id'></input>").appendTo($uploads);
-      $("<div class='form-group'><label>Titel</label><input class='form-control' name='titel' type='text' placeholder='Titel'></input></div>").appendTo($uploads);
-      $("<div class='form-group'><label>Datei</label><input id='anhang' class='form-control' name='anhang' type='file' placeholder='Datei-Anhang'></input></div>").appendTo($uploads);
-      $("<button type='submit' class='btn btn-primary'>Upload</button>").appendTo($uploads);
+      $('#btnAddFile', _this.element).click(function () {
+        $("#uploads", _this.element).show("fast");
+      });
+      $('#btnAddFileCancel', _this.element).click(function () {
+        $("#uploads", _this.element).hide("fast");
+      });
 
       $uploads.bootstrapValidator({
         fields: {
@@ -450,8 +466,13 @@
               $('#parentTree', _this.element).topicTree("markTopic", (data.rows[0].parents[0]) ? data.rows[0].parents[0].id : 0);
               $('#parentTree #topic' + id + " ul", _this.element).remove();
             });
-          if (id < 1) {
-            $("#uploads", _this.element).addClass('hidden');
+
+          // Anhaenge bei Root ausblenden
+          if (id < 1 && 0) {
+            $("#topicDlgAnhang", _this.element).addClass('hidden');
+          } else {
+            $("#topicDlgAnhang", _this.element).removeClass('hidden');
+            $("#uploads", _this.element).hide();
           }
 
           // Links:
@@ -460,17 +481,20 @@
           $.each(data.rows[0].links, function (key, obj) {
             if (obj.typ === "FILE") {
               if ($("#lnk" + obj.id, _this.element).length < 1) {
-                $("<ul id='lnk" + obj.id + "'><li><span> " + obj.bez + "<span class='badge pull-right toggle'>Ver." + obj.version + "</span></span><ul></ul></li></ul>").appendTo("#links", _this.element);
+                $("<ul id='lnk" + obj.id + "'><li><span> " + obj.bez
+                  + "<button type='button' class='btn btn-default btn-xs pull-right' title='Neue Version zufügen'><i class='fa fa-plus'></i> <i class='fa fa-file-o'></i></button>"
+                  + "<span class='badge pull-right toggle'>Ver." + obj.version + "</span>"
+                  + "</span><ul></ul></li></ul>").appendTo("#links", _this.element);
               }
-              var ft = new Date(obj.filetime * 1000);
-              var filetime = ft.toLocaleString();
-              $("<li><span><span>Version " + obj.version + "</span><span>" + obj.fileuser + "</span><span>" + filetime + "</span>"
+              $("<li><span class='fileversions'><span class='fa fa-file-o'></span><span>Version " + obj.version + "</span><span>" + obj.filetime + " - " + obj.fileuser + "</span>"
                 + "<span class='pull-right'><button class='btn btn-xs btn-danger' title='Anhang löschen'><i class='glyphicon glyphicon-trash'></i></button></span></span></li>").appendTo($("#lnk" + obj.id + " ul", _this.element));
             }
           });
           $("#links", _this.element).find(" > ul").uniTree({
             ExpandedIcon: '',
-            CollapsedIcon: ''
+            ExpandedTitle: 'Dateiversionen verbergen',
+            CollapsedIcon: '',
+            CollapsedTitle: 'Dateiversionen anzeigen'
           });
         }
         //$("#WsTabs a:first", _this.element).tab("show");

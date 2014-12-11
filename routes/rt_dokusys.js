@@ -5,6 +5,7 @@ var AppConfig = require("../AppConfig");
 var DBCon = require('../lib/dbconnection');
 var multer = require('multer');
 var fs = require('fs');
+var moment = require('moment');
 require('../lib/functions');
 
 
@@ -51,7 +52,7 @@ router.get('/get', function (req, res) {
         var ltab = AppConfig.tables.dokusys_links;
         var ftab = AppConfig.tables.dokusys_uploads;
         var qry = "select " + ltab + ".id, bez, link, target, typ, sort, " + ftab + ".version, filename, "
-              + ftab + ".user as fileuser, " + ftab + ".time as filetime "
+              + ftab + ".user as fileuser, " + ftab + ".time as filetimestamp "
               + " from " + ltab
               + " left join " + ftab + " on " + ltab + ".id = " + ftab + ".link_id where topic_id=" + req.query.id
               + " order by sort, link_id, " + ftab + ".version desc";
@@ -59,7 +60,8 @@ router.get('/get', function (req, res) {
           function (lnkdata) {
             for (var i = 0; i < lnkdata.rows.length; i++) {
               if (lnkdata.rows[i].typ === "FILE") {
-                console.log(lnkdata.rows[i]);
+                var ftime = moment.unix(lnkdata.rows[i].filetimestamp);
+                lnkdata.rows[i].filetime = ftime.format("DD.MM.YYYY HH:mm:ss");
               }
             }
             data.rows[0].links = lnkdata.rows;

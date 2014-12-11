@@ -3,6 +3,19 @@ body {
   font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
   background-color: #f0f0f0;
 }
+
+.inline {
+  display:  inline;
+}
+.inline-block {
+  display:  inline-block;
+}
+
+.hr-xs {
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 2px;
+}
+
 .JL label {
   font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
   color: #555555 !important;

@@ -24,10 +24,11 @@
     position:relative
 }
 .uniTree li>span {
-    cursor:pointer;
     width: 100%;
     display:inline-block;
     padding: 2px 0 0 0;
     border-bottom: 1px dotted #999;
 }
-
+.uniTree .toggle {
+  cursor: pointer;
+}
