@@ -149,9 +149,9 @@ $(function () {
   MainNavbar();
   console.log("ready!");
 
-  $('#testList').uniTree();
+  $('#test').topicFileDlg();
 
-
+  
   $.post('/check', function (data) {
   if (data.err) {
   MainLogin();
@@ -159,5 +159,6 @@ $(function () {
   $('#MainNav_DokuSys').click();
   }
   });
+  
 
 });
