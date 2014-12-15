@@ -149,16 +149,15 @@ $(function () {
   MainNavbar();
   console.log("ready!");
 
-  $('#test').topicFileDlg();
-
-  
-  $.post('/check', function (data) {
-  if (data.err) {
-  MainLogin();
-  } else {
-  $('#MainNav_DokuSys').click();
+  if (0) {
+    $.post('/check', function (data) {
+      if (data.err) {
+        MainLogin();
+      } else {
+        $('#MainNav_DokuSys').click();
+      }
+    });
   }
-  });
-  
+
 
 });

@@ -40,6 +40,30 @@ function getParents(sess,parentId,parents,cb) {
   
 }
 
+router.get('/file', function (req, res) {
+  DBCon.query(req.session, "select filename from " + AppConfig.tables.dokusys_uploads + " where id=" + req.query.id,
+    function (data) {
+      if (data.err) {
+        send(res, data);
+        return;
+      }
+      console.log(data.rows[0].filename);
+      res.sendFile(data.rows[0].filename, { root: AppConfig.path.dokusys_files });
+    });
+});
+
+router.get('/rmfile', function (req, res) {
+  DBCon.query(req.session, "select filename from " + AppConfig.tables.dokusys_uploads + " where id=" + req.query.id,
+    function (data) {
+      if (data.err) {
+        send(res, data);
+        return;
+      }
+      console.log(data.rows[0].filename);
+      res.sendFile(data.rows[0].filename, { root: AppConfig.path.dokusys_files });
+    });
+});
+
 router.get('/get', function (req, res) {
   DBCon.query(req.session, "select id, parent, topic, keywords, topictext, dokustatus, user, time from " + AppConfig.tables.dokusys_topics + " where id=" + req.query.id,
     function (data) {
@@ -52,7 +76,7 @@ router.get('/get', function (req, res) {
         var ltab = AppConfig.tables.dokusys_links;
         var ftab = AppConfig.tables.dokusys_uploads;
         var qry = "select " + ltab + ".id, bez, link, target, typ, sort, " + ftab + ".version, filename, "
-              + ftab + ".user as fileuser, " + ftab + ".time as filetimestamp "
+              + ftab + ".id as file_id, "+ ftab + ".user as fileuser, " + ftab + ".time as filetimestamp "
               + " from " + ltab
               + " left join " + ftab + " on " + ltab + ".id = " + ftab + ".link_id where topic_id=" + req.query.id
               + " order by sort, link_id, " + ftab + ".version desc";
@@ -102,32 +126,50 @@ router.post('/set', function (req, res) {
 });
 
 router.post('/upload', multer({ dest: "./upload" }), function (req, res) {
-  //req.setBodyEncoding("binary");
-  console.log(req.body.id);
-  console.log(req.body.titel);
-  console.log(req.files);
-  var ts = new Date();
-  var filename = AppConfig.path.dokusys_files + "T" + req.body.id.lpad(0, 8) + "_" + ts.getTime() + "." + req.files.anhang.extension.replace(/\\/, "\\\\");
-  console.log(filename);
-  //fs.unlink(req.files.anhang.path);
+  function insertFile() {
+    var qry = mysql.format(" set ?", [{
+      link_id: req.body.link_id,
+      filename: filename,
+      version: req.body.version,
+      user: req.session.user,
+      time: ts
+    }]);
+    qry = "insert into " + AppConfig.tables.dokusys_uploads + qry;
+    console.log(qry);
+    DBCon.query(req.session, qry, function () {
+      send(res, { err: "" });
+    });
+  }
 
-  fs.rename(req.files.anhang.path, filename, function (err) {
+  //req.setBodyEncoding("binary");
+  var ts = new Date() / 1000 | 0;
+  var filename = "T" + req.body.topic_id.lpad(0, 8) + "_" + ts + "." + req.files.anhang.extension.replace(/\\/, "\\\\");
+  //console.log(filename);
+
+  fs.rename(req.files.anhang.path, AppConfig.path.dokusys_files + filename, function (err) {
     if (err) {
       console.log(err);
       send(res, { err: err });
       return;
     } else {
-      /*
-      var qry = mysql.format(" set ?", [{
-      link_id: req.body.id,
-      topic: post.topic,
-      keywords: post.keywords,
-      topictext: post.topictext
-      }]);
-      qry = "insert into "+ AppConfig.tables.dokusys_uploads 
-      */
-      send(res, { err: "", path: req.files });
-
+      if (req.body.link_id < 0) {  // Neuer Link
+        var qry = mysql.format(" set ?", [{
+          topic_id: req.body.topic_id,
+          bez: req.body.titel,
+          version: req.body.version,
+          typ: 'FILE',
+          user: req.session.user,
+          time: ts
+        }]);
+        qry = "insert into " + AppConfig.tables.dokusys_links + qry;
+        console.log(qry);
+        DBCon.query(req.session, qry, function (data) {
+          req.body.link_id = data.rows.insertId;
+          insertFile();
+        });
+      } else {
+        insertFile();
+      }
     }
   });
 });

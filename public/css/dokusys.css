@@ -8,24 +8,35 @@
   margin: 2px 2px 0 0;
 }
 
-#DokuSys_TopicDlg #links .fileversions span {
+#DokuSys_TopicDlg #links .fileversions a>span {
   font-size: small;
   display:  inline-block;
   color: #333;
 }
 
-#DokuSys_TopicDlg #links .fileversions span:nth-child(1) {
+#DokuSys_TopicDlg #links .fileversions a>span:nth-child(1) {
   color: #0094ff;
   width: 3%
 }
 
-#DokuSys_TopicDlg #links .fileversions span:nth-child(2) {
+#DokuSys_TopicDlg #links .fileversions a>span:nth-child(2) {
   color: #0094ff;
   width: 20%;
 }
 
-#DokuSys_TopicDlg #links .fileversions span:nth-child(3) {
+#DokuSys_TopicDlg #links .fileversions a>span:nth-child(3) {
   width: 70%;
   font-size: x-small;
+}
+
+.topicFileDlg {
+  background-color: #ccc;
+  margin:  5px;
+  -webkit-border-radius:6px;
+  -moz-border-radius:6px;
+  border-radius:6px;
+  -webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05)
 }
 

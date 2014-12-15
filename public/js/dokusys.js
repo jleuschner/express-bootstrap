@@ -111,24 +111,26 @@
         var tree = $("<ul class='root'></ul>");
         if (_this.options.showRoot) { $("<li id='topic0'><span><i class='fa fa-home text-info'></i></span></li>").appendTo(tree); }
         var arr = data.rows;
-        do {
-          var obj = arr.shift();
-          var tagTxt = obj.keywords ? "Schlagworte: " + obj.keywords : "Keine Schlagworte definiert";
-          //var ntopic = $("<li id=topic" + obj.id + " data-json='" + JSON.stringify(obj) + "' title='" + tagTxt + "'><span><i class='glyphicon text-info'></i> " + obj.topic + "</span></li>");
-          var ntopic = $("<li id=topic" + obj.id + " title='" + tagTxt + "'><span><i class='glyphicon text-info'></i> " + obj.topic + "</span></li>");
-          if (obj.parent === 0 && _this.options.showRoot === false) {
-            $(ntopic).appendTo($(tree));
-          } else {
-            if ($('#topic' + obj.parent, tree).length) {
-              if ($('#topic' + obj.parent, tree).children("ul").length === 0) {
-                $("<UL>").appendTo($('#topic' + obj.parent, tree));
-              }
-              $(ntopic).appendTo($('#topic' + obj.parent + " UL", tree));
+        if (arr.length) {
+          do {
+            var obj = arr.shift();
+            var tagTxt = obj.keywords ? "Schlagworte: " + obj.keywords : "Keine Schlagworte definiert";
+            //var ntopic = $("<li id=topic" + obj.id + " data-json='" + JSON.stringify(obj) + "' title='" + tagTxt + "'><span><i class='glyphicon text-info'></i> " + obj.topic + "</span></li>");
+            var ntopic = $("<li id=topic" + obj.id + " title='" + tagTxt + "'><span><i class='glyphicon text-info'></i> " + obj.topic + "</span></li>");
+            if (obj.parent === 0 && _this.options.showRoot === false) {
+              $(ntopic).appendTo($(tree));
             } else {
-              arr.push(obj);
+              if ($('#topic' + obj.parent, tree).length) {
+                if ($('#topic' + obj.parent, tree).children("ul").length === 0) {
+                  $("<UL>").appendTo($('#topic' + obj.parent, tree));
+                }
+                $(ntopic).appendTo($('#topic' + obj.parent + " UL", tree));
+              } else {
+                arr.push(obj);
+              }
             }
-          }
-        } while (arr.length);
+          } while (arr.length);
+        }
 
         $('.topicTree', _this.element).html(tree);
         _this._tree(cb);
@@ -187,31 +189,46 @@
   $.widget("JL.topicFileDlg", {
     options: {
       url: "DokuSys/upload",
-      animation: 400
+      show: { duration: 0 },
+      hide: { duration: 200 },
+      topic_id: -1,
+      link_id: -1,
+      titel: "",
+      version: "1.0"
     },
     _create: function () {
       var _this = this;
       $(this.element)
-        .css("display", "none")
+        .css({ display: "none", margin: 0 })
         .bind("contextmenu", function () {
           return false;
         });
-      var $uploads = $("<form id='uploads' class='well well-sm' enctype='multipart/form-data'></form>").appendTo(_this.element);
-      $("<input type='text' name='id' hidden></input>").appendTo($uploads);
-      $("<div class='form-group'><label>Titel</label><input class='form-control' name='titel' type='text' placeholder='Titel'></input></div>").appendTo($uploads);
+      var $uploads = $("<form class='topicFileDlg well well-sm' enctype='multipart/form-data'></form>").appendTo(_this.element);
+      $("<input type='text' name='topic_id' hidden></input>").appendTo($uploads);
+      $("<input type='text' name='link_id' hidden></input>").appendTo($uploads);
+      $("<div class='form-group'><div class='row'><div class='col-xs-9'><label>Titel</label><input class='form-control' name='titel' type='text' placeholder='Titel'></input></div>"
+        + "<div class='col-xs-3'><label>Version</label><input class='form-control' name='version' type='text' placeholder='Titel'></input></div></div></div>").appendTo($uploads);
       $("<div class='form-group'><label>Datei</label><div class='input-group'><input id='anhang' class='form-control' name='anhang' type='file' placeholder='Datei-Anhang'></input>"
           + "<span class='input-group-btn'><button type='submit' class='btn btn-primary' title='Upload'><i class='fa fa-upload'></i></button>"
           + "<button id='btnAddFileCancel' type='button' class='btn btn-danger' title='Abbrechen'><i class='fa fa-remove'></i></button></span></div>").appendTo($uploads);
       $('#btnAddFileCancel', _this.element).click(function () {
-        _this.element.hide(_this.options.animation, function () {
+        _this._hide(_this.element, _this.options.hide, function () {
           _this.element.remove();
         });
       });
+      $("[name=topic_id]", $uploads).val(_this.options.topic_id);
+      $("[name=link_id]", $uploads).val(_this.options.link_id);
+      $("[name=titel]", $uploads).val(_this.options.titel);
+      $("[name=version]", $uploads).val(_this.options.version).mask("099.099.09");
 
       $uploads.bootstrapValidator({
         fields: {
           titel: { validators: {
             notEmpty: { message: "Datei-Titel muss angegeben werden!" }
+          }
+          },
+          version: { validators: {
+            notEmpty: { message: "Datei-Version muss angegeben werden!" }
           }
           },
           anhang: { validators: {
@@ -236,13 +253,14 @@
             if (data.err) {
               bootbox.alert("FEHLER!");
             } else {
-              //_this._trigger("_change", null, { id: data.id });
-              //_this.load(data.id);
+              _this._trigger("_finish", null, { err: "" });
             }
           }
         });
       });
-      _this.element.show(_this.options.animation);
+      _this._show(_this.element, _this.options.show, function () {
+        $("[name=titel]", $uploads).focus();
+      });
     }
   });
 
@@ -366,12 +384,6 @@
         });
       });
 
-      $("<button>test</button>")
-        .click(function () {
-          $(".well").show();
-        })
-        .appendTo(_this.element);
-
       // Links
       $("<hr>").appendTo(_this.element);
       var $linksDIV = $("<div id='topicDlgAnhang' class='hidden'><div class='hr-xs'><h4 class='inline'>Anhänge</h4>"
@@ -379,7 +391,12 @@
         + "</div></div>").appendTo(_this.element);
       $("<div id='links' style='background:#fff'></div>").appendTo($linksDIV);
       $('#btnAddFile', _this.element).click(function () {
-        $('#links', _this.element).before($("<div style='display:none'></div>").topicFileDlg());
+        _this._removeFileDlg();
+        $('#links', _this.element)
+          .before($("<div style='display:none'></div>")
+            .topicFileDlg({ topic_id: _this._var.id })
+            .on("topicfiledlg_finish", function () { _this.load(_this._var.id); })
+            );
       });
     },
     _setOption: function (key, value) {
@@ -388,39 +405,32 @@
     },
     _update: function () {
     },
+    _removeFileDlg: function () {
+      $(".topicFileDlg", this.element).remove();
+    },
     _editMode: function (enable) {
       var _this = this;
+      _this._removeFileDlg();
       if (enable) {
+        $("#topicDlgAnhang", _this.element).addClass('hidden');
         $('.topicShow', _this.element).addClass('hidden');
         $('.topicEdit', _this.element).removeClass('hidden');
-        /*
-        $('.topicEditor', _this.element).summernote({
-        toolbar: [
-        ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'clear']],
-        ['misc', ['undo', 'redo']],
-        ['color', ['color']],
-        ['para', ['ul', 'ol', 'paragraph']],
-        ['insert', ['table', 'picture', 'link']],
-        ['misc', ['fullscreen', 'codeview']]
-        ]
-        });
-        */
         $("#WsTabs a:first", _this.element).tab("show");
 
       } else {
+        if (_this._var.id > 0) { $("#topicDlgAnhang", _this.element).removeClass('hidden'); }
         $('.topicEdit', _this.element).addClass('hidden');
         $('.topicShow', _this.element).removeClass('hidden');
-        //$('.topicEditor', _this.element).destroy();
       }
     },
     load: function (id) {
       var _this = this;
-      _this._editMode(false);
       if (id === -1) {
         _this._var.id = $("[name=id]", _this.element).val();
         $("[name=parent]", _this.element).val(_this._var.id);
         $("[name=id]", _this.element).val(id);
         $('[name=keywords]').tagsinput('removeAll');
+        $('.summernote[name=topictext]').code("");
         $("form", _this.element).bootstrapValidator('resetForm', true);
         _this._editMode(true);
         return;
@@ -474,32 +484,47 @@
             });
 
           // Anhaenge bei Root ausblenden
-          if (id < 1 && 0) {
+          if (id < 1) {
             $("#topicDlgAnhang", _this.element).addClass('hidden');
           } else {
             $("#topicDlgAnhang", _this.element).removeClass('hidden');
-            $("#uploads", _this.element).hide();
+            //$("#uploads", _this.element).hide();
           }
 
           // Links:
-          //console.log(JSON.stringify(data.rows[0].links));
-          $("#links", _this.element).html("");
+          //$("#links", _this.element).html("");
+          $("#links", _this.element).empty();
           $.each(data.rows[0].links, function (key, obj) {
             if (obj.typ === "FILE") {
               if ($("#lnk" + obj.id, _this.element).length < 1) {
-                $("<ul id='lnk" + obj.id + "'><li><span> " + obj.bez
+                $("<ul id='lnk" + obj.id + "'><li><span data-version='" + obj.version + "' data-titel='" + obj.bez + "' data-link_id='" + obj.id + "'> "
+                  + "<a href='DokuSys/file/?id=" + obj.file_id + "' target='_blank'>" + obj.bez + "</a>"
                   + "<button type='button' class='btn btn-default btn-xs pull-right' data-lnk='" + obj.id + "' title='Neue Version zufügen'><i class='fa fa-plus'></i> <i class='fa fa-file-o'></i></button>"
                   + "<span class='badge pull-right toggle'>Ver." + obj.version + "</span>"
                   + "</span><ul></ul></li></ul>").appendTo("#links", _this.element);
               }
-              $("<li><span class='fileversions'><span class='fa fa-file-o'></span><span>Version " + obj.version + "</span><span>" + obj.filetime + " - " + obj.fileuser + "</span>"
-                + "<span class='pull-right'><button class='btn btn-xs btn-danger' title='Anhang löschen'><i class='glyphicon glyphicon-trash'></i></button></span></span></li>").appendTo($("#lnk" + obj.id + " ul", _this.element));
+              $("<li><span class='fileversions'><a href='DokuSys/file/?id=" + obj.file_id + "' target='_blank' ><span class='fa fa-file-o'></span><span>Version " + obj.version + "</span><span>" + obj.filetime + " - " + obj.fileuser + "</span></a>"
+                + "<span class='pull-right'><button data-file_id='" + obj.file_id + "' class='btn btn-xs btn-danger' title='Anhang löschen'><i class='glyphicon glyphicon-trash'></i></button></span></span></li>").appendTo($("#lnk" + obj.id + " ul", _this.element));
             }
           });
           $("button[data-lnk]", _this.element).click(function () {
+            _this._removeFileDlg();
             var myUL = $("#lnk" + $(this).data("lnk"));
-            myUL.after($("<div></div>").topicFileDlg());
+            myUL.after($("<div></div>")
+              .topicFileDlg({
+                titel: $(this).parent().data('titel'),
+                version: $(this).parent().data('version'),
+                topic_id: _this._var.id,
+                link_id: $(this).parent().data('link_id')
+              })
+              .on("topicfiledlg_finish", function () { _this.load(_this._var.id); })
+              );
           });
+
+          $("button[data-file_id]").click(function () {
+            console.log("DEL:" + $(this).data('file_id'));
+          });
+
           $("#links", _this.element).find(" > ul").uniTree({
             ExpandedIcon: '',
             ExpandedTitle: 'Dateiversionen verbergen',
@@ -509,6 +534,7 @@
         }
         //$("#WsTabs a:first", _this.element).tab("show");
         $("form", _this.element).bootstrapValidator('disableSubmitButtons', false);
+        _this._editMode(false);
       })
       .fail(function () {
         bootbox.alert("<h4 class='text-danger'>FATAL: Datenquelle " + _this.options.datasource + " antwortet nicht!</h4>");
