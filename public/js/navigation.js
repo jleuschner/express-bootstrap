@@ -150,14 +150,18 @@ $(function () {
   console.log("ready!");
 
   if (0) {
-    $.post('/check', function (data) {
-      if (data.err) {
-        MainLogin();
-      } else {
-        $('#MainNav_DokuSys').click();
-      }
+    $.post('/login', { user: "JensLeuschner", passwd: "mausi" }, function (data) {
+    if (!data.err) {
+      MainNavbar();
+      $('#MainNav_DokuSys').click();
+
+    } else {
+      $('#MainLoginErr').text("Fehler: " + data.err.text);
+      //e.preventDefault();
+    }
     });
   }
+
 
 
 });

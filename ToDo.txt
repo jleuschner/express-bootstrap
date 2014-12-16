@@ -12,7 +12,6 @@ topicTree
  - ShowRoot = false darf Topic0 nur 'hidden' (wg.Clone in Dlg)
 
 
-Install
-=======
-Datenbank-Instanz anlegen
-  dokusys_topics: ID0 als Kurzanleitung
+Datenbank-Schema:
+
+Version von Int nach char(15) ändern: Sortierung bei Query beachten!

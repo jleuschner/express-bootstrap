@@ -18,7 +18,12 @@ module.exports = {
     
   },
   tables: {
-    dokusys_topics: "dokusys_topics"
+    dokusys_topics: "dokusys_topics",
+    dokusys_links: "dokusys_links",
+    dokusys_uploads: "dokusys_uploads"
+  },
+  path: {
+    dokusys_files: "c:/DokuSys_Files/"
   }
 
 };

@@ -5,6 +5,7 @@ var AppConfig = require("../AppConfig");
 var DBCon = require('../lib/dbconnection');
 var multer = require('multer');
 var fs = require('fs');
+var path = require('path');
 var moment = require('moment');
 require('../lib/functions');
 
@@ -47,20 +48,37 @@ router.get('/file', function (req, res) {
         send(res, data);
         return;
       }
-      console.log(data.rows[0].filename);
+      // console.log(data.rows[0].filename);
       res.sendFile(data.rows[0].filename, { root: AppConfig.path.dokusys_files });
     });
 });
 
 router.get('/rmfile', function (req, res) {
-  DBCon.query(req.session, "select filename from " + AppConfig.tables.dokusys_uploads + " where id=" + req.query.id,
-    function (data) {
-      if (data.err) {
-        send(res, data);
+  DBCon.query(req.session, "select filename, link_id from " + AppConfig.tables.dokusys_uploads + " where id=" + req.query.file_id,
+    function (fdata) {
+      if (fdata.err) {
+        send(res, fdata);
         return;
       }
-      console.log(data.rows[0].filename);
-      res.sendFile(data.rows[0].filename, { root: AppConfig.path.dokusys_files });
+      var link_id = fdata.rows[0].link_id;
+      fs.unlinkSync(path.join(AppConfig.path.dokusys_files, fdata.rows[0].filename));
+      DBCon.query(req.session, "delete from " + AppConfig.tables.dokusys_uploads + " where id=" + req.query.file_id,
+        function () {
+          DBCon.query(req.session, "select id, filename from " + AppConfig.tables.dokusys_uploads + " where link_id=" + link_id,
+            function (ffdata) {
+              if (ffdata.rows.length === 0) {
+                DBCon.query(req.session, "delete from " + AppConfig.tables.dokusys_links + " where id=" + link_id,
+                  function () {
+                    send(res, { err: "" });
+                  });
+              } else {
+                send(res, { err: "" });
+              }
+            });
+
+        });
+      //send(res, { err: "" });
+      //res.sendFile(data.rows[0].filename, { root: AppConfig.path.dokusys_files });
     });
 });
 
@@ -135,7 +153,7 @@ router.post('/upload', multer({ dest: "./upload" }), function (req, res) {
       time: ts
     }]);
     qry = "insert into " + AppConfig.tables.dokusys_uploads + qry;
-    console.log(qry);
+    //console.log(qry);
     DBCon.query(req.session, qry, function () {
       send(res, { err: "" });
     });
@@ -148,7 +166,7 @@ router.post('/upload', multer({ dest: "./upload" }), function (req, res) {
 
   fs.rename(req.files.anhang.path, AppConfig.path.dokusys_files + filename, function (err) {
     if (err) {
-      console.log(err);
+      //console.log(err);
       send(res, { err: err });
       return;
     } else {
@@ -162,7 +180,7 @@ router.post('/upload', multer({ dest: "./upload" }), function (req, res) {
           time: ts
         }]);
         qry = "insert into " + AppConfig.tables.dokusys_links + qry;
-        console.log(qry);
+        //console.log(qry);
         DBCon.query(req.session, qry, function (data) {
           req.body.link_id = data.rows.insertId;
           insertFile();

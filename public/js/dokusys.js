@@ -1,5 +1,20 @@
 /* global bootbox */
 (function ($) {
+
+  function fileIcon(ext) {
+    switch (ext.toUpperCase()) {
+      case "JPG": return "fa-file-image-o";
+      case "DOC":
+      case "DOCX": return "fa-file-word-o";
+      case "XLS":
+      case "XLSX": return "fa-file-excel-o";
+      case "MSG": return "fa-envelope-o";
+      case "PDF": return "fa-file-pdf-o";
+      default: return "fa-file-o";
+    }
+  }
+
+
   /*------------------- topicTree -------------------------
   * Trigger:
   *   _click({id:id} 
@@ -206,11 +221,11 @@
       var $uploads = $("<form class='topicFileDlg well well-sm' enctype='multipart/form-data'></form>").appendTo(_this.element);
       $("<input type='text' name='topic_id' hidden></input>").appendTo($uploads);
       $("<input type='text' name='link_id' hidden></input>").appendTo($uploads);
-      $("<div class='form-group'><div class='row'><div class='col-xs-9'><label>Titel</label><input class='form-control' name='titel' type='text' placeholder='Titel'></input></div>"
-        + "<div class='col-xs-3'><label>Version</label><input class='form-control' name='version' type='text' placeholder='Titel'></input></div></div></div>").appendTo($uploads);
-      $("<div class='form-group'><label>Datei</label><div class='input-group'><input id='anhang' class='form-control' name='anhang' type='file' placeholder='Datei-Anhang'></input>"
-          + "<span class='input-group-btn'><button type='submit' class='btn btn-primary' title='Upload'><i class='fa fa-upload'></i></button>"
-          + "<button id='btnAddFileCancel' type='button' class='btn btn-danger' title='Abbrechen'><i class='fa fa-remove'></i></button></span></div>").appendTo($uploads);
+      $("<div class='form-group'><div class='row'><div class='col-xs-9'><label>Titel</label><input class='form-control' tabindex='1' autofocus='autofocus' name='titel' type='text' placeholder='Titel'></input></div>"
+        + "<div class='col-xs-3'><label>Version</label><input class='form-control' name='version' type='text' tabindex='2' placeholder='Titel'></input></div></div></div>").appendTo($uploads);
+      $("<div class='form-group'><label>Datei</label><div class='input-group'><input id='anhang' class='form-control' name='anhang' type='file' tabindex='3' placeholder='Datei-Anhang'></input>"
+          + "<span class='input-group-btn'><button type='submit' class='btn btn-primary' tabindex='4' title='Upload'><i class='fa fa-upload'></i></button>"
+          + "<button id='btnAddFileCancel' type='button' class='btn btn-danger' tabindex='5' title='Abbrechen'><i class='fa fa-remove'></i></button></span></div>").appendTo($uploads);
       $('#btnAddFileCancel', _this.element).click(function () {
         _this._hide(_this.element, _this.options.hide, function () {
           _this.element.remove();
@@ -240,7 +255,7 @@
       .on('success.form.bv', function (e) {
         e.preventDefault();
         var $lform = $(e.target);
-        console.dir($lform.serialize());
+        //console.dir($lform.serialize());
         var formdata = new FormData(e.target);
         $.ajax({
           type: "POST",
@@ -249,7 +264,6 @@
           contentType: false,
           processData: false,
           success: function (data) {
-            console.log(data);
             if (data.err) {
               bootbox.alert("FEHLER!");
             } else {
@@ -259,7 +273,7 @@
         });
       });
       _this._show(_this.element, _this.options.show, function () {
-        $("[name=titel]", $uploads).focus();
+        $("[name=titel]", _this.element).focus();
       });
     }
   });
@@ -280,6 +294,7 @@
     },
     _create: function () {
       var _this = this;
+      //this.element.addClass("topicDlg");
       $(this.element).bind("contextmenu", function () {
         return false;
       });
@@ -372,7 +387,6 @@
           $(this).val($(this).code());
         });
 
-        console.log($lform.serialize());
         $.post('DokuSys/set', $lform.serialize(), function (data) {
           if (data.err) {
             bootbox.alert("FEHLER!");
@@ -397,6 +411,7 @@
             .topicFileDlg({ topic_id: _this._var.id })
             .on("topicfiledlg_finish", function () { _this.load(_this._var.id); })
             );
+        $('[name=titel]', $linksDIV).focus();
       });
     },
     _setOption: function (key, value) {
@@ -491,6 +506,7 @@
             //$("#uploads", _this.element).hide();
           }
 
+
           // Links:
           //$("#links", _this.element).html("");
           $("#links", _this.element).empty();
@@ -498,15 +514,16 @@
             if (obj.typ === "FILE") {
               if ($("#lnk" + obj.id, _this.element).length < 1) {
                 $("<ul id='lnk" + obj.id + "'><li><span data-version='" + obj.version + "' data-titel='" + obj.bez + "' data-link_id='" + obj.id + "'> "
-                  + "<a href='DokuSys/file/?id=" + obj.file_id + "' target='_blank'>" + obj.bez + "</a>"
+                  + "<a href='DokuSys/file/?id=" + obj.file_id + "' target='_blank'><i class='fa " + fileIcon(obj.filename.split(".").pop()) + "'></i> " + obj.bez + "</a>"
                   + "<button type='button' class='btn btn-default btn-xs pull-right' data-lnk='" + obj.id + "' title='Neue Version zufügen'><i class='fa fa-plus'></i> <i class='fa fa-file-o'></i></button>"
                   + "<span class='badge pull-right toggle'>Ver." + obj.version + "</span>"
                   + "</span><ul></ul></li></ul>").appendTo("#links", _this.element);
               }
-              $("<li><span class='fileversions'><a href='DokuSys/file/?id=" + obj.file_id + "' target='_blank' ><span class='fa fa-file-o'></span><span>Version " + obj.version + "</span><span>" + obj.filetime + " - " + obj.fileuser + "</span></a>"
+              $("<li><span class='fileversions'><a href='DokuSys/file/?id=" + obj.file_id + "' target='_blank' ><span class='fa " + fileIcon(obj.filename.split(".").pop()) + "'></span><span>Version " + obj.version + "</span><span>" + obj.filetime + " - " + obj.fileuser + "</span></a>"
                 + "<span class='pull-right'><button data-file_id='" + obj.file_id + "' class='btn btn-xs btn-danger' title='Anhang löschen'><i class='glyphicon glyphicon-trash'></i></button></span></span></li>").appendTo($("#lnk" + obj.id + " ul", _this.element));
             }
           });
+          //$("a .fa").removeClass("fa-file-o").addClass("fa-plus");
           $("button[data-lnk]", _this.element).click(function () {
             _this._removeFileDlg();
             var myUL = $("#lnk" + $(this).data("lnk"));
@@ -519,10 +536,28 @@
               })
               .on("topicfiledlg_finish", function () { _this.load(_this._var.id); })
               );
+            $('[name=titel]', _this.element).focus();
           });
 
+
+          // BTN: Version löschen
           $("button[data-file_id]").click(function () {
-            console.log("DEL:" + $(this).data('file_id'));
+            var file_id = $(this).data('file_id');
+            var $myLI = $(this).parents('li:not(:has(ul))');
+            //console.log($myLI.parent().find('li').length)
+            var txt = "<h3>" + $myLI.parents('li').find('[data-titel]').data('titel') + "</h3>"
+              + "<b>" + $myLI.find('span:nth-of-type(2)').text() + "</b> - <i>" + $myLI.find('span:nth-of-type(3)').text() + "</i><br> wirklich löschen?";
+            bootbox.confirm(txt, function (answ) {
+              if (answ) {
+                $.getJSON("/dokusys/rmfile", { file_id: file_id }, function (data) {
+                  if (data.err) {
+                    //console.log(JSON.stringify(data));
+                    return;
+                  }
+                  _this.load(_this._var.id);
+                });
+              }
+            });
           });
 
           $("#links", _this.element).find(" > ul").uniTree({
