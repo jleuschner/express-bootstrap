@@ -31,6 +31,8 @@ module.exports = function (grunt) {
               'public/bower_components/bootstrapvalidator/dist/js/language/de_DE.js',
               'public/bower_components/summernote/dist/summernote.min.js',
               'public/bower_components/jquery-ui/ui/minified/widget.min.js',
+              'public/bower_components/jquery-ui/ui/minified/effect.min.js',
+              'public/bower_components/jquery-ui/ui/minified/effect-slide.min.js',
               'public/bower_components/jQuery-Mask-Plugin/dist/jquery.mask.min.js',
               'public/bower_components/tagsinput/dist/bootstrap-tagsinput.min.js',
               'public/js/*.js'
