@@ -22,7 +22,8 @@ html
       link(rel='stylesheet', href='dist/css/j.css')
       script(type='text/javascript', src='dist/js/j.min.js')
     else 
-      link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+      //link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+      link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/spacelab.min.css')
       //link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.min.css')
       link(rel='stylesheet', href='/bower_components/bootstrapvalidator/dist/css/bootstrapValidator.min.css')
       link(rel='stylesheet', href='/bower_components/tagsinput/dist/bootstrap-tagsinput.css')
@@ -44,6 +45,8 @@ html
       script(type='text/javascript', src='/bower_components/summernote/dist/summernote.min.js')
 
       script(type='text/javascript', src='/bower_components/jquery-ui/ui/minified/widget.min.js')
+      script(type='text/javascript', src='/bower_components/jquery-ui/ui/minified/effect.min.js')
+      script(type='text/javascript', src='/bower_components/jquery-ui/ui/minified/effect-slide.min.js')
       script(type='text/javascript', src='/bower_components/jQuery-Mask-Plugin/dist/jquery.mask.min.js')
       script(type='text/javascript', src='/bower_components/tagsinput/dist/bootstrap-tagsinput.min.js')
       script(type='text/javascript', src='/js/navigation.js')
@@ -57,16 +60,21 @@ html
       div.container-fluid 
         //- Brand and toggle
         .navbar-header
-          button.navbar-toggle.collapsed(type="button",data-toggle="collapse",data-target="#navbar-content")
+          button#NavbarToggle.navbar-toggle.collapsed(type="button",data-toggle="collapse",data-target="#navbar-content")
             span.sr-only Toggle navigation
             span.icon-bar
             span.icon-bar
             span.icon-bar
+          
+          button#WorkspaceToggle.btn.btn-primary.navbar-btn.navbar-toggle.collapsed.pull-left(type="text",style='margin:3px 0px 0px 5px;')
+            span.glyphicon.glyphicon-resize-horizontal(style='color:#fff')
+
           a.navbar-brand(href="#") 
             //span.glyphicon.glyphicon-home.text-right 
             span.glyphicon.glyphicon-star-empty.text-right 
             //span: image(src='/images/pent80.png', style='position:relative;top:-10px;height:200%;')
             | #{AppConfig.title_short}<sup>!{AppConfig.title_short_version}</sup>
+          
 
         //- Collapsable-Part der NavBar
         .collapse.navbar-collapse#navbar-content
@@ -105,6 +113,7 @@ html
                 span.input-group-btn 
                   button.btn.btn-primary.btn-sm(type="submit"): span.glyphicon.glyphicon-search
 
+
     form.form-horizontal#MainLogin(style='display:none;')
       .form-group
         label.col-sm-3.control-label Benutzer
@@ -130,6 +139,10 @@ html
               h1 PRD
             else 
               h1 TRN
+            #btnTest.btn.btn-primary
+            #test
+              p
+               kjsdfkjsdfksdhf dfh dsf skdf kh sd
           //-
             .col-md-8
               div

@@ -254,7 +254,7 @@
       })
       .on('success.form.bv', function (e) {
         e.preventDefault();
-        var $lform = $(e.target);
+        //var $lform = $(e.target);
         //console.dir($lform.serialize());
         var formdata = new FormData(e.target);
         $.ajax({

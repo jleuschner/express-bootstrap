@@ -1,7 +1,19 @@
+
 body {
   margin-top: 50px;
   font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
   background-color: #f0f0f0;
+}
+
+@media (max-width: 768px) {
+  [class*='col-'] {
+    padding: 0;
+  }
+}
+
+.WorkspaceLeft {
+  border:  1px solid #333;
+  height: 1000px;
 }
 
 .inline {

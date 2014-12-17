@@ -27,8 +27,9 @@ $(function () {
   function MainWorkspace(url, cb) {
     $.get(url, function (data) {
       $('#MainWorkspace').html(data);
-      if (!$('#MainNavbar .navbar-toggle').hasClass('collapsed')) {
-        $('#MainNavbar .navbar-toggle').click();
+      checkWorkspace();
+      if (!$('#NavbarToggle').hasClass('collapsed')) {
+        $('#NavbarToggle').click();
       }
       cb();
     });
@@ -97,6 +98,7 @@ $(function () {
             .topicTree({ dberror_func: function (err) { DBErr(err); } })
             .on("topictree_click", function (e, topic) {
               $('#DokuSys_TopicDlg').topicDlg("load", topic.id);
+              toggleWorkspace();
             })
             .topicTree('load');
           $('#DokuSys_TopicDlg')
@@ -147,18 +149,59 @@ $(function () {
   // ---------------- Main ------------------
 
   MainNavbar();
+
+  function checkWorkspace() {
+    if ($("#WorkspaceToggle").is(":visible")) {
+      if ($(".WorkspaceLeft").is(":visible") && $(".WorkspaceRight").is(":visible")) {
+        $(".WorkspaceLeft").hide();
+      }
+      //$(".WorkspaceRight").show();
+    } else {
+      $(".WorkspaceLeft").show();
+      $(".WorkspaceRight").show();
+    }
+  }
+  function toggleWorkspace(cb) {
+    if ($("#WorkspaceToggle").is(":visible")) {
+      if ($(".WorkspaceLeft").is(":visible")) {
+        $(".WorkspaceLeft").hide('slide', 200, function () {
+          $(".WorkspaceRight").show('slide', { direction: 'right' }, 200, function () { if (cb) { cb(); } });
+        });
+      } else {
+        $(".WorkspaceRight").hide('slide', { direction: 'right' }, 200, function () {
+          $(".WorkspaceLeft").show('slide', 200, function () { if (cb) { cb(); } });
+        });
+      }
+    }
+  }
+
+  $(window).resize(function () {
+    checkWorkspace();
+  });
+
+  checkWorkspace();
+
+  $("#WorkspaceToggle")
+    .click(function () {
+      toggleWorkspace();
+    });
+
   console.log("ready!");
+
+  $("#btnTest").click(function () {
+    $("#test").toggle('slide');
+  });
 
   if (0) {
     $.post('/login', { user: "JensLeuschner", passwd: "mausi" }, function (data) {
-    if (!data.err) {
-      MainNavbar();
-      $('#MainNav_DokuSys').click();
+      if (!data.err) {
+        MainNavbar();
+        $('#MainNav_DokuSys').click();
 
-    } else {
-      $('#MainLoginErr').text("Fehler: " + data.err.text);
-      //e.preventDefault();
-    }
+      } else {
+        $('#MainLoginErr').text("Fehler: " + data.err.text);
+        //e.preventDefault();
+      }
     });
   }
 
