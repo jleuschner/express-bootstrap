@@ -1,4 +1,5 @@
 
+
 body {
   margin-top: 50px;
   font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
@@ -13,7 +14,10 @@ body {
 
 .WorkspaceLeft {
   border:  1px solid #333;
-  height: 1000px;
+}
+.WorkspaceRight {
+  border:  1px solid #333;
+  overflow: auto;
 }
 
 .inline {

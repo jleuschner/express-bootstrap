@@ -53,8 +53,8 @@ module.exports = function (grunt) {
       combine: {
         files: {
           'public/dist/css/j.css': [
-                  'public/bower_components/bootstrap/dist/css/bootstrap.min.css',
-                  //'public/bower_components/bootstrap/dist/css/bootstrap-theme.min.css',
+                  //'public/bower_components/bootstrap/dist/css/bootstrap.min.css',
+                  'public/bower_components/bootstrap/dist/css/spacelab.min.css',
                   'public/bower_components/bootstrapvalidator/dist/css/bootstrapValidator.min.css',
                   'public/bower_components/fontawesome/css/font-awesome.min.css',
                   'public/bower_components/summernote/dist/summernote.css',

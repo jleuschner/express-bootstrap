@@ -34,6 +34,10 @@
         return false;
       });
 
+      $(this.element).resize(function(){
+        console.log("h: "+_this.element.height())
+      })
+
       var notempty = true;
       if (this.element.html().length === 0) {
         $("<div class='topicTree'></div>").appendTo(this.element);
@@ -218,6 +222,7 @@
         .bind("contextmenu", function () {
           return false;
         });
+
       var $uploads = $("<form class='topicFileDlg well well-sm' enctype='multipart/form-data'></form>").appendTo(_this.element);
       $("<input type='text' name='topic_id' hidden></input>").appendTo($uploads);
       $("<input type='text' name='link_id' hidden></input>").appendTo($uploads);
@@ -298,6 +303,8 @@
       $(this.element).bind("contextmenu", function () {
         return false;
       });
+
+
 
       // Normalanzeige
       var $show = $("<div class='topicShow'></div>").appendTo(_this.element);
