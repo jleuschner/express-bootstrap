@@ -39,15 +39,22 @@ module.exports = function (grunt) {
               ],
         dest: '_tmp/j.js'
       }
+
     },
     uglify: {
       options: {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yy-mm-dd") %> */\n'
       },
-      build: {
+      build: 
+        {
         src: ['_tmp/j.js'],
         dest: 'public/dist/js/j.min.js'
-      }
+        },
+      iodevice:
+        {
+        src: ['public/js/io/iodevice.js'],
+        dest: 'public/dist/js/io/iodevice.min.js'
+        }
     },
     cssmin: {
       combine: {

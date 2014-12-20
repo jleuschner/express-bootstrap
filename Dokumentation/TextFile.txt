@@ -1,0 +1,39 @@
+
+Module einbinden
+
+/routes/rt_modul.js:
+--------------------
+
+  var express = require('express');
+  var router = express.Router();
+  var AppConfig = require("../AppConfig");
+  ....
+  router.get('/', function(req, res) {
+    res.render('modul', { AppConfig: AppConfig });
+  });
+
+
+
+/views/modul.jade
+-----------------
+  - Aufbau Workspace
+  - laden und starten von 'modul.js', bzw. 'modul.min.js'
+
+  if AppConfig.productional
+    //link(rel='stylesheet', href='dist/css/j.css')
+    script(type='text/javascript', src='dist/js/modul/modul.min.js')
+  else 
+    //link(rel='stylesheet', href='dist/css/j.css')
+    script(type='text/javascript', src='js/modul/modul.js')
+
+
+
+/gruntfile.js
+-------------
+    uglify: {
+      module:
+        {
+        src: ['public/js/module/module.js'],
+        dest: 'public/dist/js/module/module.min.js'
+        }
+

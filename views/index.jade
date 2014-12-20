@@ -53,6 +53,7 @@ html
       script(type='text/javascript', src='/js/dokusys.js')
       script(type='text/javascript', src='/js/unitree.js')
       script(type='text/javascript', src='/js/configList.js')
+      script(type='text/javascript', src='/js/io/iodevice.js')
 
   body
 
@@ -80,8 +81,9 @@ html
         .collapse.navbar-collapse#navbar-content
           ul.nav.navbar-nav
             li.hidden: a#MainNav_DokuSys(href="#") DokuSys
+            li: a#MainNav_IODevice(href="#") IO-Devices
             li.hidden: a#MainNav_DBtest(href="#") DB-Test
-            li.hidden: a#MainNav_Config(href="#") Config
+            li: a#MainNav_Config(href="#") Config
             li.dropdown.hidden
               a.dropdown-toggle(href="#",data-toggle="dropdown") Dropdown 
                 span.caret
@@ -139,10 +141,8 @@ html
               h1 PRD
             else 
               h1 TRN
-            #btnTest.btn.btn-primary
-            #test
-              p
-               kjsdfkjsdfksdhf dfh dsf skdf kh sd
+            #btnTest.btn.btn-primary Mood1
+            #btnTest2.btn.btn-primary Mood0
           //-
             .col-md-8
               div

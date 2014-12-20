@@ -1,15 +1,10 @@
 module.exports = {
-  title: "BootStrap Template",
-  title_short: "BootJL",
-  title_short_version: "1/4vor2",
-  description: "Ein Template für Bootstrap",
+  title: "@Home",
+  title_short: "@Home",
+  title_short_version: "0.2",
+  description: "@Home Haussteuerung",
   version: "1.0",
   productional : false,
-  login : {
-    required : true,
-    MySQLServer : "gandalf.shire.local",
-    MySQLDatabase : "athome"
-  },
   DB: {
     server : "gandalf.shire.local",
     instance : "athome",
@@ -18,6 +13,11 @@ module.exports = {
     
   },
   tables: {
-    dokusys_topics: "dokusys_topic"
+    dokusys_topics: "dokusys_topic",
+    dokusys_links: "dokusys_links",
+    dokusys_uploads: "dokusys_uploads"
+  },
+  path: {
+    dokusys_files: "e:/DokuSys_Files/"
   }
 };

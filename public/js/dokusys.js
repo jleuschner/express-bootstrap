@@ -34,9 +34,9 @@
         return false;
       });
 
-      $(this.element).resize(function(){
-        console.log("h: "+_this.element.height())
-      })
+      $(this.element).resize(function () {
+        console.log("h: " + _this.element.height());
+      });
 
       var notempty = true;
       if (this.element.html().length === 0) {

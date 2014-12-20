@@ -15,3 +15,11 @@ topicTree
 Datenbank-Schema:
 
 Version von Int nach char(15) ändern: Sortierung bei Query beachten!
+
+
+-------------------------------------------------------------------------
+IO-Devices
+
+Routes:
+/io/device
+  -> iodevice.jade

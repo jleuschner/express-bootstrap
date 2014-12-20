@@ -1,4 +1,4 @@
-/* global bootbox */
+/* global bootbox, IOtest */
 $(function () {
   $.ajaxSetup({ cache: false });
   $('#MainNavbar').bind("contextmenu", function () {
@@ -124,6 +124,11 @@ $(function () {
         MainWorkspace('dbtest', function () {
         });
         break;
+      case "MainNav_IODevice":
+        MainWorkspace('/io/device', function () {
+          IOtest();
+        });
+        break;
       case "MainNav_Config":
         MainWorkspace('config', function () {
           $('#configList').configList({ dberror_func: function (err) { DBErr(err); } });
@@ -184,11 +189,6 @@ $(function () {
 
   checkWorkspace();
 
-  $(".WorkspaceLeft").resize(function(){
-    console.log("h: "+_this.element.height())
-  })
-
-
 
   $("#WorkspaceToggle")
     .click(function () {
@@ -198,7 +198,12 @@ $(function () {
   console.log("ready!");
 
   $("#btnTest").click(function () {
-    $("#test").toggle('slide');
+    $.get("/io/raw/?mood=1", function () {
+    });
+  });
+  $("#btnTest2").click(function () {
+    $.get("/io/raw/?mood=0", function () {
+    });
   });
 
   if (0) {
