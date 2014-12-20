@@ -67,7 +67,10 @@ module.exports = function (grunt) {
                   'public/bower_components/summernote/dist/summernote.css',
                   'public/bower_components/tagsinput/dist/bootstrap-tagsinput.css',
                   'public/css/*.css'
-              ]
+              ],
+          'public/dist/css/io/iodevice.min.css': [
+                  'public/css/io/*.css'
+          ]
         }
       }
     },

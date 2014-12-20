@@ -20,10 +20,10 @@ Module einbinden
   - laden und starten von 'modul.js', bzw. 'modul.min.js'
 
   if AppConfig.productional
-    //link(rel='stylesheet', href='dist/css/j.css')
+    link(rel='stylesheet', href='dist/css/modul/modul.css')
     script(type='text/javascript', src='dist/js/modul/modul.min.js')
   else 
-    //link(rel='stylesheet', href='dist/css/j.css')
+    link(rel='stylesheet', href='dist/css/modul/modul.css')
     script(type='text/javascript', src='js/modul/modul.js')
 
 
@@ -36,4 +36,9 @@ Module einbinden
         src: ['public/js/module/module.js'],
         dest: 'public/dist/js/module/module.min.js'
         }
+
+        files: {
+          'public/dist/css/modul/modul.min.css': [
+                  'public/css/modul/*.css'
+          ]
 

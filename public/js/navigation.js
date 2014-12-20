@@ -1,4 +1,4 @@
-/* global bootbox, IOtest */
+/* global bootbox */
 $(function () {
   $.ajaxSetup({ cache: false });
   $('#MainNavbar').bind("contextmenu", function () {
@@ -31,7 +31,7 @@ $(function () {
         $('#NavbarToggle').click();
       }
       checkWorkspace();
-      cb();
+      if (cb) { cb(); }
     });
   }
 
@@ -125,9 +125,7 @@ $(function () {
         });
         break;
       case "MainNav_IODevice":
-        MainWorkspace('/io/device', function () {
-          IOtest();
-        });
+        MainWorkspace('/io/device');
         break;
       case "MainNav_Config":
         MainWorkspace('config', function () {
