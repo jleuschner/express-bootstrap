@@ -204,6 +204,8 @@ $(function () {
     });
   });
 
+  $("#MainNav_IODevice").click();
+
   if (0) {
     $.post('/login', { user: "JensLeuschner", passwd: "mausi" }, function (data) {
       if (!data.err) {
