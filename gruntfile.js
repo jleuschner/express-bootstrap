@@ -50,11 +50,17 @@ module.exports = function (grunt) {
         src: ['_tmp/j.js'],
         dest: 'public/dist/js/j.min.js'
         },
+      dokusys:
+        {
+        src: ['public/js/dokusys/dokusys.js'],
+        dest: 'public/dist/js/dokusys/dokusys.min.js'
+        },
       iodevice:
         {
         src: ['public/js/io/iodevice.js'],
         dest: 'public/dist/js/io/iodevice.min.js'
         }
+
     },
     cssmin: {
       combine: {
@@ -68,6 +74,9 @@ module.exports = function (grunt) {
                   'public/bower_components/tagsinput/dist/bootstrap-tagsinput.css',
                   'public/css/*.css'
               ],
+          'public/dist/css/dokusys/dokusys.min.css': [
+                  'public/css/dokusys/*.css'
+          ],
           'public/dist/css/io/iodevice.min.css': [
                   'public/css/io/*.css'
           ]

@@ -11,7 +11,6 @@ var mysql = require('mysql');
 var routes = require('./routes/rt_index');
 var dokusys = require('./routes/rt_dokusys');
 var users = require('./routes/rt_users');
-var dbtest= require('./routes/rt_dbtest');
 var config= require('./routes/rt_config');
 var io= require('./routes/rt_io');
 
@@ -72,7 +71,6 @@ DB.connect(function (err) {
 app.use('/', routes);
 app.use('/users', users);
 app.use('/dokusys', dokusys);
-app.use('/dbtest', dbtest);
 app.use('/config', config);
 app.use('/io', io);
 

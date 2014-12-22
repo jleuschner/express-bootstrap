@@ -8,21 +8,6 @@ $(function () {
     return false;
   });
 
-  /*
-  $('[data-toggle="tooltip"]').tooltip();
-  $('[data-toggle="popover"]').popover();
-
-  $('.xxxnavbar .dropdown').hover(function () {
-  if ($('.navbar-toggle', '#MainNavbar').hasClass('collapsed')) {
-  $(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
-  }
-  }, function () {
-  if ($('.navbar-toggle', '#MainNavbar').hasClass('collapsed')) {
-  $(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp();
-  }
-  });
-  */
-
   // ------------------ MainNavbar -----------------------
   function MainWorkspace(url, cb) {
     $.get(url, function (data) {
@@ -95,23 +80,9 @@ $(function () {
       case "MainNav_DokuSys":
         MainWorkspace('DokuSys', function () {
           $('#DokuSys_TopicTree')
-            .topicTree({ dberror_func: function (err) { DBErr(err); } })
-            .on("topictree_click", function (e, topic) {
-              $('#DokuSys_TopicDlg').topicDlg("load", topic.id);
+            .on("topictree_click", function () {
               toggleWorkspace();
-            })
-            .topicTree('load');
-          $('#DokuSys_TopicDlg')
-            .topicDlg({ dberror_func: function (err) { DBErr(err); } })
-            .on("topicdlg_change", function (e, topic) {
-              $('#DokuSys_TopicTree').topicTree("load", function () {
-                $('#DokuSys_TopicTree').topicTree("selectTopic", topic.id);
-              });
-            })
-            .on("topicdlg_crumbclick", function (e, topic) {
-              $('#DokuSys_TopicTree').topicTree("selectTopic", topic.id);
             });
-
         });
         break;
       case "MainNav_Logout":
@@ -119,10 +90,6 @@ $(function () {
         break;
       case "MainNav_Login":
         MainLogin();
-        break;
-      case "MainNav_DBtest":
-        MainWorkspace('dbtest', function () {
-        });
         break;
       case "MainNav_IODevice":
         MainWorkspace('/io/device');

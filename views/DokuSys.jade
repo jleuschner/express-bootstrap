@@ -5,3 +5,11 @@
       #DokuSys_TopicTree.WorkspaceLeft
     .col-sm-8
       #DokuSys_TopicDlg.WorkspaceRight
+
+if AppConfig.productional
+  link(rel='stylesheet', href='dist/css/dokusys/dokusys.min.css')
+  script(type='text/javascript', src='dist/js/dokusys/dokusys.min.js')
+else 
+  link(rel='stylesheet', href='css/dokusys/dokusys.css')
+  link(rel='stylesheet', href='/css/dokusys/topicTree.css')
+  script(type='text/javascript', src='js/dokusys/dokusys.js')

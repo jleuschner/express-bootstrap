@@ -11,7 +11,7 @@ require('../lib/functions');
 
 
 router.get('/', function (req, res) {
-  res.render('DokuSys');
+  res.render('DokuSys',{ AppConfig: AppConfig });
 });
 
 function send(res,data) {
