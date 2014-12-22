@@ -7,7 +7,7 @@ body {
 }
 
 @media (max-width: 768px) {
-  [class*='col-'] {
+  [class*='col-sm-'] {
     padding: 0;
   }
 }

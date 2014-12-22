@@ -56,6 +56,17 @@ router.get('/device', function (req, res) {
   res.render('iodevice',{ AppConfig: AppConfig });
 });
 
+router.get('/device/get', function (req, res) {
+  res.send({
+      err:"", 
+      rows: [
+        {
+          hostname: "Horst1",
+          ip: "192.168.0.71"
+        }
+       ] 
+      });
+});
 
 
 module.exports = router;

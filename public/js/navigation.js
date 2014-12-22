@@ -127,7 +127,7 @@ $(function () {
 
     if ($("#WorkspaceToggle").is(":visible")) {
       if ($(".WorkspaceLeft").is(":visible") && $(".WorkspaceRight").is(":visible")) {
-        $(".WorkspaceLeft").hide();
+        $(".WorkspaceRight").hide();
       }
     } else {
       $(".WorkspaceLeft").show();
