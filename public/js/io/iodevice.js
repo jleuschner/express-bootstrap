@@ -1,5 +1,7 @@
 /* global checkDirty */
 
+
+
 (function ($) {
 
   $.widget("JL.netioDevice", {
