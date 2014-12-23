@@ -1,6 +1,5 @@
 /* global checkDirty */
-
-
+/* global handleError */
 
 (function ($) {
 
@@ -37,17 +36,20 @@
           var formdata = new FormData(e.target);
           $.ajax({
             type: "POST",
-            url: _this.options.url,
+            url: "/io/device/set",
             data: formdata,
             contentType: false,
             processData: false,
             success: function (data) {
               if (data.err) {
-                console.log("FEHLER!");
+                handleError(data.err);
               } else {
                 _this._trigger("_finish", null, { err: "" });
               }
             }
+          })
+          .fail(function () {
+            handleError({code:"AJAX", text: _this.options.datasource + " nicht erreichbar!"});
           });
         })
         .find("[name='ip']").mask('099.099.099.099');
@@ -91,9 +93,9 @@
           $("#device [name]", this.element).text("");
           _this._deviceEdit(true);
         } else {
-          $.getJSON(this.options.datasource, function (data) {
+          $.getJSON(this.options.datasource,{ deviceID: deviceID }, function (data) {
             if (data.err) {
-              console.log(JSON.stringify(data));
+              handleError(data.err);
               return;
             } else {
               console.log(JSON.stringify(data));
@@ -102,7 +104,7 @@
             }
           })
           .fail(function () {
-            console.log("ErrFail");
+            handleError({code:"AJAX", text: _this.options.datasource + " nicht erreichbar!"});
           });
         }
       }

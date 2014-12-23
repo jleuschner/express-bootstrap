@@ -56,15 +56,36 @@ router.get('/device', function (req, res) {
   res.render('iodevice',{ AppConfig: AppConfig });
 });
 
-router.get('/device/get', function (req, res) {
+router.route("/device/get")
+    .get( function (req, res) {
+      res.json({
+          err:"", 
+          rows: [
+            {
+              hostname: "Horst1",
+              ip: "192.168.0.71"
+            }
+           ] 
+          });
+    });
+router.route("/device/get/:deviceID")
+    .get( function (req, res) {
+      res.json({
+          err:"", 
+          rows: [
+            {
+              id: req.params.deviceID,
+              hostname: "Horst1",
+              ip: "192.168.0.71"
+            }
+           ] 
+          });
+    });
+
+router.post('/device/set', function (req, res) {
+  var post = req.body;
   res.send({
-      err:"", 
-      rows: [
-        {
-          hostname: "Horst1",
-          ip: "192.168.0.71"
-        }
-       ] 
+      err: {code:"DUBHostname", text: "Hostname " + post.hostname + " existiert bereits"}
       });
 });
 

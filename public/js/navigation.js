@@ -21,7 +21,16 @@ $(function () {
       cb(true);
     }
   };
+  window.handleError = function (err) {
+    bootbox.alert("<span class='fa fa-frown-o inline-block' style='color:#f00;font-size:48px;margin-right:5px'></span><span class='inline-block'><h3 class='inline text-danger'>Fehlercode: " + err.code + "</h3><p>" + err.text + "</p></span>");
+  };
 
+
+  window.onbeforeunload = function () {
+    if (($("#Workspace").attr('dirty'))) {
+      return ("Ungespeicherte Änderungen! Seite verlassen?");
+    }
+  };
 
   // ------------------ MainNavbar -----------------------
   function MainWorkspace(url, cb) {
@@ -140,6 +149,7 @@ $(function () {
     if (err.code === "NOUSER") { MainLogout(); }
   }
 
+
   // ---------------- Main ------------------
 
   MainNavbar();
@@ -195,6 +205,7 @@ $(function () {
     });
   });
 
+  //ErrorBox({code:"007",text: "ErrText"})
   $("#MainNav_IODevice").click();
 
   if (0) {
