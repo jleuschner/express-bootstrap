@@ -23,20 +23,26 @@
           p Alle IO-Devices (Pollin Net-IOs, PIOs, usw.) werden hier definiert.
           p Bitte Device in der Liste links auswählen oder neues Device anlegen.
         #device
-          h2(name='hostname')
+          .row(style='padding-top:10px')
+            .col-xs-10
+              h2.inline(name='hostname')
+            .col-xs-2
+              button#btnDeviceEdit.btn.btn-sm.btn-primary.pull-right Edit
+
           p(name='ip')
         #deviceForm
-          form#configForm
+          form
+            .row(style='padding-top:10px')
+              .col-xs-2.col-xs-offset-8
+                button#btnDeviceEdit.btn.btn-success.pull-right(type='submit') Speichern
+              .col-xs-2
+                button#btnCancel.btn.btn-danger.pull-right(type='button') Abbrechen
             .form-group
               label Hostname
               input.form-control(name='hostname',type='text',required='required',placeholder='Hostname',data-bv-message='Benutzername angeben!')
             .form-group
               label IP-Adresse
               input#configIP.form-control(name='ip',type='text',required='required',data-mask='099.099.099.099',placeholder='IP-Adresse')
-            .form-group
-              .row
-                .col-xs-4.col-xs-offset-8
-                  button.btn.btn-primary.btn-block(type='submit') OK
 
 
 if AppConfig.productional

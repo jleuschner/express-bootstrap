@@ -1,30 +1,4 @@
 (function ($) {
-  $.widget("JL.outlookList", {
-    options: {
-    },
-    _create: function () {
-      var _this = this;
-      $(this.element).bind("contextmenu", function () {
-        return false;
-      });
-      this.element.addClass("outlookList");
-
-      $('li', this.element)
-        .hover(
-          function () {
-            $(this).addClass('hover');
-          },
-          function () {
-            $(this).removeClass('hover');
-          })
-        .click(function () {
-          $('li.active').removeClass("active");
-          $(this).addClass('active');
-          _this._trigger("_click", null, this);
-        });
-
-    }
-  });
 
   $.widget("JL.netioDevice", {
     options: {
@@ -36,18 +10,83 @@
       $(this.element).bind("contextmenu", function () {
         return false;
       });
+      $("#btnDeviceEdit", this.element).click(function () {
+        _this._deviceEdit(true);
+      });
+
+      $("#deviceForm", this.element).bootstrapValidator({
+        fields: {
+          hostname: { validators: {
+            notEmpty: { message: "Hostname muss angegeben werden!" }
+          }
+          },
+          ip: { validators: {
+            ip: { message: "Gültige IP-Adresse muss angegeben werden!" }
+          }
+          }
+        }
+      })
+        .on('success.form.bv', function (e) {
+          e.preventDefault();
+          //var $lform = $(e.target);
+          //console.dir($lform.serialize());
+          var formdata = new FormData(e.target);
+          $.ajax({
+            type: "POST",
+            url: _this.options.url,
+            data: formdata,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+              if (data.err) {
+                bootbox.alert("FEHLER!");
+              } else {
+                _this._trigger("_finish", null, { err: "" });
+              }
+            }
+          });
+        })
+        .find("[name='ip']").mask('099.099.099.099');
+      $("#deviceForm #btnCancel", _this.element).click(function () {
+        checkDirty(function (ok) {
+          if (ok) {
+            if (_this.options.deviceID < 0) { _this.options.deviceID = 0; }
+            _this.load(_this.options.deviceID);
+          }
+        })
+      });
+
       this.load(this.options.deviceID);
     },
+    _deviceEdit: function (edit) {
+      var _this = this;
+      if (edit) {
+        $("#Workspace").attr("dirty", "sajdhakshdhk");
+        $("#deviceForm [name='hostname']", _this.element).val($("#device [name='hostname']", _this.element).text());
+        $("#deviceForm [name='ip']", _this.element).val($("#device [name='ip']", _this.element).text());
+        $("#device", _this.element).hide(0, function () {
+          $("#deviceForm", _this.element).show(0);
+        })
+      } else {
+        $("#deviceForm", _this.element).hide(0, function () {
+          $("#device", _this.element).show(0);
+        })
+
+      }
+    },
     load: function (deviceID) {
+      var _this = this;
       this.options.deviceID = deviceID;
       if (deviceID === 0) {
         $("[id*=device]", this.element).hide();
         $("#about", this.element).show();
       } else {
         $("#about", this.element).hide();
+        $("#deviceForm", this.element).hide();
         $("#device", this.element).show();
         if (deviceID < 0) {
-          $("[name='hostname']", this.element).val("Neuer Horst");
+          $("#device [name]", this.element).text("");
+          _this._deviceEdit(true);
         } else {
           $.getJSON(this.options.datasource, function (data) {
             if (data.err) {
@@ -55,8 +94,8 @@
               return;
             } else {
               console.log(JSON.stringify(data));
-              $("[name='hostname']", this.element).text(data.rows[0].hostname);
-              $("[name='ip']", this.element).text(data.rows[0].ip);
+              $("#device [name='hostname']", this.element).text(data.rows[0].hostname);
+              $("#device [name='ip']", this.element).text(data.rows[0].ip);
             }
           })
           .fail(function () {
@@ -76,53 +115,21 @@ $(function () {
   $("#devList")
     .outlookList()
     .on("outlooklist_click", function (e, o) {
-      //alert($(o).html());
-      $("#deviceDlg").netioDevice("load",1);
-
-    })
-
+      checkDirty(function (ok) {
+        if (ok) {
+          $("#deviceDlg").netioDevice("load", 1);
+        }
+      })
+    });
   $("#deviceDlg").netioDevice();
 
 
   $("#btnNeu", ".WorkspaceLeft").click(function () {
-    //$("<li><span class='list-title'>Neu</span></li>").appendTo("#devList");
-      $("#deviceDlg").netioDevice("load",-1);
+    $("#deviceDlg").netioDevice("load", -1);
   })
 
 
   // ---------------- WorkspaceRight ---------------------------------
-  $("form", ".WorkspaceRight").bootstrapValidator({
-    fields: {
-      hostname: { validators: {
-        notEmpty: { message: "Hostname muss angegeben werden!" }
-      }
-      },
-      ip: { validators: {
-        notEmpty: { message: "IP-Adresse muss angegeben werden!" }
-      }
-      }
-    }
-  })
-  .on('success.form.bv', function (e) {
-    e.preventDefault();
-    //var $lform = $(e.target);
-    //console.dir($lform.serialize());
-    var formdata = new FormData(e.target);
-    $.ajax({
-      type: "POST",
-      url: _this.options.url,
-      data: formdata,
-      contentType: false,
-      processData: false,
-      success: function (data) {
-        if (data.err) {
-          bootbox.alert("FEHLER!");
-        } else {
-          _this._trigger("_finish", null, { err: "" });
-        }
-      }
-    });
-  });
 
 })
 

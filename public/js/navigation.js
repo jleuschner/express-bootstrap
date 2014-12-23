@@ -1,4 +1,8 @@
 /* global bootbox */
+
+
+
+
 $(function () {
   $.ajaxSetup({ cache: false });
   $('#MainNavbar').bind("contextmenu", function () {
@@ -7,16 +11,32 @@ $(function () {
   $('#MainLogin').bind("contextmenu", function () {
     return false;
   });
+  
+  window.checkDirty = function(cb) {
+    if (($("#Workspace").attr('dirty'))) {
+      bootbox.confirm("<span class='fa fa-warning' style='color:#f00;font-size:48px'></span><h3 class='inline'> Ungespeicherte Änderungen! Fortsetzen?</h3>", function (ok) {
+        if (ok) { $("#Workspace").removeAttr('dirty'); }
+        cb(ok);
+      })
+    } else {
+      cb(true);
+    }
+  }
+
 
   // ------------------ MainNavbar -----------------------
   function MainWorkspace(url, cb) {
-    $.get(url, function (data) {
-      $('#MainWorkspace').html(data);
-      if (!$('#NavbarToggle').hasClass('collapsed')) {
-        $('#NavbarToggle').click();
+    checkDirty(function (ok) {
+      if (ok) {
+        $.get(url, function (data) {
+          $('#Workspace').html(data);
+          if (!$('#NavbarToggle').hasClass('collapsed')) {
+            $('#NavbarToggle').click();
+          }
+          checkWorkspace();
+          if (cb) { cb(); }
+        });
       }
-      checkWorkspace();
-      if (cb) { cb(); }
     });
   }
 
@@ -92,7 +112,12 @@ $(function () {
         MainLogin();
         break;
       case "MainNav_IODevice":
-        MainWorkspace('/io/device');
+        MainWorkspace('/io/device', function () {
+          $('#devList')
+            .on("outlooklist_click", function () {
+              toggleWorkspace();
+            });
+        });
         break;
       case "MainNav_Config":
         MainWorkspace('config', function () {
