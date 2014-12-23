@@ -1,6 +1,5 @@
 /* global bootbox */
-
-
+/* global checkDirty */
 
 
 $(function () {
@@ -11,17 +10,17 @@ $(function () {
   $('#MainLogin').bind("contextmenu", function () {
     return false;
   });
-  
-  window.checkDirty = function(cb) {
+
+  window.checkDirty = function (cb) {
     if (($("#Workspace").attr('dirty'))) {
       bootbox.confirm("<span class='fa fa-warning' style='color:#f00;font-size:48px'></span><h3 class='inline'> Ungespeicherte Änderungen! Fortsetzen?</h3>", function (ok) {
         if (ok) { $("#Workspace").removeAttr('dirty'); }
         cb(ok);
-      })
+      });
     } else {
       cb(true);
     }
-  }
+  };
 
 
   // ------------------ MainNavbar -----------------------

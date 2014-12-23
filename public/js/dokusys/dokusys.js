@@ -606,4 +606,4 @@ $(function () {
     .on("topicdlg_crumbclick", function (e, topic) {
       $('#DokuSys_TopicTree').topicTree("selectTopic", topic.id);
     });
-})
+});

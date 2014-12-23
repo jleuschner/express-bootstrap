@@ -1,3 +1,5 @@
+/* global checkDirty */
+
 (function ($) {
 
   $.widget("JL.netioDevice", {
@@ -39,7 +41,7 @@
             processData: false,
             success: function (data) {
               if (data.err) {
-                bootbox.alert("FEHLER!");
+                console.log("FEHLER!");
               } else {
                 _this._trigger("_finish", null, { err: "" });
               }
@@ -53,7 +55,7 @@
             if (_this.options.deviceID < 0) { _this.options.deviceID = 0; }
             _this.load(_this.options.deviceID);
           }
-        })
+        });
       });
 
       this.load(this.options.deviceID);
@@ -66,12 +68,11 @@
         $("#deviceForm [name='ip']", _this.element).val($("#device [name='ip']", _this.element).text());
         $("#device", _this.element).hide(0, function () {
           $("#deviceForm", _this.element).show(0);
-        })
+        });
       } else {
         $("#deviceForm", _this.element).hide(0, function () {
           $("#device", _this.element).show(0);
-        })
-
+        });
       }
     },
     load: function (deviceID) {
@@ -114,22 +115,19 @@
 $(function () {
   $("#devList")
     .outlookList()
-    .on("outlooklist_click", function (e, o) {
+    .on("outlooklist_click", function () {
       checkDirty(function (ok) {
         if (ok) {
           $("#deviceDlg").netioDevice("load", 1);
         }
-      })
+      });
     });
   $("#deviceDlg").netioDevice();
 
 
   $("#btnNeu", ".WorkspaceLeft").click(function () {
     $("#deviceDlg").netioDevice("load", -1);
-  })
+  });
 
-
-  // ---------------- WorkspaceRight ---------------------------------
-
-})
+});
 
