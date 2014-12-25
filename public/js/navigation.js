@@ -120,7 +120,7 @@ $(function () {
         MainLogin();
         break;
       case "MainNav_IODevice":
-        MainWorkspace('/io/device', function () {
+        MainWorkspace('/io/devices/html', function () {
           $('#devList')
             .on("outlooklist_click", function () {
               toggleWorkspace();

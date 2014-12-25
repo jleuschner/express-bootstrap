@@ -3,12 +3,14 @@
     options: {
     },
     _create: function () {
-      var _this = this;
       $(this.element).bind("contextmenu", function () {
         return false;
       });
       this.element.addClass("outlookList");
-
+      this.refresh();
+    },
+    refresh: function () {
+      var _this = this;
       $('li', this.element)
         .hover(
           function () {

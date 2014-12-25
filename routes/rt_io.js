@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var AppConfig = require("../AppConfig");
+var DBCon = require('../lib/dbconnection');
+
 
 
 var net = require('net');
@@ -52,34 +54,32 @@ function netio_send(cmd) {
 
 
 //--------------- Device ---------------------------------
-router.get('/device', function (req, res) {
+router.get('/devices/html', function (req, res) {
   res.render('iodevice',{ AppConfig: AppConfig });
 });
 
-router.route("/device/get")
-    .get( function (req, res) {
-      res.json({
-          err:"", 
-          rows: [
-            {
-              hostname: "Horst1",
-              ip: "192.168.0.71"
-            }
-           ] 
-          });
+function getDevices(req,res,id) {
+  var qry = "select * from " + AppConfig.io.tbl_iodevices;
+  if (id) {
+    qry += " where id=" + id;
+  } else {
+    qry += " order by id";
+  }
+  DBCon.query(req.session, qry,
+    function (data) {
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('charset', 'utf-8');
+      res.json(data);
     });
-router.route("/device/get/:deviceID")
-    .get( function (req, res) {
-      res.json({
-          err:"", 
-          rows: [
-            {
-              id: req.params.deviceID,
-              hostname: "Horst1",
-              ip: "192.168.0.71"
-            }
-           ] 
-          });
+}
+
+router.route("/devices")
+    .get(function (req, res) {
+      getDevices(req,res);
+    });
+router.route("/devices/:deviceID")
+    .get(function (req, res) {
+      getDevices(req,res,req.params.deviceID);
     });
 
 router.post('/device/set', function (req, res) {
