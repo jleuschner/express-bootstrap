@@ -9,7 +9,6 @@ var DBCon = require('../lib/dbconnection');
 var net = require('net');
 
 router.get("/raw", function (req, res) {
-  console.log(req.query.mood);
   switch (req.query.mood) {
     case '0':
       netio_send("channel 2 0");
@@ -27,27 +26,23 @@ router.get("/raw", function (req, res) {
 
 function netio_send(cmd) {
   var client = new net.Socket();
-  client.on('data', function(data) {
-	  console.log('Received: ' + data);
+  client.on('data', function() {
 	  client.destroy(); // kill client after server's response
   });
 
-  client.on('error', function (e) {
-    console.log("Error: " + e.code);
+  client.on('error', function () {
     client.destroy();
   });
   client.setTimeout(1000);
   client.on('timeout', function () {
-    console.log("TimeOut");
     client.destroy();
   });
 
   client.on('close', function() {
-	  console.log('Connection closed');
+	  //console.log('Connection closed');
   });
 
 	client.connect(2701, '192.168.0.70', function() {
-		console.log('--Connected');
 		client.write(cmd+"\n");
 	});
 }
@@ -76,23 +71,18 @@ function getDevices(req,res,id) {
 
 function setDevice(req,res,id) {
   var post = req.body;
-  console.log("check")
   var qry = mysql.format(" set ?", [{
     hostname: post.hostname,
     ip: post.ip
   }]);
-  console.log("qry: "+qry)
   if (id < 1) {
     qry = "insert into " + AppConfig.io.tbl_iodevices + qry;
     DBCon.query(req.session, qry, function (data) {
-      //console.log(data.rows)
       res.json({ err: "", id: data.rows.insertId, result: data.rows });
     });
   } else {
     qry = "update " + AppConfig.io.tbl_iodevices + qry+ " where id=" + id;
-    console.log(qry)
     DBCon.query(req.session, qry, function (data) {
-      //console.log(data.rows)
       res.json({ err: "", id: id, result: data.rows });
     });
   }
@@ -116,7 +106,7 @@ router.route("/devices/:deviceID")
     .delete(function(req,res){
       var qry = "delete from " + AppConfig.io.tbl_iodevices + " where id="+req.params.deviceID;
       DBCon.query(req.session, qry,
-        function (data) {
+        function () {
           res.json({err:""});
         });
     });

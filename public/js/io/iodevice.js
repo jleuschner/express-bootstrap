@@ -1,3 +1,4 @@
+/* global bootbox */
 /* global checkDirty */
 /* global handleError */
 
@@ -17,7 +18,7 @@
         _this._deviceEdit(true);
       });
       $("#btnDeviceDel", this.element).click(function () {
-        bootbox.confirm("Device wirklich löschen?", function(ok){
+        bootbox.confirm("Device wirklich löschen?", function (ok) {
           if (ok) {
             $.ajax({
               type: "DELETE",
@@ -35,7 +36,7 @@
               handleError({ code: "AJAX", text: _this.options.datasource + " nicht erreichbar!" });
             });
           }
-        })
+        });
       });
 
       $("#deviceForm", this.element).bootstrapValidator({
@@ -52,7 +53,6 @@
       })
         .on('success.form.bv', function (e) {
           e.preventDefault();
-          console.log("Tg:" + $(e.target).serialize())
           $.ajax({
             type: (_this.options.deviceID > 0) ? "PUT" : "POST",
             url: _this.options.datasource + ((_this.options.deviceID > 0) ? _this.options.deviceID : ""),
@@ -61,7 +61,6 @@
               if (data.err) {
                 handleError(data.err);
               } else {
-                console.log(JSON.stringify(data))
                 $("#Workspace").removeAttr("dirty");
                 _this.load(data.id);
                 _this._trigger("_change", null, { err: "" });

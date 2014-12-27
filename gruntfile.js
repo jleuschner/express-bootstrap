@@ -18,7 +18,8 @@ module.exports = function (grunt) {
         'routes/*.js',
         'public/js/*.js',
         //'public/js/dokusys/*.js',
-        'public/js/io/*.js'
+        'public/js/io/*.js',
+        'public/js/templates/*.js'
         ]
     },
     concat: {
@@ -51,6 +52,11 @@ module.exports = function (grunt) {
         {
         src: ['_tmp/j.js'],
         dest: 'public/dist/js/j.min.js'
+        },
+      templates:
+        {
+        src: ['public/js/templates/cruds.js'],
+        dest: 'public/dist/js/templates/cruds.min.js'
         },
       dokusys:
         {

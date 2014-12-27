@@ -1,0 +1,68 @@
+.container-fluid.JL
+  .row
+    .col-sm-4.WorkspaceLeft
+      .row(style='padding-top:10px')
+        .col-xs-10
+          h2.inline CRUDs
+        .col-xs-2
+          button#btnNeu.btn.btn-default.pull-right(type="button", title="Neues Element")
+            i.fa.fa-plus-square-o
+      ul
+
+    .col-sm-8.WorkspaceRight
+      #about 
+        h1 Einface CRUD-Operationen
+        .row
+          .col-xs-6
+            h3 <strong>C</strong>reate
+            p POST: <i>Server</i>/template/cruds
+            p Response: { err: <i>ErrorObject</i>, id: <i>insertID</i> }
+            h3 <strong>R</strong>ead
+            p GET: <i>Server</i>/template/cruds
+            p Response: { err: <i>ErrorObject</i>, rows: [ {<i>...</i> } , {<i>...</i> } ] }
+            p GET: <i>Server</i>/template/cruds/<i>id</i>
+            p Response: { err: <i>ErrorObject</i>, rows: [ {<i>...</i> } ] }
+            h3 <strong>U</strong>pdate
+            p PUT: <i>Server</i>/template/cruds/<i>id</i>
+            p Response: { err: <i>ErrorObject</i> }
+            h3 <strong>D</strong>elete
+            p DELETE: <i>Server</i>/template/cruds/<i>id</i>
+            p Response: html-Code (Diese Website)
+          .col-xs-6
+            h3 Web-Application
+            p GET: <i>Server</i>/template/cruds/html
+            p Response: { err: <i>ErrorObject</i>, id: <i>insertID</i> }
+      #content
+        .row(style='padding-top:10px')
+          .col-xs-8
+            h2.inline(name='crudtitle')
+          .col-xs-4
+            .btn-group.pull-right(role='group')
+              button#btnDel.btn.btn-danger(type="button", title="Element löschen")
+                i.fa.fa-trash
+              button#btnEdit.btn.btn-default(type="button", title="Element bearbeiten")
+                i.fa.fa-pencil-square-o
+
+        p(name='crudtext')
+      form#contentForm(enctype='multipart/form-data')
+        .row(style='padding-top:10px')
+          .col-xs-12
+            .btn-group.pull-right(role='group')
+              button.btn.btn-success(type='submit', title='Speichern')
+                i.fa.fa-save
+              button#btnCancel.btn.btn-danger(type='button', title='Abbrechen') 
+                i.fa.fa-close
+        .form-group
+          label Crud-Titel
+          input.form-control(name='crudtitle',type='text',required='required',placeholder='Titel')
+        .form-group
+          label Crud-Text
+          input.form-control(name='crudtext',type='text',required='required',placeholder='Text')
+
+
+if AppConfig.productional
+  //link(rel='stylesheet', href='dist/css/templates/style.min.css')
+  script(type='text/javascript', src='dist/js/templates/cruds.min.js')
+else 
+  //link(rel='stylesheet', href='css/templates/style.css')
+  script(type='text/javascript', src='js/templates/cruds.js')

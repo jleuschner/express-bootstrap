@@ -1,6 +1,6 @@
 /* global bootbox */
 /* global checkDirty */
-
+/* global handleError */
 
 $(function () {
   $.ajaxSetup({ cache: false });
@@ -43,6 +43,9 @@ $(function () {
           }
           checkWorkspace();
           if (cb) { cb(); }
+        })
+        .fail(function () {
+          handleError({ code: "AJAX", text: window.location.host +"/"+url+ " nicht erreichbar!" });
         });
       }
     });
@@ -127,27 +130,20 @@ $(function () {
             });
         });
         break;
-      case "MainNav_Config":
-        MainWorkspace('config', function () {
-          $('#configList').configList({ dberror_func: function (err) { DBErr(err); } });
-          $('#configForm').configDlg();
-          $('#xconfigForm').bootstrapValidator({ fields: { ip: { validators: {
-            ip: { message: 'Ip-Adresse!' }
-          }
-          }
-          }
-          });
-          $('#configIP').mask('099.099.099.099', { placeholder: "___.___.___.___" });
+      case "MainNav_CRUDs":
+        MainWorkspace('templates/cruds/html', function () {
         });
         break;
     }
 
   }
 
+  /*
   function DBErr(err) {
     bootbox.alert("<h3 class='text-danger'>" + err.code + "</h3><p>" + err.text + "</p>");
     if (err.code === "NOUSER") { MainLogout(); }
   }
+  */
 
 
   // ---------------- Main ------------------
@@ -210,7 +206,8 @@ $(function () {
     $.post('/login', { user: "jens", passwd: "mausi" }, function (data) {
       if (!data.err) {
         MainNavbar();
-        $("#MainNav_IODevice").click();
+        $("#MainNav_CRUDs").click();
+        //$("#MainNav_IODevice").click();
         //$('#MainNav_DokuSys').click();
 
       } else {

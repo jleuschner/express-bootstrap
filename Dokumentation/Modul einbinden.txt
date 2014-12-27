@@ -1,44 +1,38 @@
 
-Module einbinden
+Das CRUDs-Template:
 
-/routes/rt_modul.js:
---------------------
+Dateien:
+/views/templates/cruds.jade
+/public/js/templates/cruds.js
+/public/css/templates/cruds.css  (optional)
+/routes/rt_templates.js
 
-  var express = require('express');
-  var router = express.Router();
-  var AppConfig = require("../AppConfig");
-  ....
-  router.get('/', function(req, res) {
-    res.render('modul', { AppConfig: AppConfig });
-  });
-
-
-
-/views/modul.jade
------------------
-  - Aufbau Workspace
-  - laden und starten von 'modul.js', bzw. 'modul.min.js'
-
-  if AppConfig.productional
-    link(rel='stylesheet', href='dist/css/modul/modul.css')
-    script(type='text/javascript', src='dist/js/modul/modul.min.js')
-  else 
-    link(rel='stylesheet', href='dist/css/modul/modul.css')
-    script(type='text/javascript', src='js/modul/modul.js')
+Einbinden:
+/apps.js
+--------
+var templates= require('./routes/rt_templates');
+app.use('/templates', templates);
 
 
-
+Einbindung in grunt:
 /gruntfile.js
 -------------
+    jshint: {
+      all: [
+        'public/js/templates/*.js'
+        ]
+    },
     uglify: {
-      module:
+      template:
         {
-        src: ['public/js/module/module.js'],
-        dest: 'public/dist/js/module/module.min.js'
-        }
-
+        src: ['public/js/templates/cruds.js'],
+        dest: 'public/dist/js/templates/cruds.min.js'
+        },
+    },
+    cssmin: {
+      combine: {
         files: {
-          'public/dist/css/modul/modul.min.css': [
-                  'public/css/modul/*.css'
+          'public/dist/css/templates/templates.min.css': [
+                  'public/css/templates/*.css'
           ]
 

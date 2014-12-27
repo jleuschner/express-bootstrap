@@ -11,8 +11,8 @@ var mysql = require('mysql');
 var routes = require('./routes/rt_index');
 var dokusys = require('./routes/rt_dokusys');
 var users = require('./routes/rt_users');
-var config= require('./routes/rt_config');
 var io= require('./routes/rt_io');
+var templates= require('./routes/rt_templates');
 
 var app = express();
 
@@ -71,8 +71,8 @@ DB.connect(function (err) {
 app.use('/', routes);
 app.use('/users', users);
 app.use('/dokusys', dokusys);
-app.use('/config', config);
 app.use('/io', io);
+app.use('/templates', templates);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
