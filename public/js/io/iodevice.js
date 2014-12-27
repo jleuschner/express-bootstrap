@@ -16,6 +16,27 @@
       $("#btnDeviceEdit", this.element).click(function () {
         _this._deviceEdit(true);
       });
+      $("#btnDeviceDel", this.element).click(function () {
+        bootbox.confirm("Device wirklich löschen?", function(ok){
+          if (ok) {
+            $.ajax({
+              type: "DELETE",
+              url: _this.options.datasource + _this.options.deviceID,
+              success: function (data) {
+                if (data.err) {
+                  handleError(data.err);
+                } else {
+                  _this.load(0);
+                  _this._trigger("_change", null, { err: "" });
+                }
+              }
+            })
+            .fail(function () {
+              handleError({ code: "AJAX", text: _this.options.datasource + " nicht erreichbar!" });
+            });
+          }
+        })
+      });
 
       $("#deviceForm", this.element).bootstrapValidator({
         fields: {
@@ -31,20 +52,19 @@
       })
         .on('success.form.bv', function (e) {
           e.preventDefault();
-          //var $lform = $(e.target);
-          //console.dir($lform.serialize());
-          var formdata = new FormData(e.target);
+          console.log("Tg:" + $(e.target).serialize())
           $.ajax({
-            type: "POST",
-            url: "/io/device/set",
-            data: formdata,
-            contentType: false,
-            processData: false,
+            type: (_this.options.deviceID > 0) ? "PUT" : "POST",
+            url: _this.options.datasource + ((_this.options.deviceID > 0) ? _this.options.deviceID : ""),
+            data: $(e.target).serialize(),
             success: function (data) {
               if (data.err) {
                 handleError(data.err);
               } else {
-                _this._trigger("_finish", null, { err: "" });
+                console.log(JSON.stringify(data))
+                $("#Workspace").removeAttr("dirty");
+                _this.load(data.id);
+                _this._trigger("_change", null, { err: "" });
               }
             }
           })
@@ -163,7 +183,11 @@
 
 $(function () {
   $(".WorkspaceLeft").netioList();  
-  $("#deviceDlg").netioDevice();
+  $("#deviceDlg")
+    .netioDevice()
+    .on("netiodevice_change", function(){
+      $(".WorkspaceLeft").netioList("load");    
+    });
 
 
 

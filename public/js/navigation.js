@@ -205,14 +205,13 @@ $(function () {
     });
   });
 
-  //ErrorBox({code:"007",text: "ErrText"})
-  $("#MainNav_IODevice").click();
 
-  if (0) {
-    $.post('/login', { user: "JensLeuschner", passwd: "mausi" }, function (data) {
+  if (1) {
+    $.post('/login', { user: "jens", passwd: "mausi" }, function (data) {
       if (!data.err) {
         MainNavbar();
-        $('#MainNav_DokuSys').click();
+        $("#MainNav_IODevice").click();
+        //$('#MainNav_DokuSys').click();
 
       } else {
         $('#MainLoginErr').text("Fehler: " + data.err.text);

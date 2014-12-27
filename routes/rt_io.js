@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var AppConfig = require("../AppConfig");
+var mysql = require('mysql');
 var DBCon = require('../lib/dbconnection');
 
 
@@ -73,21 +74,51 @@ function getDevices(req,res,id) {
     });
 }
 
+function setDevice(req,res,id) {
+  var post = req.body;
+  console.log("check")
+  var qry = mysql.format(" set ?", [{
+    hostname: post.hostname,
+    ip: post.ip
+  }]);
+  console.log("qry: "+qry)
+  if (id < 1) {
+    qry = "insert into " + AppConfig.io.tbl_iodevices + qry;
+    DBCon.query(req.session, qry, function (data) {
+      //console.log(data.rows)
+      res.json({ err: "", id: data.rows.insertId, result: data.rows });
+    });
+  } else {
+    qry = "update " + AppConfig.io.tbl_iodevices + qry+ " where id=" + id;
+    console.log(qry)
+    DBCon.query(req.session, qry, function (data) {
+      //console.log(data.rows)
+      res.json({ err: "", id: id, result: data.rows });
+    });
+  }
+  
+}
+
 router.route("/devices")
     .get(function (req, res) {
       getDevices(req,res);
+    })
+    .post(function(req,res){
+      setDevice(req,res,0);
     });
 router.route("/devices/:deviceID")
     .get(function (req, res) {
       getDevices(req,res,req.params.deviceID);
+    })
+    .put(function (req, res) {
+      setDevice(req,res,req.params.deviceID);
+    })
+    .delete(function(req,res){
+      var qry = "delete from " + AppConfig.io.tbl_iodevices + " where id="+req.params.deviceID;
+      DBCon.query(req.session, qry,
+        function (data) {
+          res.json({err:""});
+        });
     });
-
-router.post('/device/set', function (req, res) {
-  var post = req.body;
-  res.send({
-      err: {code:"DUBHostname", text: "Hostname " + post.hostname + " existiert bereits"}
-      });
-});
-
 
 module.exports = router;
