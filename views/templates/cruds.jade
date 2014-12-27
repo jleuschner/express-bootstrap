@@ -11,7 +11,7 @@
 
     .col-sm-8.WorkspaceRight
       #about 
-        h1 Einface CRUD-Operationen
+        h1 Einfache CRUD-Operationen
         .row
           .col-xs-6
             h3 <strong>C</strong>reate
@@ -61,8 +61,8 @@
 
 
 if AppConfig.productional
-  //link(rel='stylesheet', href='dist/css/templates/style.min.css')
+  link(rel='stylesheet', href='dist/css/templates/style.min.css')
   script(type='text/javascript', src='dist/js/templates/cruds.min.js')
 else 
-  //link(rel='stylesheet', href='css/templates/style.css')
+  link(rel='stylesheet', href='css/templates/style.css')
   script(type='text/javascript', src='js/templates/cruds.js')

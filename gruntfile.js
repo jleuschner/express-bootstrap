@@ -55,8 +55,8 @@ module.exports = function (grunt) {
         },
       templates:
         {
-        src: ['public/js/templates/cruds.js'],
-        dest: 'public/dist/js/templates/cruds.min.js'
+        src: ['public/js/templates/crud.js'],
+        dest: 'public/dist/js/templates/crud.min.js'
         },
       dokusys:
         {
@@ -84,6 +84,9 @@ module.exports = function (grunt) {
               ],
           'public/dist/css/dokusys/dokusys.min.css': [
                   'public/css/dokusys/*.css'
+          ],
+          'public/dist/css/templates/style.min.css': [
+                  'public/css/templates/*.css'
           ],
           'public/dist/css/io/iodevice.min.css': [
                   'public/css/io/*.css'

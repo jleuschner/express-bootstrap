@@ -32,7 +32,7 @@ Einbindung in grunt:
     cssmin: {
       combine: {
         files: {
-          'public/dist/css/templates/templates.min.css': [
+          'public/dist/css/templates/style.min.css': [
                   'public/css/templates/*.css'
           ]
 
