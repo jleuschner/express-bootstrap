@@ -202,7 +202,7 @@ $(function () {
   });
 
 
-  if (1) {
+  if (0) {
     $.post('/login', { user: "jens", passwd: "mausi" }, function (data) {
       if (!data.err) {
         MainNavbar();
