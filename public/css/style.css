@@ -6,7 +6,7 @@ body {
   background-color: #f0f0f0;
 }
 
-@media (max-width: 768px) {
+@xxxmedia (max-width: 768px) {
   [class*='col-sm-'] {
     padding: 0;
   }

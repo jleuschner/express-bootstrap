@@ -73,7 +73,8 @@ function setDevice(req,res,id) {
   var post = req.body;
   var qry = mysql.format(" set ?", [{
     hostname: post.hostname,
-    ip: post.ip
+    ip: post.ip,
+    remark: post.remark
   }]);
   if (id < 1) {
     qry = "insert into " + AppConfig.io.tbl_iodevices + qry;

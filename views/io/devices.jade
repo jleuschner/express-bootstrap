@@ -24,8 +24,9 @@
                 i.fa.fa-trash
               button#btnEdit.btn.btn-default(type="button", title="Device bearbeiten")
                 i.fa.fa-pencil-square-o
-
         p(name='ip')
+        p(name='remark')
+
       form#deviceForm(enctype='multipart/form-data')
         .row(style='padding-top:10px')
           .col-xs-12
@@ -34,14 +35,29 @@
                 i.fa.fa-save
               button#btnCancel.btn.btn-danger(type='button', title='Abbrechen') 
                 i.fa.fa-close
+        .row
+          .col-sm-6
+            .form-group
+              label Hostname
+              input.form-control(name='hostname',type='text',required='required',placeholder='Hostname',data-bv-message='Benutzername angeben!')
+          .col-sm-6
+            .form-group
+              label IP-Adresse
+              input.form-control(name='ip',type='text',required='required',data-mask='099.099.099.099',placeholder='IP-Adresse')
         .form-group
-          label Hostname
-          input.form-control(name='hostname',type='text',required='required',placeholder='Hostname',data-bv-message='Benutzername angeben!')
-        .form-group
-          label IP-Adresse
-          input#configIP.form-control(name='ip',type='text',required='required',data-mask='099.099.099.099',placeholder='IP-Adresse')
+          label Kurzbeschreibung
+          input.form-control(name='remark',type='text',placeholder='Beschreibung')
 
-
+      #ioDefinition
+        .row(style='padding-top:10px')
+          .col-xs-8
+            h3.inline IOs
+          .col-xs-4
+            .btn-group.pull-right(role='group')
+              button#btnIoAdd.btn.btn-sm.btn-default(type="button", title="IO hinzufügen")
+                i.fa.fa-plus-square-o
+        .ioList
+          
 if AppConfig.productional
   link(rel='stylesheet', href='dist/css/io/devices.min.css')
   script(type='text/javascript', src='dist/js/io/devices.min.js')

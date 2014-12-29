@@ -80,6 +80,10 @@
         });
       });
 
+      $("#btnIoAdd", _this.element).click(function () {
+        _this._createIO({ id: '-1', name: 'Neue IO-Definition', klasse: '?', typ: '?', channel: '?' });
+      });
+
       this.load(this.options.id);
     },
     _editMode: function (edit) {
@@ -88,6 +92,7 @@
         $("#Workspace").attr("dirty", "1");
         $("#deviceForm [name='hostname']", _this.element).val($("#device [name='hostname']", _this.element).text());
         $("#deviceForm [name='ip']", _this.element).val($("#device [name='ip']", _this.element).text());
+        $("#deviceForm [name='remark']", _this.element).val($("#device [name='remark']", _this.element).text());
         $("#device", _this.element).hide(0, function () {
           $("#deviceForm", _this.element).show(0);
         });
@@ -100,13 +105,18 @@
     load: function (id) {
       var _this = this;
       this.options.id = id;
+
+      this._createIOs([{ id: 2, name: 'Neuer IO', klasse: 'DimmDimm', typ: 'xCMD', channel: '3' }, { id: 3, name: 'Neuerer IO', klasse: 'Switch', typ: 'ECMD-IO', channel: '1/6'}]);
+
       if (id === 0) {
         $("[id*=device]", this.element).hide();
+        //$("#ioDefinition", this.element).hide();
         $("#about", this.element).show();
       } else {
         $("#about", this.element).hide();
         $("#deviceForm", this.element).hide();
         $("#device", this.element).show();
+        $("#ioDefinition", this.element).show();
         if (id < 0) {
           $("#device [name]", this.element).text("");
           _this._editMode(true);
@@ -118,6 +128,7 @@
             } else {
               $("#device [name='hostname']", this.element).text(data.rows[0].hostname);
               $("#device [name='ip']", this.element).text(data.rows[0].ip);
+              $("#device [name='remark']", this.element).text(data.rows[0].remark);
             }
           })
           .fail(function () {
@@ -125,6 +136,42 @@
           });
         }
       }
+    },
+    _createIO: function (io) {
+      $("<div class='ioDef' data-id=" + io.id + "><div class='name'>" + io.name + "</div><div class='klasse'>" + io.klasse + "</div><div class='typ'>" + io.typ + "</div><div class='channel'>" + io.channel + "</div>"
+        + "<div class='btn-group pull-right' role='group'>"
+        + "<button class='btn btn-xs btn-danger btnDel' type='button' title='IO löschen'><i class='fa fa-trash'></i></button>"
+        + "<button class='btn btn-xs btn-default btnEdit' type='button' title='IO bearbeiten'><i class='fa fa-pencil-square-o'></i></button>"
+        + "</div></div>")
+      .appendTo(".ioList", this.element);
+    },
+    _createIOs: function (ios) {
+      var _this = this;
+      $(".ioList", this.element).empty();
+      $.each(ios, function (k, io) {
+        _this._createIO(io);
+      });
+      $(".ioDef .btnEdit", this.element).click(function () {
+        _this._editIO($(this).parent().parent().data("id"));
+      });
+    },
+    _editIO: function (id) {
+      var klassen = [{ id: 1, name: 'Dimmer' }, { id: 2, name: 'OnOff'}];
+      var $div = $(".ioDef[data-id='" + id + "']");
+      var $form = $("<form>"
+        + "<div class='form-group'><input class='form-control input-sm' name='name' type='text' value='" + $(".name", $div).text() + "'></input></div>"
+        + "<div class='form-group'><input class='form-control input-sm' name='xklasse' type='text' value='" + $(".klasse", $div).text() + "'></input></div>"
+        + "<div class='form-group'><select class='form-control selectpicker' data-style='btn-primary' name='klasse' value='" + $(".klasse", $div).text() + "'></select></div>"
+        + "<div class='form-group'><input class='form-control input-sm' name='typ' type='text' value='" + $(".typ", $div).text() + "'></input></div>"
+        + "<div class='form-group'><input class='form-control input-sm' name='channel' type='text' value='" + $(".channel", $div).text() + "'></input></div>"
+        + "</form>");
+      $.each(klassen, function () {
+        $("<option>" + this.name + "</option>").appendTo($(".selectpicker", $form));
+      });
+      $div.empty();
+      $form.appendTo($div);
+      $('.selectpicker').selectpicker();
+
     }
   });
 
@@ -162,7 +209,7 @@
           var $list = $("ul", _this.element);
           $list.empty();
           $.each(data.rows, function (k, obj) {
-            $("<li data-id=" + obj.id + "><div class='list-title'>" + obj.hostname + "</div><div class='list-subtitle'>" + obj.ip + "</div></li>").appendTo($list);
+            $("<li data-id=" + obj.id + "><div class='list-title'>" + obj.hostname + "</div><div class='list-subtitle'>" + obj.ip + "</div><div class='list-remark'>" + obj.remark + "</div></li>").appendTo($list);
           });
           $list.outlookList("refresh");
         }

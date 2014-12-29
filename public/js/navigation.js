@@ -124,7 +124,7 @@ $(function () {
         break;
       case "MainNav_IODevice":
         MainWorkspace('/io/devices/html', function () {
-          $('#devList')
+          $('.WorkspaceLeft')
             .on("outlooklist_click", function () {
               toggleWorkspace();
             });
