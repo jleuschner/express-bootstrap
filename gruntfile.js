@@ -55,18 +55,18 @@ module.exports = function (grunt) {
         },
       templates:
         {
-        src: ['public/js/templates/crud.js'],
-        dest: 'public/dist/js/templates/crud.min.js'
+        src: ['public/js/templates/cruds.js'],
+        dest: 'public/dist/js/templates/cruds.min.js'
         },
       dokusys:
         {
         src: ['public/js/dokusys/dokusys.js'],
         dest: 'public/dist/js/dokusys/dokusys.min.js'
         },
-      iodevice:
+      iodevices:
         {
-        src: ['public/js/io/iodevice.js'],
-        dest: 'public/dist/js/io/iodevice.min.js'
+        src: ['public/js/io/devices.js'],
+        dest: 'public/dist/js/io/devices.min.js'
         }
 
     },
@@ -88,7 +88,7 @@ module.exports = function (grunt) {
           'public/dist/css/templates/style.min.css': [
                   'public/css/templates/*.css'
           ],
-          'public/dist/css/io/iodevice.min.css': [
+          'public/dist/css/io/devices.min.css': [
                   'public/css/io/*.css'
           ]
         }

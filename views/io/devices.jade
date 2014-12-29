@@ -1,0 +1,50 @@
+.container-fluid.JL
+  .row
+    .col-sm-4.WorkspaceLeft
+      .row(style='padding-top:10px')
+        .col-xs-10
+          h2.inline IO-Devices
+        .col-xs-2
+          button#btnNeu.btn.btn-default.pull-right(type="button", title="Neues Device")
+            i.fa.fa-plus-square-o
+      ul
+
+    .col-sm-8.WorkspaceRight
+      #about
+        h1 IO-Devices
+        p Alle IO-Devices (Pollin Net-IOs, PIOs, usw.) werden hier definiert.
+        p Bitte Device in der Liste links auswählen oder neues Device anlegen.
+      #device
+        .row(style='padding-top:10px')
+          .col-xs-8
+            h2.inline(name='hostname')
+          .col-xs-4
+            .btn-group.pull-right(role='group')
+              button#btnDel.btn.btn-danger(type="button", title="Device löschen")
+                i.fa.fa-trash
+              button#btnEdit.btn.btn-default(type="button", title="Device bearbeiten")
+                i.fa.fa-pencil-square-o
+
+        p(name='ip')
+      form#deviceForm(enctype='multipart/form-data')
+        .row(style='padding-top:10px')
+          .col-xs-12
+            .btn-group.pull-right(role='group')
+              button#btnDeviceEdit.btn.btn-success(type='submit', title='Speichern')
+                i.fa.fa-save
+              button#btnCancel.btn.btn-danger(type='button', title='Abbrechen') 
+                i.fa.fa-close
+        .form-group
+          label Hostname
+          input.form-control(name='hostname',type='text',required='required',placeholder='Hostname',data-bv-message='Benutzername angeben!')
+        .form-group
+          label IP-Adresse
+          input#configIP.form-control(name='ip',type='text',required='required',data-mask='099.099.099.099',placeholder='IP-Adresse')
+
+
+if AppConfig.productional
+  link(rel='stylesheet', href='dist/css/io/devices.min.css')
+  script(type='text/javascript', src='dist/js/io/devices.min.js')
+else 
+  link(rel='stylesheet', href='css/io/devices.css')
+  script(type='text/javascript', src='js/io/devices.js')

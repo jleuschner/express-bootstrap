@@ -3,26 +3,25 @@
 /* global handleError */
 
 (function ($) {
-
-  $.widget("JL.netioDevice", {
+  $.widget("JL.DevicesDlg", {
     options: {
-      deviceID: 0,
-      datasource: "/io/devices/"
+      id: 0,
+      api: "/io/devices/"
     },
     _create: function () {
       var _this = this;
       $(this.element).bind("contextmenu", function () {
         return false;
       });
-      $("#btnDeviceEdit", this.element).click(function () {
-        _this._deviceEdit(true);
+      $("#btnEdit", this.element).click(function () {
+        _this._editMode(true);
       });
-      $("#btnDeviceDel", this.element).click(function () {
+      $("#btnDel", this.element).click(function () {
         bootbox.confirm("Device wirklich löschen?", function (ok) {
           if (ok) {
             $.ajax({
               type: "DELETE",
-              url: _this.options.datasource + _this.options.deviceID,
+              url: _this.options.api + _this.options.id,
               success: function (data) {
                 if (data.err) {
                   handleError(data.err);
@@ -33,7 +32,7 @@
               }
             })
             .fail(function () {
-              handleError({ code: "AJAX", text: _this.options.datasource + " nicht erreichbar!" });
+              handleError({ code: "AJAX", text: _this.options.api + " nicht erreichbar!" });
             });
           }
         });
@@ -46,7 +45,7 @@
           }
           },
           ip: { validators: {
-            ip: { message: "Gültige IP-Adresse muss angegeben werden!" }
+            ip: { message: "Gültige IP-Adresse notwendig!" }
           }
           }
         }
@@ -54,8 +53,8 @@
         .on('success.form.bv', function (e) {
           e.preventDefault();
           $.ajax({
-            type: (_this.options.deviceID > 0) ? "PUT" : "POST",
-            url: _this.options.datasource + ((_this.options.deviceID > 0) ? _this.options.deviceID : ""),
+            type: (_this.options.id > 0) ? "PUT" : "POST",
+            url: _this.options.api + ((_this.options.id > 0) ? _this.options.id : ""),
             data: $(e.target).serialize(),
             success: function (data) {
               if (data.err) {
@@ -68,25 +67,25 @@
             }
           })
           .fail(function () {
-            handleError({ code: "AJAX", text: _this.options.datasource + " nicht erreichbar!" });
+            handleError({ code: "AJAX", text: _this.options.api + " nicht erreichbar!" });
           });
         })
         .find("[name='ip']").mask('099.099.099.099');
       $("#deviceForm #btnCancel", _this.element).click(function () {
         checkDirty(function (ok) {
           if (ok) {
-            if (_this.options.deviceID < 0) { _this.options.deviceID = 0; }
-            _this.load(_this.options.deviceID);
+            if (_this.options.id < 0) { _this.options.id = 0; }
+            _this.load(_this.options.id);
           }
         });
       });
 
-      this.load(this.options.deviceID);
+      this.load(this.options.id);
     },
-    _deviceEdit: function (edit) {
+    _editMode: function (edit) {
       var _this = this;
       if (edit) {
-        $("#Workspace").attr("dirty", "sajdhakshdhk");
+        $("#Workspace").attr("dirty", "1");
         $("#deviceForm [name='hostname']", _this.element).val($("#device [name='hostname']", _this.element).text());
         $("#deviceForm [name='ip']", _this.element).val($("#device [name='ip']", _this.element).text());
         $("#device", _this.element).hide(0, function () {
@@ -98,32 +97,31 @@
         });
       }
     },
-    load: function (deviceID) {
+    load: function (id) {
       var _this = this;
-      this.options.deviceID = deviceID;
-      if (deviceID === 0) {
+      this.options.id = id;
+      if (id === 0) {
         $("[id*=device]", this.element).hide();
         $("#about", this.element).show();
       } else {
         $("#about", this.element).hide();
         $("#deviceForm", this.element).hide();
         $("#device", this.element).show();
-        if (deviceID < 0) {
+        if (id < 0) {
           $("#device [name]", this.element).text("");
-          _this._deviceEdit(true);
+          _this._editMode(true);
         } else {
-          $.getJSON(this.options.datasource + deviceID, function (data) {
+          $.getJSON(this.options.api + id, function (data) {
             if (data.err) {
               handleError(data.err);
               return;
             } else {
-              //console.log(JSON.stringify(data));
               $("#device [name='hostname']", this.element).text(data.rows[0].hostname);
               $("#device [name='ip']", this.element).text(data.rows[0].ip);
             }
           })
           .fail(function () {
-            handleError({ code: "AJAX", text: _this.options.datasource + " nicht erreichbar!" });
+            handleError({ code: "AJAX", text: _this.options.api + " nicht erreichbar!" });
           });
         }
       }
@@ -131,23 +129,24 @@
   });
 
 
-  $.widget("JL.netioList", {
+  $.widget("JL.DevicesList", {
     options: {
-      datasource: "/io/devices/"
+      api: "/io/devices/"
     },
     _create: function () {
+      var _this = this;
       $(this.element).bind("contextmenu", function () {
         return false;
       });
       $("#btnNeu", this.element).click(function () {
-        $("#deviceDlg").netioDevice("load", -1);
+        _this._trigger("_click", null, { id: -1 });
       });
-      $("#devList")
+      $("ul", this.element)
         .outlookList()
         .on("outlooklist_click", function (e, o) {
           checkDirty(function (ok) {
             if (ok) {
-              $("#deviceDlg").netioDevice("load", $(o).data('id'));
+              _this._trigger("_click", null, { id: $(o).data('id') });
             }
           });
         });
@@ -155,25 +154,24 @@
     },
     load: function () {
       var _this = this;
-      $.getJSON(this.options.datasource, function (data) {
+      $.getJSON(this.options.api, function (data) {
         if (data.err) {
           handleError(data.err);
           return;
         } else {
-          $("#devList").empty();
+          var $list = $("ul", _this.element);
+          $list.empty();
           $.each(data.rows, function (k, obj) {
-            $("<li data-id=" + obj.id + "><div class='list-title'>" + obj.hostname + "</div><div class='list-subtitle'>" + obj.ip + "</div></li>").appendTo($("#devList"));
+            $("<li data-id=" + obj.id + "><div class='list-title'>" + obj.hostname + "</div><div class='list-subtitle'>" + obj.ip + "</div></li>").appendTo($list);
           });
-          $("#devList").outlookList("refresh");
+          $list.outlookList("refresh");
         }
       })
         .fail(function () {
-          handleError({ code: "AJAX", text: _this.options.datasource + " nicht erreichbar!" });
+          handleError({ code: "AJAX", text: _this.options.api + " nicht erreichbar!" });
         });
-
     }
   });
-
 
 } (jQuery));
 
@@ -181,14 +179,15 @@
 
 
 $(function () {
-  $(".WorkspaceLeft").netioList();  
-  $("#deviceDlg")
-    .netioDevice()
-    .on("netiodevice_change", function(){
-      $(".WorkspaceLeft").netioList("load");    
+  $(".WorkspaceLeft")
+    .DevicesList()
+    .on("deviceslist_click", function (e, o) {
+      $(".WorkspaceRight").DevicesDlg("load", o.id);
     });
-
-
-
+  $(".WorkspaceRight")
+    .DevicesDlg()
+    .on("devicesdlg_change", function () {
+      $(".WorkspaceLeft").DevicesList("load");
+    });
 });
 

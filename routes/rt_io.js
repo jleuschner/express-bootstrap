@@ -51,7 +51,7 @@ function netio_send(cmd) {
 
 //--------------- Device ---------------------------------
 router.get('/devices/html', function (req, res) {
-  res.render('iodevice',{ AppConfig: AppConfig });
+  res.render('io/devices',{ AppConfig: AppConfig });
 });
 
 function getDevices(req,res,id) {
