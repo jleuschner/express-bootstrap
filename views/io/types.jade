@@ -1,0 +1,89 @@
+.container-fluid.JL
+  .row
+    .col-sm-4.WorkspaceLeft
+      .row(style='padding-top:10px')
+        .col-xs-10
+          h2.inline IO-Typen
+        .col-xs-2
+          button#btnNeu.btn.btn-default.pull-right(type="button", title="Neuer IO-Typ")
+            i.fa.fa-plus-square-o
+      ul
+
+    .col-sm-8.WorkspaceRight
+      #about 
+        h1 IO-Typen
+        p.
+          Definition aller IO-Type, die an Devices definiert sein können.
+      #content
+        .row(style='padding-top:10px')
+          .col-xs-8
+            h2.inline(name='crudtitle')
+          .col-xs-4
+            .btn-group.pull-right(role='group')
+              button#btnDel.btn.btn-danger(type="button", title="IO-Typ löschen")
+                i.fa.fa-trash
+              button#btnEdit.btn.btn-default(type="button", title="IO-Typ bearbeiten")
+                i.fa.fa-pencil-square-o
+
+        p(name='crudtext')
+      form#contentForm(role='form', enctype='multipart/form-data')
+        .row(style='padding-top:10px')
+          .col-xs-12
+            .btn-group.pull-right(role='group')
+              button.btn.btn-success(type='submit', title='Speichern')
+                i.fa.fa-save
+              button#btnCancel.btn.btn-danger(type='button', title='Abbrechen') 
+                i.fa.fa-close
+        .form-group
+          label IO-Typbezeichnung
+          input.form-control(name='crudtitle',type='text',required='required',placeholder='Titel')
+        .form-group
+          label Beschreibung
+          input.form-control(name='crudtext',type='text',required='required',placeholder='Text')
+        .row
+          .col-sm-6
+            .form-group
+              label Klasse
+              select.form-control.chosen-select(name='klasse',type='select',required='required',placeholder='Text')
+                option Dimmer
+                option Schalter
+          .col-sm-6
+            .form-group
+              label Protokoll
+              select.form-control.chosen-select(name='protokoll',type='select',required='required',placeholder='Text')
+                option ECMD
+                option XCMD
+        .row
+          .form-group
+            .col-sm-3
+                label Parameter1
+                .input-group.input-group-sm
+                  span.input-group-addon.input-group-sm-addon
+                    input(type='checkbox',data-toggle="param1")
+                  input.form-control(name='param1',type='text',required='required',placeholder='Label',disabled)
+            .col-sm-3
+                label Parameter2
+                .input-group.input-group-sm
+                  span.input-group-addon.input-group-sm-addon
+                    input(type='checkbox',data-toggle="param2")
+                  input.form-control(name='param2',type='text',required='required',placeholder='Label',disabled)
+            .col-sm-3
+                label Parameter3
+                .input-group.input-group-sm
+                  span.input-group-addon.input-group-sm-addon
+                    input(type='checkbox',data-toggle="param3")
+                  input.form-control(name='param3',type='text',required='required',placeholder='Label',disabled)
+            .col-sm-3
+                label Parameter4
+                .input-group.input-group-sm
+                  span.input-group-addon.input-group-sm-addon
+                    input(type='checkbox',data-toggle="param4")
+                  input.form-control(name='param4',type='text',required='required',placeholder='Label',disabled)
+            
+
+if AppConfig.productional
+  //link(rel='stylesheet', href='dist/css/templates/style.min.css')
+  script(type='text/javascript', src='dist/js/io/types.min.js')
+else 
+  //link(rel='stylesheet', href='css/templates/style.css')
+  script(type='text/javascript', src='js/io/types.js')

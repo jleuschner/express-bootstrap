@@ -1,5 +1,3 @@
-
-
 body {
   margin-top: 50px;
   font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
@@ -27,6 +25,11 @@ body {
   display:  inline-block;
 }
 
+/* für iCheck als inout-AddOn */
+span.input-group-addon.input-group-sm-addon {
+  padding: 0 2px 0 2px;
+  
+}
 .hr-xs {
   border-bottom: 1px solid #aaa;
   padding-bottom: 2px;

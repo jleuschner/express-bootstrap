@@ -28,6 +28,7 @@ html
       link(rel='stylesheet', href='/bower_components/bootstrapvalidator/dist/css/bootstrapValidator.min.css')
       link(rel='stylesheet', href='/bower_components/tagsinput/dist/bootstrap-tagsinput.css')
       link(rel='stylesheet', href='/bower_components/chosen-bootstrap/chosen.bootstrap.min.css')
+      link(rel='stylesheet', href='/bower_components/iCheck/skins/flat/blue.css')
       link(rel='stylesheet', href='/css/style.css')
       link(rel='stylesheet', href='/css/uniTree.css')
       link(rel='stylesheet', href='/css/outlookList.css')
@@ -49,6 +50,7 @@ html
       script(type='text/javascript', src='/bower_components/jQuery-Mask-Plugin/dist/jquery.mask.min.js')
       script(type='text/javascript', src='/bower_components/tagsinput/dist/bootstrap-tagsinput.min.js')
       script(type='text/javascript', src='/bower_components/chosen/chosen.jquery.min.js')
+      script(type='text/javascript', src='/bower_components/iCheck/icheck.min.js')
       script(type='text/javascript', src='/js/navigation.js')
       script(type='text/javascript', src='/js/unitree.js')
       script(type='text/javascript', src='/js/outlookList.js')
@@ -80,7 +82,8 @@ html
         .collapse.navbar-collapse#navbar-content
           ul.nav.navbar-nav
             li.hidden: a#MainNav_DokuSys(href="#") DokuSys
-            li: a#MainNav_IODevice(href="#") IO-Devices
+            li: a#MainNav_IoDevices(href="#") IO-Devices
+            li: a#MainNav_IoTypes(href="#") IO-Types
             li: a#MainNav_CRUDs(href="#") CRUDs
             li.dropdown.hidden
               a.dropdown-toggle(href="#",data-toggle="dropdown") Dropdown 
@@ -141,6 +144,9 @@ html
               h1 TRN
             #btnTest.btn.btn-primary Mood1
             #btnTest2.btn.btn-primary Mood0
+            label
+              input(type='checkbox')
+              
           //-
             .col-md-8
               div

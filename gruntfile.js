@@ -38,6 +38,7 @@ module.exports = function (grunt) {
               'public/bower_components/jquery-ui/ui/minified/effect-slide.min.js',
               'public/bower_components/jQuery-Mask-Plugin/dist/jquery.mask.min.js',
               'public/bower_components/tagsinput/dist/bootstrap-tagsinput.min.js',
+              'public/bower_components/iCheck/icheck.min.js',
               'public/bower_components/chosen/chosen.jquery.min.js',
               'public/js/*.js'
               ],
@@ -68,7 +69,13 @@ module.exports = function (grunt) {
         {
         src: ['public/js/io/devices.js'],
         dest: 'public/dist/js/io/devices.min.js'
+        },
+      iotypes:
+        {
+        src: ['public/js/io/types.js'],
+        dest: 'public/dist/js/io/types.min.js'
         }
+
 
     },
     cssmin: {
@@ -81,6 +88,7 @@ module.exports = function (grunt) {
                   'public/bower_components/fontawesome/css/font-awesome.min.css',
                   'public/bower_components/summernote/dist/summernote.css',
                   'public/bower_components/tagsinput/dist/bootstrap-tagsinput.css',
+                  'public/bower_components/iCheck/skins/flat/blue.css',
                   'public/bower_components/chosen-bootstrap/chosen.bootstrap.min.css',
                   'public/css/*.css'
               ],
@@ -115,6 +123,12 @@ module.exports = function (grunt) {
             expand: true,
             cwd: 'public/bower_components/chosen-bootstrap',
             src: '*.png',
+            dest: 'public/dist/css/'
+          },
+          {
+            expand: true,
+            cwd: 'public/bower_components/iCheck/skins/flat/',
+            src: 'blue*.png',
             dest: 'public/dist/css/'
           }
 

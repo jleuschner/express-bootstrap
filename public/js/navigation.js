@@ -45,7 +45,7 @@ $(function () {
           if (cb) { cb(); }
         })
         .fail(function () {
-          handleError({ code: "AJAX", text: window.location.host +"/"+url+ " nicht erreichbar!" });
+          handleError({ code: "AJAX", text: window.location.host + "/" + url + " nicht erreichbar!" });
         });
       }
     });
@@ -122,8 +122,16 @@ $(function () {
       case "MainNav_Login":
         MainLogin();
         break;
-      case "MainNav_IODevice":
+      case "MainNav_IoDevices":
         MainWorkspace('/io/devices/html', function () {
+          $('.WorkspaceLeft')
+            .on("outlooklist_click", function () {
+              toggleWorkspace();
+            });
+        });
+        break;
+      case "MainNav_IoTypes":
+        MainWorkspace('/io/types/html', function () {
           $('.WorkspaceLeft')
             .on("outlooklist_click", function () {
               toggleWorkspace();
@@ -140,8 +148,8 @@ $(function () {
 
   /*
   function DBErr(err) {
-    bootbox.alert("<h3 class='text-danger'>" + err.code + "</h3><p>" + err.text + "</p>");
-    if (err.code === "NOUSER") { MainLogout(); }
+  bootbox.alert("<h3 class='text-danger'>" + err.code + "</h3><p>" + err.text + "</p>");
+  if (err.code === "NOUSER") { MainLogout(); }
   }
   */
 
@@ -199,6 +207,11 @@ $(function () {
   $("#btnTest2").click(function () {
     $.get("/io/raw/?mood=0", function () {
     });
+  });
+
+  $("input").iCheck({
+    checkboxClass: 'icheckbox_flat-blue',
+    radioClass: 'iradio_square-red'
   });
 
 
