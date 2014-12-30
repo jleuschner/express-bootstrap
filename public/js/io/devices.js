@@ -159,18 +159,17 @@
       var klassen = [{ id: 1, name: 'Dimmer' }, { id: 2, name: 'OnOff'}];
       var $div = $(".ioDef[data-id='" + id + "']");
       var $form = $("<form>"
-        + "<div class='form-group'><input class='form-control input-sm' name='name' type='text' value='" + $(".name", $div).text() + "'></input></div>"
-        + "<div class='form-group'><input class='form-control input-sm' name='xklasse' type='text' value='" + $(".klasse", $div).text() + "'></input></div>"
-        + "<div class='form-group'><select class='form-control selectpicker' data-style='btn-primary' name='klasse' value='" + $(".klasse", $div).text() + "'></select></div>"
+        + "<div class='form-group'><label>IO-Bezeichnung</label><input class='form-control input-sm' name='name' type='text' value='" + $(".name", $div).text() + "'></input></div>"
+        + "<div class='form-group'><label>IO-Klasse</label><select class='form-control chosen-select' data-style='btn-primary' name='klasse' value='" + $(".klasse", $div).text() + "'></select></div>"
         + "<div class='form-group'><input class='form-control input-sm' name='typ' type='text' value='" + $(".typ", $div).text() + "'></input></div>"
         + "<div class='form-group'><input class='form-control input-sm' name='channel' type='text' value='" + $(".channel", $div).text() + "'></input></div>"
         + "</form>");
       $.each(klassen, function () {
-        $("<option>" + this.name + "</option>").appendTo($(".selectpicker", $form));
+        $("<option>" + this.name + "</option>").appendTo($("[name=klasse]", $form));
       });
       $div.empty();
       $form.appendTo($div);
-      $('.selectpicker').selectpicker();
+      $("[name=klasse]").chosen({ disable_search: true});
 
     }
   });

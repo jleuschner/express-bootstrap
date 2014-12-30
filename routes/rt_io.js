@@ -49,7 +49,7 @@ function netio_send(cmd) {
 
 
 
-//--------------- Device ---------------------------------
+//--------------- Devices ---------------------------------
 router.get('/devices/html', function (req, res) {
   res.render('io/devices',{ AppConfig: AppConfig });
 });

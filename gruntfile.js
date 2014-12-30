@@ -38,7 +38,7 @@ module.exports = function (grunt) {
               'public/bower_components/jquery-ui/ui/minified/effect-slide.min.js',
               'public/bower_components/jQuery-Mask-Plugin/dist/jquery.mask.min.js',
               'public/bower_components/tagsinput/dist/bootstrap-tagsinput.min.js',
-              'public/bower_components/bootstrap-select/dist/js/bootstrap-select.min.js',
+              'public/bower_components/chosen/chosen.jquery.min.js',
               'public/js/*.js'
               ],
         dest: '_tmp/j.js'
@@ -81,7 +81,7 @@ module.exports = function (grunt) {
                   'public/bower_components/fontawesome/css/font-awesome.min.css',
                   'public/bower_components/summernote/dist/summernote.css',
                   'public/bower_components/tagsinput/dist/bootstrap-tagsinput.css',
-                  'public/bower_components/bootstrap-select/dist/css/bootstrap-select.min.css',
+                  'public/bower_components/chosen-bootstrap/chosen.bootstrap.min.css',
                   'public/css/*.css'
               ],
           'public/dist/css/dokusys/dokusys.min.css': [
@@ -110,7 +110,14 @@ module.exports = function (grunt) {
             cwd: 'public/bower_components/fontawesome/fonts',
             src: '*',
             dest: 'public/dist/fonts/'
+          },
+          {
+            expand: true,
+            cwd: 'public/bower_components/chosen-bootstrap',
+            src: '*.png',
+            dest: 'public/dist/css/'
           }
+
         ]
       }
     }

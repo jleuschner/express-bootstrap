@@ -21,6 +21,7 @@
     "jquery-ui" : "~1.11.2",
     "jQuery-Mask-Plugin": "~1.10.13",
     "tagsinput": "~0.4.2",
-    "bootstrap-select": ""
+    "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.3.0/chosen_v1.3.0.zip",
+    "chosen-bootstrap": ""
   }
 }
