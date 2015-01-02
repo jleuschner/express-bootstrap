@@ -212,13 +212,13 @@ $(function () {
 
 
   if (1) {
-    $.post('/login', { user: "jens", passwd: "mausi" }, function (data) {
+    $.post('/login', { user: "JensLeuschner", passwd: "mausi" }, function (data) {
       if (!data.err) {
         MainNavbar();
         //$("#MainNav_CRUDs").click();
-        //$("#MainNav_IoDevices").click();
         //$('#MainNav_DokuSys').click();
-        $("#MainNav_IoTypes").click();
+        //$("#MainNav_IoTypes").click();
+        $("#MainNav_IoDevices").click();
 
       } else {
         $('#MainLoginErr').text("Fehler: " + data.err.text);

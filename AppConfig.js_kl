@@ -24,6 +24,12 @@ module.exports = {
   },
   path: {
     dokusys_files: "c:/DokuSys_Files/"
+  },
+  io: {
+    tbl_iodevices: "io_devices",
+    tbl_iotypes: "io_types",
+    tbl_ioclasses: "io_classes",
+    tbl_ioprotocols: "io_protocols"
   }
 
 };

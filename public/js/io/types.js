@@ -8,7 +8,9 @@
       id: 0,
       api: "/io/types/",
       api_classes: "/io/classes/",
-      api_protocols: "/io/protocols/"
+      api_protocols: "/io/protocols/",
+      classes_id: 1,
+      protocols_id: 1
     },
     _loadClasses: function () {
       var _this = this;
@@ -19,7 +21,7 @@
         } else {
           $.each(data.rows, function () {
             $("<option value='" + this.id + "'>" + this.name + "</option>").appendTo($("[name='classes_id']"));
-          })
+          });
           $("[name='classes_id']").chosen({ disable_search: true });
         }
       })
@@ -36,7 +38,7 @@
         } else {
           $.each(data.rows, function () {
             $("<option value='" + this.id + "'>" + this.name + "</option>").appendTo($("[name='protocols_id']"));
-          })
+          });
           $("[name='protocols_id']").chosen({ disable_search: true });
         }
       })
@@ -58,7 +60,7 @@
         })
         .on("ifUnchecked", function () {
           var inp = $("[name='" + $(this).data("toggle") + "']", _this.element);
-          $("form", _this.element).bootstrapValidator('resetField', inp);
+          //$("form", _this.element).bootstrapValidator('resetField', inp);
           inp.attr("disabled", "disabled").val("");
         });
 
@@ -120,12 +122,9 @@
           });
         });
       $("#contentForm #btnCancel", _this.element).click(function () {
-        checkDirty(function (ok) {
-          if (ok) {
-            if (_this.options.id < 0) { _this.options.id = 0; }
-            _this.load(_this.options.id);
-          }
-        });
+        $("#Workspace").removeAttr("dirty");
+        if (_this.options.id < 0) { _this.options.id = 0; }
+        _this.load(_this.options.id);
       });
 
       this.load(this.options.id);
@@ -136,6 +135,19 @@
         $("#Workspace").attr("dirty", "1");
         $("#contentForm [name='name']", _this.element).val($("#content [name='name']", _this.element).text());
         $("#contentForm [name='remark']", _this.element).val($("#content [name='remark']", _this.element).text());
+        $("#contentForm [name='classes_id']", _this.element)
+          .val(_this.options.classes_id)
+          .trigger("chosen:updated");
+        $("#contentForm [name='protocols_id']", _this.element)
+          .val(_this.options.protocols_id)
+          .trigger("chosen:updated");
+        for (var i = 1; i < 5; i++) {
+          var param = $("#content [name='param" + i + "']", _this.element).text();
+          if (param) {
+            $("#contentForm [data-toggle='param" + i + "']", _this.element).iCheck('check');
+          }
+          $("#contentForm [name='param" + i + "']", _this.element).val(param);
+        }
         $("#content", _this.element).hide(0, function () {
           $("#contentForm", _this.element).show(0);
 
@@ -161,13 +173,20 @@
           _this._editMode(true);
         } else {
           $.getJSON(this.options.api + id, function (data) {
-            console.log(JSON.stringify(data))
             if (data.err) {
               handleError(data.err);
               return;
             } else {
               $("#content [name='name']", this.element).text(data.rows[0].name);
-              $("#content [name='remark']", this.element).text("Beschreibung: "+data.rows[0].remark);
+              $("#content [name='remark']", this.element).text(data.rows[0].remark);
+              $("#content [name='class']", this.element).text(data.rows[0].class);
+              $("#content [name='protocol']", this.element).text(data.rows[0].protocol);
+              $("#content [name='param1']", this.element).text(data.rows[0].param1);
+              $("#content [name='param2']", this.element).text(data.rows[0].param2);
+              $("#content [name='param3']", this.element).text(data.rows[0].param3);
+              $("#content [name='param4']", this.element).text(data.rows[0].param4);
+              _this.options.classes_id = data.rows[0].classes_id;
+              _this.options.protocols_id = data.rows[0].protocols_id;
             }
           })
           .fail(function () {
@@ -212,7 +231,7 @@
           var $list = $("ul", _this.element);
           $list.empty();
           $.each(data.rows, function (k, obj) {
-            $("<li data-id=" + obj.id + "><div class='list-title'>" + obj.name + "</div><div class='list-subtitle'>" + obj.class +"  ["+obj.protocol+"]</div><div class='list-remark'>" + obj.remark + "</div></li>").appendTo($list);
+            $("<li data-id=" + obj.id + "><div class='list-title'>" + obj.name + "</div><div class='list-subtitle'>" + obj.class + "  [" + obj.protocol + "]</div><div class='list-remark'>" + obj.remark + "</div></li>").appendTo($list);
           });
           $list.outlookList("refresh");
         }

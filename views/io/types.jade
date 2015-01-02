@@ -25,11 +25,20 @@
               button#btnEdit.btn.btn-default(type="button", title="IO-Typ bearbeiten")
                 i.fa.fa-pencil-square-o
 
-        p(name='remark') Beschreibung:
-        p(name='param1')
-        p(name='param2')
-        p(name='param3')
-        p(name='param4')
+        p Beschreibung:
+          span(name='remark')
+        p Klasse:
+          span(name='class')
+        p Protokoll:
+          span(name='protocol')
+        p Parameter1:
+          span(name='param1')
+        p Parameter2:
+          span(name='param2')
+        p Parameter3:
+          span(name='param3')
+        p Parameter4:
+          span(name='param4')
 
       form#contentForm(role='form', enctype='multipart/form-data')
         .row(style='padding-top:10px')

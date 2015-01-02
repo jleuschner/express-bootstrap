@@ -5,28 +5,23 @@
     border-radius:5px;
     width: 100%;
     background-color: #fff;
-    padding: 4px;
+    padding: 4px 8px 2px 8px;
 }
 
 .ioDef .name {
   display: block;
 }
 
-.ioDef .klasse {
+.ioDef .typ {
   display: inline-block;
   color: #333;
   font-size: medium;
   width:  30%;
 }
-.ioDef .typ {
+.ioDef .channel {
   display: inline-block;
   color: #333;
   font-size: smaller;
   width:  30%;
-}
-.ioDef .channel {
-  display: inline-block;
-  color: #333;
-  font-size: smaller
 }
 

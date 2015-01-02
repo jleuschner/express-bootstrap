@@ -6,7 +6,10 @@
   $.widget("JL.DevicesDlg", {
     options: {
       id: 0,
-      api: "/io/devices/"
+      io_id: 0,
+      api: "/io/devices/",
+      api_types: "/io/types/",
+      api_io: "/io/definitions"
     },
     _create: function () {
       var _this = this;
@@ -81,7 +84,8 @@
       });
 
       $("#btnIoAdd", _this.element).click(function () {
-        _this._createIO({ id: '-1', name: 'Neue IO-Definition', klasse: '?', typ: '?', channel: '?' });
+        _this._createIO({ id: '-1', name: '', param1: '', param2: '', param3: '', param4: '' });
+        _this._editIO(-1);
       });
 
       this.load(this.options.id);
@@ -110,7 +114,7 @@
 
       if (id === 0) {
         $("[id*=device]", this.element).hide();
-        //$("#ioDefinition", this.element).hide();
+        $("#ioDefinition", this.element).hide();
         $("#about", this.element).show();
       } else {
         $("#about", this.element).hide();
@@ -138,7 +142,7 @@
       }
     },
     _createIO: function (io) {
-      $("<div class='ioDef' data-id=" + io.id + "><div class='name'>" + io.name + "</div><div class='klasse'>" + io.klasse + "</div><div class='typ'>" + io.typ + "</div><div class='channel'>" + io.channel + "</div>"
+      $("<div class='ioDef' data-id=" + io.id + "><div class='name'>" + io.name + "</div><div class='typ'>" + io.typ + "</div><div class='channel'>" + io.channel + "</div>"
         + "<div class='btn-group pull-right' role='group'>"
         + "<button class='btn btn-xs btn-danger btnDel' type='button' title='IO löschen'><i class='fa fa-trash'></i></button>"
         + "<button class='btn btn-xs btn-default btnEdit' type='button' title='IO bearbeiten'><i class='fa fa-pencil-square-o'></i></button>"
@@ -155,21 +159,126 @@
         _this._editIO($(this).parent().parent().data("id"));
       });
     },
+    _loadTypes: function (cb) {
+      var _this = this;
+      $.getJSON(this.options.api_types, function (data) {
+        if (data.err) {
+          handleError(data.err);
+          return;
+        } else {
+          $.each(data.rows, function () {
+            $("<option value='" + this.id + "'>" + this.name + "</option>").appendTo($("[name='types_id']"));
+          });
+          $("[name='types_id']")
+            .chosen({ disable_search: true })
+            .on("change", function () {
+              _this._changeTypes($(this).val());
+            });
+          if (cb) { cb(); }
+        }
+      })
+      .fail(function () {
+        handleError({ code: "AJAX", text: _this.options.api_classes + " nicht erreichbar!" });
+      });
+    },
+    _changeTypes: function (typ) {
+      var _this = this;
+      $.getJSON(this.options.api_types + typ, function (data) {
+        if (data.err) {
+          handleError(data.err);
+          return;
+        } else {
+          var i = 1;
+          $.each(data.rows[0].params, function () {
+            $("label[for='param" + i + "']").text(this);
+            $("#param" + i).show(0);
+            i++;
+          });
+          for (var j = i; j < 5; j++) {
+            $("#param" + j).hide(0);
+          }
+
+        }
+      })
+      .fail(function () {
+        handleError({ code: "AJAX", text: _this.options.api_classes + " nicht erreichbar!" });
+      });
+    },
     _editIO: function (id) {
-      var klassen = [{ id: 1, name: 'Dimmer' }, { id: 2, name: 'OnOff'}];
+      var _this = this;
       var $div = $(".ioDef[data-id='" + id + "']");
       var $form = $("<form>"
         + "<div class='form-group'><label>IO-Bezeichnung</label><input class='form-control input-sm' name='name' type='text' value='" + $(".name", $div).text() + "'></input></div>"
-        + "<div class='form-group'><label>IO-Klasse</label><select class='form-control chosen-select' data-style='btn-primary' name='klasse' value='" + $(".klasse", $div).text() + "'></select></div>"
-        + "<div class='form-group'><input class='form-control input-sm' name='typ' type='text' value='" + $(".typ", $div).text() + "'></input></div>"
-        + "<div class='form-group'><input class='form-control input-sm' name='channel' type='text' value='" + $(".channel", $div).text() + "'></input></div>"
+        + "<div class='form-group'><div class='row'>"
+        + "<div class='col-xs-8'><label>IO-Typ</label><select class='form-control chosen-select' data-style='btn-primary' name='types_id' value='" + $(".typ", $div).text() + "'></select></div>"
+        + "<div class='col-xs-4'><div class='btn-group pull-right'><button type='submit' class='btn btn-sm btn-success'><i class='fa fa-save'></i></button><button id='btnCancel' type='button' class='btn btn-sm btn-danger'><i class='fa fa-close'></i></button></div></div>"
+        + "</div></div>"
+        + "<div class='form-group'><div id='params' class='row'></div></div>"
         + "</form>");
-      $.each(klassen, function () {
-        $("<option>" + this.name + "</option>").appendTo($("[name=klasse]", $form));
-      });
       $div.empty();
       $form.appendTo($div);
-      $("[name=klasse]").chosen({ disable_search: true});
+      for (var i = 1; i < 5; i++) {
+        $("<div class='col-sm-3' id='param" + i + "' hidden><label for='param" + i + "'>Param" + i + "</label><input class='form-control input-sm' name='param" + i + "' type='text'></input></div>").appendTo($("#params", $form));
+      }
+      this._loadTypes(function () {
+        _this._changeTypes($("[name='types_id']").val());
+      });
+
+      $form.bootstrapValidator({
+        fields: {
+          name: { validators: {
+            notEmpty: { message: "IO-Bezeichnung muss angegeben werden!" }
+          }
+          },
+          param1: { validators: {
+            notEmpty: { message: "Parameter notwendig!" }
+          }
+          },
+          param2: { validators: {
+            notEmpty: { message: "Parameter notwendig!" }
+          }
+          },
+          param3: { validators: {
+            notEmpty: { message: "Parameter notwendig!" }
+          }
+          },
+          param4: { validators: {
+            notEmpty: { message: "Parameter notwendig!" }
+          }
+          }
+        }
+      })
+        .on('success.form.bv', function (e) {
+          e.preventDefault();
+          var post = $(e.target).serialize()+"&devices_id="+_this.options.id;
+          $.ajax({
+            type: (_this.options.io_id > 0) ? "PUT" : "POST",
+            url: _this.options.api_io + ((_this.options.io_id > 0) ? _this.options.io_id : ""),
+            data: post,
+            success: function (data) {
+              if (data.err) {
+                handleError(data.err);
+              } else {
+                $("#Workspace").removeAttr("dirty");
+                _this.load(data.id);
+                //_this._trigger("_change", null, { err: "" });
+              }
+            }
+          })
+          .fail(function () {
+            handleError({ code: "AJAX", text: _this.options.api_io + " nicht erreichbar!" });
+          });
+        });
+      $("#btnCancel", $form).click(function () {
+        checkDirty(function (ok) {
+          if (ok) {
+            if (_this.options.id < 0) { _this.options.id = 0; }
+            _this.load(_this.options.id);
+          }
+        });
+      });
+
+
 
     }
   });
