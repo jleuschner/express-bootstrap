@@ -17,7 +17,7 @@
       #content
         .row(style='padding-top:10px')
           .col-xs-8
-            h2.inline(name='crudtitle')
+            h2.inline(name='name')
           .col-xs-4
             .btn-group.pull-right(role='group')
               button#btnDel.btn.btn-danger(type="button", title="IO-Typ löschen")
@@ -25,7 +25,12 @@
               button#btnEdit.btn.btn-default(type="button", title="IO-Typ bearbeiten")
                 i.fa.fa-pencil-square-o
 
-        p(name='crudtext')
+        p(name='remark') Beschreibung:
+        p(name='param1')
+        p(name='param2')
+        p(name='param3')
+        p(name='param4')
+
       form#contentForm(role='form', enctype='multipart/form-data')
         .row(style='padding-top:10px')
           .col-xs-12
@@ -36,23 +41,19 @@
                 i.fa.fa-close
         .form-group
           label IO-Typbezeichnung
-          input.form-control(name='crudtitle',type='text',required='required',placeholder='Titel')
+          input.form-control(name='name',type='text',required='required',placeholder='Titel')
         .form-group
           label Beschreibung
-          input.form-control(name='crudtext',type='text',required='required',placeholder='Text')
+          input.form-control(name='remark',type='text',required='required',placeholder='Text')
         .row
           .col-sm-6
             .form-group
               label Klasse
-              select.form-control.chosen-select(name='klasse',type='select',required='required',placeholder='Text')
-                option Dimmer
-                option Schalter
+              select.form-control.chosen-select(name='classes_id',type='select',required='required',placeholder='Text')
           .col-sm-6
             .form-group
               label Protokoll
-              select.form-control.chosen-select(name='protokoll',type='select',required='required',placeholder='Text')
-                option ECMD
-                option XCMD
+              select.form-control.chosen-select(name='protocols_id',type='select',required='required',placeholder='Text')
         .row
           .form-group
             .col-sm-3

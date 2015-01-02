@@ -209,19 +209,16 @@ $(function () {
     });
   });
 
-  $("input").iCheck({
-    checkboxClass: 'icheckbox_flat-blue',
-    radioClass: 'iradio_square-red'
-  });
 
 
-  if (0) {
+  if (1) {
     $.post('/login', { user: "jens", passwd: "mausi" }, function (data) {
       if (!data.err) {
         MainNavbar();
-        $("#MainNav_CRUDs").click();
-        //$("#MainNav_IODevice").click();
+        //$("#MainNav_CRUDs").click();
+        //$("#MainNav_IoDevices").click();
         //$('#MainNav_DokuSys').click();
+        $("#MainNav_IoTypes").click();
 
       } else {
         $('#MainLoginErr').text("Fehler: " + data.err.text);

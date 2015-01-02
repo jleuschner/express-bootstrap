@@ -118,6 +118,101 @@ router.get('/types/html', function (req, res) {
   res.render('io/types',{ AppConfig: AppConfig });
 });
 
+function typesGet(req,res,id) {
+  //var qry = "select * from " + AppConfig.io.tbl_iotypes;
+  var qry = "select "+AppConfig.io.tbl_iotypes+".id, "+AppConfig.io.tbl_iotypes+".name, remark, classes_id, protocols_id, param1, param2, param3, param4, " 
+    + AppConfig.io.tbl_ioclasses + ".name as class, "
+    + AppConfig.io.tbl_ioprotocols + ".name as protocol "
+    + "from " 
+    + AppConfig.io.tbl_iotypes + " left join "
+    + AppConfig.io.tbl_ioclasses + " on " + AppConfig.io.tbl_iotypes + ".classes_id="+ AppConfig.io.tbl_ioclasses+".id left join "
+    + AppConfig.io.tbl_ioprotocols + " on " + AppConfig.io.tbl_iotypes + ".protocols_id="+ AppConfig.io.tbl_ioprotocols+".id " 
+    ;
+  if (id) {
+    qry += " where "+AppConfig.io.tbl_iotypes+".id=" + id;
+  } else {
+    qry += " order by "+AppConfig.io.tbl_iotypes+".id";
+  }
+  DBCon.query(req.session, qry,
+    function (data) {
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('charset', 'utf-8');
+      res.json({ err: data.err, rows: data.rows });
+    });
+}
+
+function typesSet(req,res,id) {
+  var post = req.body;
+  var qry = mysql.format(" set ?", [{
+    name: post.name,
+    remark: post.remark,
+    classes_id: post.classes_id,
+    protocols_id: post.protocols_id,
+    param1: post.param1,
+    param2: post.param2,
+    param3: post.param3,
+    param4: post.param4
+  }]);
+  console.log(qry);
+  if (id < 1) {
+    qry = "insert into " + AppConfig.io.tbl_iotypes + qry;
+    DBCon.query(req.session, qry, function (data) {
+      res.json({ err: "", id: data.rows.insertId, result: data.rows });
+    });
+  } else {
+    qry = "update " + AppConfig.io.tbl_iotypes + qry+ " where id=" + id;
+    DBCon.query(req.session, qry, function (data) {
+      res.json({ err: "", id: id, result: data.rows });
+    });
+  }
+  
+}
+
+router.route("/types")
+    .get(function (req, res) {
+      typesGet(req,res);
+    })
+    .post(function(req,res){
+      typesSet(req,res,0);
+    });
+router.route("/types/:ID")
+    .get(function (req, res) {
+      typesGet(req,res,req.params.ID);
+    })
+    .put(function (req, res) {
+      typesSet(req,res,req.params.ID);
+    })
+    .delete(function(req,res){
+      var qry = "delete from " + AppConfig.io.tbl_types + " where id="+req.params.ID;
+      DBCon.query(req.session, qry,
+        function () {
+          res.json({err:""});
+        });
+    });
+
+//--------------- IoClasses ---------------------------------
+router.route("/classes")
+  .get(function (req, res) {
+    var qry = "select * from " + AppConfig.io.tbl_ioclasses + " order by id";
+    DBCon.querySys(qry,
+      function (data) {
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('charset', 'utf-8');
+        res.json({ err: data.err, rows: data.rows });
+      });
+  });
+
+//--------------- IoProtocols ---------------------------------
+router.route("/protocols")
+  .get(function (req, res) {
+    var qry = "select * from " + AppConfig.io.tbl_ioprotocols + " order by id";
+    DBCon.querySys(qry,
+      function (data) {
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('charset', 'utf-8');
+        res.json({ err: data.err, rows: data.rows });
+      });
+  });
 
 
 module.exports = router;

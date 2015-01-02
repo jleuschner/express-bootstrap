@@ -6,22 +6,59 @@
   $.widget("JL.CrudDlg", {
     options: {
       id: 0,
-      api: "/io/types"
+      api: "/io/types/",
+      api_classes: "/io/classes/",
+      api_protocols: "/io/protocols/"
+    },
+    _loadClasses: function () {
+      var _this = this;
+      $.getJSON(this.options.api_classes, function (data) {
+        if (data.err) {
+          handleError(data.err);
+          return;
+        } else {
+          $.each(data.rows, function () {
+            $("<option value='" + this.id + "'>" + this.name + "</option>").appendTo($("[name='classes_id']"));
+          })
+          $("[name='classes_id']").chosen({ disable_search: true });
+        }
+      })
+      .fail(function () {
+        handleError({ code: "AJAX", text: _this.options.api_classes + " nicht erreichbar!" });
+      });
+    },
+    _loadProtocols: function () {
+      var _this = this;
+      $.getJSON(this.options.api_protocols, function (data) {
+        if (data.err) {
+          handleError(data.err);
+          return;
+        } else {
+          $.each(data.rows, function () {
+            $("<option value='" + this.id + "'>" + this.name + "</option>").appendTo($("[name='protocols_id']"));
+          })
+          $("[name='protocols_id']").chosen({ disable_search: true });
+        }
+      })
+      .fail(function () {
+        handleError({ code: "AJAX", text: _this.options.api_protocols + " nicht erreichbar!" });
+      });
     },
     _create: function () {
       var _this = this;
       $(this.element).bind("contextmenu", function () {
         return false;
       });
-      $(".chosen-select").chosen({ disable_search: true });
+      _this._loadClasses();
+      _this._loadProtocols();
       $("input[type='checkbox']")
         .iCheck({ checkboxClass: 'icheckbox_flat-blue' })
         .on("ifChecked", function () {
           $("[name='" + $(this).data("toggle") + "']", _this.element).removeAttr("disabled");
         })
         .on("ifUnchecked", function () {
-          var inp=$("[name='" + $(this).data("toggle") + "']", _this.element);
-          $("form", _this.element).bootstrapValidator('resetField',inp);
+          var inp = $("[name='" + $(this).data("toggle") + "']", _this.element);
+          $("form", _this.element).bootstrapValidator('resetField', inp);
           inp.attr("disabled", "disabled").val("");
         });
 
@@ -29,7 +66,7 @@
         _this._editMode(true);
       });
       $("#btnDel", this.element).click(function () {
-        bootbox.confirm("Element wirklich löschen?", function (ok) {
+        bootbox.confirm("IO-Typ wirklich löschen?", function (ok) {
           if (ok) {
             $.ajax({
               type: "DELETE",
@@ -52,11 +89,11 @@
 
       $("#contentForm", this.element).bootstrapValidator({
         fields: {
-          crudtitle: { validators: {
+          name: { validators: {
             notEmpty: { message: "Typbezeichnung muss angegeben werden!" }
           }
           },
-          crudtext: { validators: {
+          remark: { validators: {
             notEmpty: { message: "Kurzbeschreibung muss angegeben werden!" }
           }
           }
@@ -97,10 +134,11 @@
       var _this = this;
       if (edit) {
         $("#Workspace").attr("dirty", "1");
-        $("#contentForm [name='crudtitle']", _this.element).val($("#content [name='crudtitle']", _this.element).text());
-        $("#contentForm [name='crudtext']", _this.element).val($("#content [name='crudtext']", _this.element).text());
+        $("#contentForm [name='name']", _this.element).val($("#content [name='name']", _this.element).text());
+        $("#contentForm [name='remark']", _this.element).val($("#content [name='remark']", _this.element).text());
         $("#content", _this.element).hide(0, function () {
           $("#contentForm", _this.element).show(0);
+
         });
       } else {
         $("#contentForm", _this.element).hide(0, function () {
@@ -123,12 +161,13 @@
           _this._editMode(true);
         } else {
           $.getJSON(this.options.api + id, function (data) {
+            console.log(JSON.stringify(data))
             if (data.err) {
               handleError(data.err);
               return;
             } else {
-              $("#content [name='crudtitle']", this.element).text(data.rows[0].crudtitle);
-              $("#content [name='crudtext']", this.element).text(data.rows[0].crudtext);
+              $("#content [name='name']", this.element).text(data.rows[0].name);
+              $("#content [name='remark']", this.element).text("Beschreibung: "+data.rows[0].remark);
             }
           })
           .fail(function () {
@@ -173,7 +212,7 @@
           var $list = $("ul", _this.element);
           $list.empty();
           $.each(data.rows, function (k, obj) {
-            $("<li data-id=" + obj.id + "><div class='list-title'>" + obj.crudtitle + "</div><div class='list-subtitle'>" + obj.crudtext + "</div></li>").appendTo($list);
+            $("<li data-id=" + obj.id + "><div class='list-title'>" + obj.name + "</div><div class='list-subtitle'>" + obj.class +"  ["+obj.protocol+"]</div><div class='list-remark'>" + obj.remark + "</div></li>").appendTo($list);
           });
           $list.outlookList("refresh");
         }
