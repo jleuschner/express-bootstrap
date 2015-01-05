@@ -3,6 +3,7 @@ var router = express.Router();
 var AppConfig = require("../AppConfig");
 var mysql = require('mysql');
 var DBCon = require('../lib/dbconnection');
+var Seq = require("seq");
 
 
 
@@ -53,20 +54,41 @@ function netio_send(cmd) {
 var objDevice = function(data) {
   var _this=this;
   this.data = data;
-  this.getIos = function(cb) {
+  
+  this.getData= function(cb){
     var qry = "select * from "+ AppConfig.io.tbl_iodefinitions +" where devices_id="+data.id;
     DBCon.querySys(qry, function(defData){
       _this.data.ios=defData.rows;
-      if (cb) {cb()};
+      cb(_this.data);
     });
-  };
+  }
+}
 
-  this.getData = function(){
+var objDeviceList = function(id) {
+  var _this=this;
+  var id=id;
+  this.list = [];
+
+  this.getData =function(cb){
     var _this=this;
-    this.getIos(function(){
-      console.log(JSON.stringify(_this.data))
-      return(_this.data);
-    });
+    var qry = "select * from " + AppConfig.io.tbl_iodevices;
+    if (id) {
+      qry += " where id=" + id;
+    } else {
+      qry += " order by id";
+    }
+    DBCon.querySys(qry,
+      function (data) {
+        Seq(data.rows)
+          .parEach(function(row){
+            var _seq=this;
+            var device =new objDevice(row);
+            device.getData(function(ddata){ _this.list.push(ddata); _seq(); });
+          })
+          .seq(function(){
+            cb(_this.list);
+          });
+      });
   }
 }
 
@@ -75,27 +97,18 @@ router.get('/devices/html', function (req, res) {
 });
 
 function getDevices(req,res,id) {
-  var qry = "select * from " + AppConfig.io.tbl_iodevices;
-  if (id) {
-    qry += " where id=" + id;
-  } else {
-    qry += " order by id";
-  }
-  DBCon.query(req.session, qry,
-    function (data) {
-      var deviceList=[];
-      for (var k=0;k<data.rows.length;k++) {
-        var device =new objDevice(data.rows[k]);
-        console.log(device.getData());
-        deviceList.push(device.getData());
-      }
+  var deviceList = new objDeviceList(id);
+  deviceList.getData(function(data){
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('charset', 'utf-8');
-      console.log("OUT: "+JSON.stringify(deviceList))
+      console.log("OUT: "+JSON.stringify(data))
 
-      res.json(deviceList);
-    });
+      res.json({err:"",rows:data});
+    
+  })
+    
 }
+
 
 function setDevice(req,res,id) {
   var post = req.body;

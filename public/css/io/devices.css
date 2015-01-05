@@ -12,13 +12,13 @@
   display: block;
 }
 
-.ioDef .typ {
+.ioDef .type {
   display: inline-block;
   color: #333;
   font-size: medium;
   width:  30%;
 }
-.ioDef .channel {
+.ioDef .params {
   display: inline-block;
   color: #333;
   font-size: smaller;

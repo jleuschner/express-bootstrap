@@ -9,7 +9,7 @@
       io_id: 0,
       api: "/io/devices/",
       api_types: "/io/types/",
-      api_io: "/io/definitions"
+      api_io: "/io/definitions/"
     },
     _create: function () {
       var _this = this;
@@ -110,8 +110,6 @@
       var _this = this;
       this.options.id = id;
 
-      this._createIOs([{ id: 2, name: 'Neuer IO', klasse: 'DimmDimm', typ: 'xCMD', channel: '3' }, { id: 3, name: 'Neuerer IO', klasse: 'Switch', typ: 'ECMD-IO', channel: '1/6'}]);
-
       if (id === 0) {
         $("[id*=device]", this.element).hide();
         $("#ioDefinition", this.element).hide();
@@ -133,6 +131,7 @@
               $("#device [name='hostname']", this.element).text(data.rows[0].hostname);
               $("#device [name='ip']", this.element).text(data.rows[0].ip);
               $("#device [name='remark']", this.element).text(data.rows[0].remark);
+              _this._createIOs(data.rows[0].ios);
             }
           })
           .fail(function () {
@@ -142,7 +141,7 @@
       }
     },
     _createIO: function (io) {
-      $("<div class='ioDef' data-id=" + io.id + "><div class='name'>" + io.name + "</div><div class='typ'>" + io.typ + "</div><div class='channel'>" + io.channel + "</div>"
+      $("<div class='ioDef' data-id=" + io.id + " data-param1='" + io.param1 + "'><div class='name'>" + io.name + "</div><div class='type'>" + io.types_id + "</div><div class='params'>" + io.param1 + "</div>"
         + "<div class='btn-group pull-right' role='group'>"
         + "<button class='btn btn-xs btn-danger btnDel' type='button' title='IO löschen'><i class='fa fa-trash'></i></button>"
         + "<button class='btn btn-xs btn-default btnEdit' type='button' title='IO bearbeiten'><i class='fa fa-pencil-square-o'></i></button>"
@@ -206,6 +205,7 @@
     },
     _editIO: function (id) {
       var _this = this;
+      _this.options.io_id = id;
       var $div = $(".ioDef[data-id='" + id + "']");
       var $form = $("<form>"
         + "<div class='form-group'><label>IO-Bezeichnung</label><input class='form-control input-sm' name='name' type='text' value='" + $(".name", $div).text() + "'></input></div>"
@@ -218,7 +218,7 @@
       $div.empty();
       $form.appendTo($div);
       for (var i = 1; i < 5; i++) {
-        $("<div class='col-sm-3' id='param" + i + "' hidden><label for='param" + i + "'>Param" + i + "</label><input class='form-control input-sm' name='param" + i + "' type='text'></input></div>").appendTo($("#params", $form));
+        $("<div class='col-sm-3' id='param" + i + "' hidden><label for='param" + i + "'>Param" + i + "</label><input class='form-control input-sm' name='param" + i + "' type='text' value='" + $div.data('param1') + "'></input></div>").appendTo($("#params", $form));
       }
       this._loadTypes(function () {
         _this._changeTypes($("[name='types_id']").val());
@@ -250,7 +250,7 @@
       })
         .on('success.form.bv', function (e) {
           e.preventDefault();
-          var post = $(e.target).serialize()+"&devices_id="+_this.options.id;
+          var post = $(e.target).serialize() + "&devices_id=" + _this.options.id;
           $.ajax({
             type: (_this.options.io_id > 0) ? "PUT" : "POST",
             url: _this.options.api_io + ((_this.options.io_id > 0) ? _this.options.io_id : ""),
@@ -260,7 +260,7 @@
                 handleError(data.err);
               } else {
                 $("#Workspace").removeAttr("dirty");
-                _this.load(data.id);
+                _this.load(_this.options.id);
                 //_this._trigger("_change", null, { err: "" });
               }
             }

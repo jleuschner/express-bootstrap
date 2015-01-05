@@ -212,7 +212,7 @@ $(function () {
 
 
   if (1) {
-    $.post('/login', { user: "JensLeuschner", passwd: "mausi" }, function (data) {
+    $.post('/login', { user: "jens", passwd: "mausi" }, function (data) {
       if (!data.err) {
         MainNavbar();
         //$("#MainNav_CRUDs").click();
