@@ -82,9 +82,11 @@ html
         .collapse.navbar-collapse#navbar-content
           ul.nav.navbar-nav
             li.hidden: a#MainNav_DokuSys(href="#") DokuSys
-            li: a#MainNav_IoDevices(href="#") IO-Devices
-            li: a#MainNav_IoTypes(href="#") IO-Types
-            li: a#MainNav_CRUDs(href="#") CRUDs
+            if AppConfig.io.enabled
+              li: a#MainNav_IoDevices(href="#") IO-Devices
+              li: a#MainNav_IoTypes(href="#") IO-Types
+            if AppConfig.crud_template.enabled
+              li: a#MainNav_CRUDs(href="#") CRUDs
             li.dropdown.hidden
               a.dropdown-toggle(href="#",data-toggle="dropdown") Dropdown 
                 span.caret
@@ -138,14 +140,10 @@ html
           .col-md-4
             //- h1= AppConfig.title
 
-            if AppConfig.productional
-              h1 PRD
-            else 
+            if !AppConfig.productional
               h1 TRN
-            #btnTest.btn.btn-primary Mood1
-            #btnTest2.btn.btn-primary Mood0
-            label
-              input(type='checkbox')
+              #btnTest.btn.btn-primary Mood1
+              #btnTest2.btn.btn-primary Mood0
               
           //-
             .col-md-8

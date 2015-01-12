@@ -198,6 +198,7 @@ $(function () {
       toggleWorkspace();
     });
 
+  
   console.log("ready!");
 
   $("#btnTest").click(function () {
@@ -211,7 +212,7 @@ $(function () {
 
 
 
-  if (1) {
+  if (0) {
     $.post('/login', { user: "JensLeuschner", passwd: "mausi" }, function (data) {
       if (!data.err) {
         MainNavbar();

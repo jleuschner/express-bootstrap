@@ -61,12 +61,12 @@ var objDevice = function(data) {
       _this.data.ios=defData.rows;
       cb(_this.data);
     });
-  }
-}
+  };
+};
 
 var objDeviceList = function(id) {
-  var _this=this;
-  var id=id;
+  //var _this=this;
+  //var id=id;
   this.list = [];
 
   this.getData =function(cb){
@@ -89,8 +89,8 @@ var objDeviceList = function(id) {
             cb(_this.list);
           });
       });
-  }
-}
+  };
+};
 
 router.get('/devices/html', function (req, res) {
   res.render('io/devices',{ AppConfig: AppConfig });
@@ -101,11 +101,11 @@ function getDevices(req,res,id) {
   deviceList.getData(function(data){
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('charset', 'utf-8');
-      console.log("OUT: "+JSON.stringify(data))
+      //console.log("OUT: "+JSON.stringify(data));
 
       res.json({err:"",rows:data});
     
-  })
+  });
     
 }
 

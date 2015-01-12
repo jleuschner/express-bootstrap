@@ -25,7 +25,11 @@ module.exports = {
   path: {
     dokusys_files: "c:/DokuSys_Files/"
   },
+  crud_template: {
+    enabled: false
+  },
   io: {
+    enabled: false,
     tbl_iodevices: "io_devices",
     tbl_iotypes: "io_types",
     tbl_ioclasses: "io_classes",
