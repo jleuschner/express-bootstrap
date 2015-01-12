@@ -11,10 +11,9 @@ body {
 }
 
 .WorkspaceLeft {
-  border:  1px solid #333;
+  overflow: auto;
 }
 .WorkspaceRight {
-  border:  1px solid #333;
   overflow: auto;
 }
 

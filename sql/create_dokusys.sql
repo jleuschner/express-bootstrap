@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `dokusys_topics` (
 --
 
 INSERT INTO `dokusys_topics` (`id`, `parent`, `topic`, `keywords`, `topictext`, `dokustatus`, `user`, `time`) VALUES
-(0, 0, 'Doku-Management', '', '<h4>Artikel anlegen</h4><blockquote class="small">Neue Artikel werden unterhalb des aktuellen Artikels mit Klick auf das <span class="fa fa-plus-square text-primary" style="font-size: 14pt;"></span>-Symbol am Ende der Pfadanzeige erzeugt.</blockquote><h4>Artikel bearbeiten</h4><blockquote class="small">Zum Bearbeiten den mit <span class="fa fa-pencil-square-o text-primary" style="font-size: 18pt;"></span>  markierten Artikel in der Pfadanzeige anklicken.</blockquote>', 100, 'System', 0);
+(0, 0, 'Doku-Management', '', '<h4>Artikel anlegen</h4><blockquote class="small">Neue Artikel werden unterhalb des aktuellen Artikels mit Klick auf das <span class="fa fa-plus-square text-primary" style="font-size: 14pt;"></span>-Symbol am Ende der oberen Pfadanzeige erzeugt.</blockquote><h4>Artikel bearbeiten</h4><blockquote class="small">Zum Bearbeiten den mit <span class="fa fa-pencil-square-o text-primary" style="font-size: 18pt;"></span>  markierten Artikel in der Pfadanzeige anklicken.</blockquote>', 100, 'System', 0);
 
 --
 -- Tabellenstruktur für Tabelle `dokusys_links`
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `dokusys_links` (
   `user` varchar(20) NOT NULL,
   `time` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
-);
+) AUTO_INCREMENT=1001;
 
 --
 -- Tabellenstruktur für Tabelle `dokusys_uploads`
@@ -53,5 +53,5 @@ CREATE TABLE IF NOT EXISTS `dokusys_uploads` (
   `user` varchar(30) NOT NULL,
   `time` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
-);
+) AUTO_INCREMENT=1001;
 

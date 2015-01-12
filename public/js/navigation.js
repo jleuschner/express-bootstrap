@@ -57,6 +57,7 @@ $(function () {
         $('#MainNav_Login').parent().removeClass('hidden');
         $('#MainNav_LogoutDD').parent().addClass('hidden');
         $('#MainNav_DokuSys').parent().addClass('hidden');
+        $('#Workspace').empty();
       } else {
         $('#MainNav_Login').parent().addClass('hidden');
         $('#MainNav_LogoutDD').html(data.user + "<span class='caret'></span>");
@@ -198,7 +199,7 @@ $(function () {
       toggleWorkspace();
     });
 
-  
+
   console.log("ready!");
 
   $("#btnTest").click(function () {
