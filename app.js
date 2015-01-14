@@ -74,11 +74,12 @@ app.use('/dokusys', dokusys);
 app.use('/io', io);
 app.use('/templates', templates);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+// catch 404 and redirect
+app.use(function (req, res, next) {
+  res.redirect(303, "/");
+  //var err = new Error('Not Found');
+  //err.status = 404;
+  //next(err);
 });
 
 // error handlers

@@ -22,7 +22,7 @@
   */
   $.widget("JL.topicTree", {
     options: {
-      datasource: "/DokuSys/getList",
+      datasource: "/DokuSys/topics/",
       showRoot: true,
       searchTools: true,
       keepRootOpen: true,
@@ -207,7 +207,7 @@
   */
   $.widget("JL.topicFileDlg", {
     options: {
-      url: "DokuSys/upload",
+      url: "DokuSys/files",
       show: { duration: 0 },
       hide: { duration: 200 },
       topic_id: -1,
@@ -291,11 +291,12 @@
   */
   $.widget("JL.topicDlg", {
     options: {
-      datasource: "/DokuSys/get",
+      datasource: "/DokuSys/topics/",
       dberror_func: ""
     },
     _var: {
-      id: 0
+      id: 0,
+      prev_id: 0
     },
     _create: function () {
       var _this = this;
@@ -324,7 +325,7 @@
     _createForm: function () {
       var _this = this;
       var $form = $("<form id='topicDlgForm' class='topicEdit hidden'></form>").appendTo(_this.element);
-      $("<input name='id' class='hidden'></input>").appendTo($form);
+      //$("<input name='id' class='hidden'></input>").appendTo($form);
       $("<input name='parent' class='hidden'></input>").appendTo($form);
 
       var $tabpanel = $("<div role='tabpanel'></div").appendTo($form);
@@ -346,7 +347,8 @@
       $("<div id='parentTree'></div>")
         .topicTree({ showRoot: true })
         .on("topictree_click", function (e, topic) {
-          if (topic.id !== $("input[name=id]", _this.element).val()) {
+          //if (topic.id !== $("input[name=id]", _this.element).val()) {
+          if (topic.id !== _this._var.id) {
             $('input[name=parent]', _this.element).val(topic.id);
             $('#parentTree', _this.element).topicTree("markTopic", topic.id);
           }
@@ -354,7 +356,7 @@
         .appendTo($p2c);
 
       $('#btnCancel', $form).click(function () {
-        _this.load(_this._var.id);
+        _this.load(_this._var.prev_id);
       });
 
       $("[name=keywords]").tagsinput();
@@ -388,22 +390,26 @@
       .bootstrapValidator('revalidateField', 'topictext')
       .on('success.form.bv', function (e) {
         e.preventDefault();
-        var $lform = $(e.target);
-
-        $.each($lform.find(".summernote"), function () {
-          $(this).val($(this).code());
-        });
-
-        $.post('DokuSys/set', $lform.serialize(), function (data) {
-          if (data.err) {
-            bootbox.alert("FEHLER!");
-          } else {
-            _this._trigger("_change", null, { id: data.id });
-            _this.load(data.id);
-
+        $.ajax({
+          type: (_this._var.id > 0) ? "PUT" : "POST",
+          url: _this.options.datasource + ((_this._var.id > 0) ? _this._var.id : ""),
+          data: $(e.target).serialize(),
+          success: function (data) {
+            if (data.err) {
+              handleError(data.err);
+            } else {
+              $("#Workspace").removeAttr("dirty");
+              _this.load(data.id);
+              _this._trigger("_change", null, { id: data.id });
+            }
           }
+        })
+        .fail(function () {
+          handleError({ code: "AJAX", text: _this.options.datasource + " nicht erreichbar!" });
         });
-      });
+      })
+      
+      
 
       // Links
       $("<hr>").appendTo(_this.element);
@@ -448,9 +454,13 @@
     load: function (id) {
       var _this = this;
       if (id === -1) {
-        _this._var.id = $("[name=id]", _this.element).val();
-        $("[name=parent]", _this.element).val(_this._var.id);
-        $("[name=id]", _this.element).val(id);
+        _this._var.prev_id = _this._var.id;
+        _this._var.id = -1;
+        $("[name=parent]", _this.element).val(_this._var.prev_id);
+
+        //_this._var.id = $("[name=id]", _this.element).val();
+        //$("[name=parent]", _this.element).val(_this._var.id);
+        //$("[name=id]", _this.element).val(-1);
         $('[name=keywords]').tagsinput('removeAll');
         $('.summernote[name=topictext]').code("");
         $("form", _this.element).bootstrapValidator('resetForm', true);
@@ -458,7 +468,9 @@
         return;
       }
       _this._var.id = id;
-      $.getJSON(this.options.datasource, { id: id }, function (data) {
+      _this._var.prev_id = id;
+
+      $.getJSON(this.options.datasource + id, function (data) {
         if (data.err && _this.options.dberror_func) {
           _this.options.dberror_func(data.err);
           return;
@@ -515,18 +527,17 @@
 
 
           // Links:
-          //$("#links", _this.element).html("");
           $("#links", _this.element).empty();
           $.each(data.rows[0].links, function (key, obj) {
             if (obj.typ === "FILE") {
               if ($("#lnk" + obj.id, _this.element).length < 1) {
                 $("<ul id='lnk" + obj.id + "'><li><span data-version='" + obj.version + "' data-titel='" + obj.bez + "' data-link_id='" + obj.id + "'> "
-                  + "<a href='DokuSys/file/?id=" + obj.file_id + "' target='_blank'><i class='fa " + fileIcon(obj.filename.split(".").pop()) + "'></i> " + obj.bez + "</a>"
+                  + "<a href='DokuSys/files/" + obj.file_id + "' target='_blank'><i class='fa " + fileIcon(obj.filename.split(".").pop()) + "'></i> " + obj.bez + "</a>"
                   + "<button type='button' class='btn btn-default btn-xs pull-right' data-lnk='" + obj.id + "' title='Neue Version zufügen'><i class='fa fa-plus'></i> <i class='fa fa-file-o'></i></button>"
                   + "<span class='badge pull-right toggle'>Ver." + obj.version + "</span>"
                   + "</span><ul></ul></li></ul>").appendTo("#links", _this.element);
               }
-              $("<li><span class='fileversions'><a href='DokuSys/file/?id=" + obj.file_id + "' target='_blank' ><span class='fa " + fileIcon(obj.filename.split(".").pop()) + "'></span><span>Version " + obj.version + "</span><span>" + obj.filetime + " - " + obj.fileuser + "</span></a>"
+              $("<li><span class='fileversions'><a href='DokuSys/files/" + obj.file_id + "' target='_blank' ><span class='fa " + fileIcon(obj.filename.split(".").pop()) + "'></span><span>Version " + obj.version + "</span><span>" + obj.filetime + " - " + obj.fileuser + "</span></a>"
                 + "<span class='pull-right'><button data-file_id='" + obj.file_id + "' class='btn btn-xs btn-danger' title='Anhang löschen'><i class='glyphicon glyphicon-trash'></i></button></span></span></li>").appendTo($("#lnk" + obj.id + " ul", _this.element));
             }
           });
@@ -556,13 +567,21 @@
               + "<b>" + $myLI.find('span:nth-of-type(2)').text() + "</b> - <i>" + $myLI.find('span:nth-of-type(3)').text() + "</i><br> wirklich löschen?";
             bootbox.confirm(txt, function (answ) {
               if (answ) {
-                $.getJSON("/dokusys/rmfile", { file_id: file_id }, function (data) {
-                  if (data.err) {
-                    //console.log(JSON.stringify(data));
-                    return;
+                $.ajax({
+                  type: "DELETE",
+                  url: "/dokusys/files/" + file_id,
+                  success: function (data) {
+                    if (data.err) {
+                      handleError(data.err);
+                    } else {
+                      _this.load(_this._var.id);
+                    }
                   }
-                  _this.load(_this._var.id);
+                })
+                .fail(function () {
+                  handleError({ code: "AJAX", text: _this.options.api + " nicht erreichbar!" });
                 });
+
               }
             });
           });

@@ -81,7 +81,8 @@ html
         //- Collapsable-Part der NavBar
         .collapse.navbar-collapse#navbar-content
           ul.nav.navbar-nav
-            li.hidden: a#MainNav_DokuSys(href="#") DokuSys
+            if AppConfig.dokusys.enabled
+              li.hidden: a#MainNav_DokuSys(href="#") DokuSys
             if AppConfig.io.enabled
               li: a#MainNav_IoDevices(href="#") IO-Devices
               li: a#MainNav_IoTypes(href="#") IO-Types

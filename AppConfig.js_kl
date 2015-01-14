@@ -1,8 +1,8 @@
 module.exports = {
-  title: "BootStrap Template",
+  title: "Satan viertel vor 2",
   title_short: "Satan",
   title_short_version: "&#188;vor2",
-  description: "Ein Template für Bootstrap",
+  description: "Dokusystem",
   version: "1.0",
   productional : false,
   login : {
@@ -17,13 +17,13 @@ module.exports = {
     password: "auenland"
     
   },
-  tables: {
-    dokusys_topics: "dokusys_topics",
-    dokusys_links: "dokusys_links",
-    dokusys_uploads: "dokusys_uploads"
-  },
-  path: {
-    dokusys_files: "c:/DokuSys_Files/"
+  dokusys: {
+    enabled: true,
+    tbl_topics: "dokusys_topics",
+    tbl_uploads: "dokusys_uploads",
+    tbl_links: "dokusys_links",
+    path: "c:/DokuSys_Files/",
+    upload_tmp: "./upload/"
   },
   crud_template: {
     enabled: false
@@ -33,7 +33,7 @@ module.exports = {
     tbl_iodevices: "io_devices",
     tbl_iotypes: "io_types",
     tbl_ioclasses: "io_classes",
-    tbl_ioprotocols: "io_protocols"
+    tbl_ioprotocols: "io_protocols",
+    tbl_iodefinitions: "io_definitions"
   }
-
 };

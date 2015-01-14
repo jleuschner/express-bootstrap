@@ -110,7 +110,7 @@ $(function () {
     //$('#' + id).parent().addClass('active');
     switch (id) {
       case "MainNav_DokuSys":
-        MainWorkspace('DokuSys', function () {
+        MainWorkspace('dokusys/html', function () {
           $('#DokuSys_TopicTree')
             .on("topictree_click", function () {
               toggleWorkspace();
@@ -213,14 +213,14 @@ $(function () {
 
 
 
-  if (0) {
+  if (1) {
     $.post('/login', { user: "JensLeuschner", passwd: "mausi" }, function (data) {
       if (!data.err) {
         MainNavbar();
         //$("#MainNav_CRUDs").click();
         //$('#MainNav_DokuSys').click();
         //$("#MainNav_IoTypes").click();
-        $("#MainNav_IoDevices").click();
+        //$("#MainNav_IoDevices").click();
 
       } else {
         $('#MainLoginErr').text("Fehler: " + data.err.text);
