@@ -28,14 +28,31 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret: '1f2g3h4j5k67890QWERTY'}));
-/*
-app.use(multer({
-  dest: "./uploads/"
-}))
-*/
 
 // Config laden
 var AppConfig= require("./AppConfig")
+
+var basicAuth = require('basic-auth');
+var auth = function (req, res, next) {
+  function unauthorized(res) {
+    res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+    return res.send(401);
+  };
+
+  var user = basicAuth(req);
+  console.log("User: " + user.name);
+  console.log("Pass: " + user.pass);
+
+  if (!user || !user.name || !user.pass) {
+    return unauthorized(res);
+  };
+
+  if (user.name === 'JensLeuschner' && user.pass === 'mausi') {
+    return next();
+  } else {
+    return unauthorized(res);
+  };
+}
 
 global.DB = mysql.createConnection({
       host: AppConfig.DB.server,
@@ -69,17 +86,17 @@ DB.connect(function (err) {
 });
 
 app.use('/', routes);
-app.use('/users', users);
+app.use('/users',auth, users);
 app.use('/dokusys', dokusys);
 app.use('/io', io);
 app.use('/templates', templates);
 
 // catch 404 and redirect
 app.use(function (req, res, next) {
-  res.redirect(303, "/");
-  //var err = new Error('Not Found');
-  //err.status = 404;
-  //next(err);
+  //res.redirect(303, "/");
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handlers
