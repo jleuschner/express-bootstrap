@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `dokusys_topics` (
   `parent` int(11) NOT NULL default '0',
   `topic` varchar(200) NOT NULL,
   `keywords` varchar(255) NOT NULL,
-  `topictext` text NOT NULL,
+  `topictext` mediumtext NOT NULL,
   `dokustatus` int(11) NOT NULL default '100',
   `user` varchar(30) NOT NULL,
   `time` int(11) NOT NULL,

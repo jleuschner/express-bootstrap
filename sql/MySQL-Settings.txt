@@ -1,0 +1,12 @@
+
+Max_Allowed_Packet
+
+maximale Paketgröße pro Query
+
+Sql-Abfrage:
+select @@max_allowed_packet;
+
+setzen in /etc/my.cnf
+max_allowed_packet=16M
+
+

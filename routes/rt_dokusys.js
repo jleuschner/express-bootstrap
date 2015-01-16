@@ -111,7 +111,11 @@ router.route("/topics/:ID")
     }]);
     qry = "update " + AppConfig.dokusys.tbl_topics + qry+ " where id=" + req.params.ID;
     DBCon.query(req.session, qry, function (data) {
-        //console.log(data.rows)
+      if (data.err) {
+        //console.log(data.err);
+        send (res, {err: data.err});
+        return;
+      }
       send(res, { err: "", id: req.params.ID, result: data.rows });
     });
   });
