@@ -18,7 +18,7 @@ module.exports = function (grunt) {
       all: [
         'routes/*.js',
         'public/js/*.js',
-        //'public/js/dokusys/*.js',
+        'public/js/dokusys/*.js',
         'public/js/io/*.js',
         'public/js/templates/*.js'
         ]

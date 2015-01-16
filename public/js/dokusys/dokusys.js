@@ -1,4 +1,6 @@
 /* global bootbox */
+/* global handleError */
+
 (function ($) {
 
   function fileIcon(ext) {
@@ -25,17 +27,12 @@
       datasource: "/DokuSys/topics/",
       showRoot: true,
       searchTools: true,
-      keepRootOpen: true,
-      dberror_func: ""
+      keepRootOpen: true
     },
     _create: function () {
       var _this = this;
       $(this.element).bind("contextmenu", function () {
         return false;
-      });
-
-      $(this.element).resize(function () {
-        console.log("h: " + _this.element.height());
       });
 
       var notempty = true;
@@ -124,8 +121,8 @@
       // cb wird an _tree(cb) durchgeleitet
       var _this = this;
       $.getJSON(this.options.datasource, function (data) {
-        if (data.err && _this.options.dberror_func) {
-          _this.options.dberror_func(data.err);
+        if (data.err) {
+          handleError(data.err);
         }
         var tree = $("<ul class='root'></ul>");
         if (_this.options.showRoot) { $("<li id='topic0'><span><i class='fa fa-home text-info'></i></span></li>").appendTo(tree); }
@@ -134,7 +131,6 @@
           do {
             var obj = arr.shift();
             var tagTxt = obj.keywords ? "Schlagworte: " + obj.keywords : "Keine Schlagworte definiert";
-            //var ntopic = $("<li id=topic" + obj.id + " data-json='" + JSON.stringify(obj) + "' title='" + tagTxt + "'><span><i class='glyphicon text-info'></i> " + obj.topic + "</span></li>");
             var ntopic = $("<li id=topic" + obj.id + " title='" + tagTxt + "'><span><i class='glyphicon text-info'></i> " + obj.topic + "</span></li>");
             if (obj.parent === 0 && _this.options.showRoot === false) {
               $(ntopic).appendTo($(tree));
@@ -155,7 +151,7 @@
         _this._tree(cb);
       })
       .fail(function () {
-        bootbox.alert("<h4 class='text-danger'>FATAL: Datenquelle " + _this.options.datasource + " antwortet nicht!</h4>");
+        handleError({ code: "AJAX", text: "Datenquelle " + _this.options.datasource + " antwortet nicht!" });
       });
     },
     collapseAll: function () {
@@ -259,8 +255,6 @@
       })
       .on('success.form.bv', function (e) {
         e.preventDefault();
-        //var $lform = $(e.target);
-        //console.dir($lform.serialize());
         var formdata = new FormData(e.target);
         $.ajax({
           type: "POST",
@@ -270,11 +264,14 @@
           processData: false,
           success: function (data) {
             if (data.err) {
-              bootbox.alert("FEHLER!");
+              handleError(data.err);
             } else {
               _this._trigger("_finish", null, { err: "" });
             }
           }
+        })
+        .fail(function () {
+          handleError({ code: "AJAX", text: "Datenquelle " + _this.options.datasource + " antwortet nicht!" });
         });
       });
       _this._show(_this.element, _this.options.show, function () {
@@ -291,8 +288,7 @@
   */
   $.widget("JL.topicDlg", {
     options: {
-      datasource: "/DokuSys/topics/",
-      dberror_func: ""
+      datasource: "/DokuSys/topics/"
     },
     _var: {
       id: 0,
@@ -407,9 +403,7 @@
         .fail(function () {
           handleError({ code: "AJAX", text: _this.options.datasource + " nicht erreichbar!" });
         });
-      })
-      
-      
+      });
 
       // Links
       $("<hr>").appendTo(_this.element);
@@ -471,8 +465,8 @@
       _this._var.prev_id = id;
 
       $.getJSON(this.options.datasource + id, function (data) {
-        if (data.err && _this.options.dberror_func) {
-          _this.options.dberror_func(data.err);
+        if (data.err) {
+          handleError(data.err);
           return;
         }
         $(".breadcrumbs ul li[bcfix!=1]", _this.element).remove();
@@ -598,7 +592,7 @@
         _this._editMode(false);
       })
       .fail(function () {
-        bootbox.alert("<h4 class='text-danger'>FATAL: Datenquelle " + _this.options.datasource + " antwortet nicht!</h4>");
+        handleError({ code: "AJAX", text: "Datenquelle " + _this.options.datasource + " antwortet nicht!" });
       });
     }
 
@@ -610,13 +604,13 @@
 //------------------------------ Loader -------------------------------
 $(function () {
   $('#DokuSys_TopicTree')
-    .topicTree({ dberror_func: function (err) { DBErr(err); } })
+    .topicTree()
     .on("topictree_click", function (e, topic) {
       $('#DokuSys_TopicDlg').topicDlg("load", topic.id);
     })
     .topicTree('load');
   $('#DokuSys_TopicDlg')
-    .topicDlg({ dberror_func: function (err) { DBErr(err); } })
+    .topicDlg()
     .on("topicdlg_change", function (e, topic) {
       $('#DokuSys_TopicTree').topicTree("load", function () {
         $('#DokuSys_TopicTree').topicTree("selectTopic", topic.id);

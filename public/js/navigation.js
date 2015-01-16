@@ -22,6 +22,7 @@ $(function () {
     }
   };
   window.handleError = function (err) {
+    // { code , text }
     bootbox.alert("<span class='fa fa-frown-o inline-block' style='color:#f00;font-size:48px;margin-right:5px'></span><span class='inline-block'><h3 class='inline text-danger'>Fehlercode: " + err.code + "</h3><p>" + err.text + "</p></span>");
   };
 
@@ -213,7 +214,7 @@ $(function () {
 
 
 
-  if (1) {
+  if (0) {
     $.post('/login', { user: "JensLeuschner", passwd: "mausi" }, function (data) {
       if (!data.err) {
         MainNavbar();
