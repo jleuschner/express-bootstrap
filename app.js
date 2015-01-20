@@ -91,6 +91,11 @@ app.use('/dokusys', dokusys);
 app.use('/io', io);
 app.use('/templates', templates);
 
+if (AppConfig.syslogd.enabled) {
+  var syslogd = require("./lib/syslogd");
+  syslogd.start();
+}
+
 // catch 404 and redirect
 app.use(function (req, res, next) {
   //res.redirect(303, "/");

@@ -12,19 +12,26 @@ module.exports = {
     password: "ServiceAtHome"
     
   },
-  tables: {
-    dokusys_topics: "dokusys_topic",
-    dokusys_links: "dokusys_links",
-    dokusys_uploads: "dokusys_uploads"
+  syslogd: {
+    enabled: false
   },
-  path: {
-    dokusys_files: "e:/DokuSys_Files/"
+  dokusys: {
+    enabled: true,
+    tbl_topics: "dokusys_topics",
+    tbl_uploads: "dokusys_uploads",
+    tbl_links: "dokusys_links",
+    path: "c:/DokuSys_Files/",
+    upload_tmp: "./upload/"
+  },
+  crud_template: {
+    enabled: true
   },
   io: {
+    enabled: false,
     tbl_iodevices: "io_devices",
     tbl_iotypes: "io_types",
     tbl_ioclasses: "io_classes",
-    tbl_ioprotocols: "io_protocols"
+    tbl_ioprotocols: "io_protocols",
+    tbl_iodefinitions: "io_definitions"
   }
-
 };

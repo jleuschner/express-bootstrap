@@ -17,6 +17,9 @@ module.exports = {
     password: "auenland"
     
   },
+  syslogd: {
+    enabled: false
+  },
   dokusys: {
     enabled: true,
     tbl_topics: "dokusys_topics",
