@@ -434,6 +434,7 @@
       var _this = this;
       _this._removeFileDlg();
       if (enable) {
+        $("#Workspace").attr("dirty", "1");
         $("#topicDlgAnhang", _this.element).addClass('hidden');
         $('.topicShow', _this.element).addClass('hidden');
         $('.topicEdit', _this.element).removeClass('hidden');
@@ -603,6 +604,8 @@
 
 //------------------------------ Loader -------------------------------
 $(function () {
+
+
   $('#DokuSys_TopicTree')
     .topicTree()
     .on("topictree_click", function (e, topic) {

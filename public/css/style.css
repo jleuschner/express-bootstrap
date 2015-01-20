@@ -29,6 +29,31 @@ span.input-group-addon.input-group-sm-addon {
   padding: 0 2px 0 2px;
   
 }
+
+.spinner {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    margin-left: -50px; /* half width of the spinner gif */
+    margin-top: -50px; /* half height of the spinner gif */
+    text-align:center;
+    z-index:1234;
+    overflow: auto;
+    width: 150px; /* width of the spinner gif */
+    height: 152px; /*hight of the spinner gif +2px to fix IE8 issue */
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border:1px solid #999;
+    border-radius:5px;
+    background-color: #fff;
+    padding-top: 10px;
+}
+.spinner h3 {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+}
+
 .hr-xs {
   border-bottom: 1px solid #aaa;
   padding-bottom: 2px;

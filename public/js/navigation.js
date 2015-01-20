@@ -188,6 +188,16 @@ $(function () {
     }
   }
 
+  $(document).bind("ajaxSend", function () {
+    $("#spinner").show();
+  }).bind("ajaxStop", function () {
+    $("#spinner").hide();
+  }).bind("ajaxError", function () {
+    $("#spinner").hide();
+  });
+
+
+
   $(window).resize(function () {
     checkWorkspace();
   });
