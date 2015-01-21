@@ -372,23 +372,25 @@
           if (_this._var.id < 0) {
             bootbox.alert("Bilder können erst nach Anlage des Themas hinzugefügt werden.<br>Bitte zunächst speichern.");
           }
-          /*
+          
           data = new FormData();
-            
+          data.append("topic_id", _this._var.id);
+          data.append("link_id", -1 );
+          data.append("titel", "Image" );
+          data.append("version", 1 );
           data.append("anhang", files[0]);
           $.ajax({
-          data: data,
-          type: "POST",
-          url: '/dokusys/files',
-          cache: false,
-          contentType: false,
-          processData: false,
-          success: function(ret) {
-          editor.insertImage(welEditable, "/dokusys/files/"+ret.id);
-          }
+            data: data,
+            type: "POST",
+            url: '/dokusys/files',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(ret) {
+              console.log(ret.id)
+              editor.insertImage(welEditable, "/dokusys/files/"+ret.id);
+            }
           });
-          */
-          // scheisse, topic_id ist bei neuen Topics -1 !!!!
         }
       });
 

@@ -181,8 +181,8 @@ router.route("/files")
         time: ts
       }]);
       qry = "insert into " + AppConfig.dokusys.tbl_uploads + qry;
-      DBCon.query(req.session, qry, function (data) {
-        send(res, { err: "", id: data.rows.insertId });
+      DBCon.query(req.session, qry, function () {
+        send(res, { err: "", id: req.body.link_id });
       });
     }
     //req.setBodyEncoding("binary");
