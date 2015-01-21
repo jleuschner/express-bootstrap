@@ -134,8 +134,14 @@ router.route("/files/:ID")
           send(res, data);
           return;
         }
-        // console.log(data.rows[0].filename);
-        res.sendFile(data.rows[0].filename, { root: AppConfig.dokusys.path });
+        if (data.rows.length) {
+          // console.log(data.rows[0].filename);
+          res.sendFile(data.rows[0].filename, { root: AppConfig.dokusys.path });
+        } else {
+          res.writeHead(404, {"Content-Type": "text/plain"});
+          res.write("404 Not Found\n");
+          res.end();
+          return;        }
       });
   })
   .delete(function (req, res) {
@@ -175,8 +181,8 @@ router.route("/files")
         time: ts
       }]);
       qry = "insert into " + AppConfig.dokusys.tbl_uploads + qry;
-      DBCon.query(req.session, qry, function () {
-        send(res, { err: "" });
+      DBCon.query(req.session, qry, function (data) {
+        send(res, { err: "", id: data.rows.insertId });
       });
     }
     //req.setBodyEncoding("binary");

@@ -309,7 +309,7 @@
       $crumbs.find("li").tooltip();
       $crumbs.find("a").click(function () { _this.load($(this).data("id")); });
       $("<h1  name='topic'>Thema</h1>").appendTo($show);
-      $("<div name='topictext' style='background-color:#fbfbfb;'></div>").appendTo($show);
+      $("<div class='topictext' name='topictext' style='background-color:#fbfbfb;'></div>").appendTo($show);
 
       // Editieren ID0: Kurzanleitung
       //$("<a href='#'>Edit</a>").click(function () { _this._editMode(true); }).appendTo($show);
@@ -352,6 +352,7 @@
         .appendTo($p2c);
 
       $('#btnCancel', $form).click(function () {
+        $("#Workspace").removeAttr("dirty");
         _this.load(_this._var.prev_id);
       });
 
@@ -362,9 +363,33 @@
               ['misc', ['undo', 'redo']],
               ['color', ['color']],
               ['para', ['ul', 'ol', 'paragraph']],
-              ['insert', ['table', 'picture', 'link']],
+              ['insert', ['table', 'picture', 'link', 'hr']],
               ['misc', ['fullscreen', 'codeview']]
-              ]
+              ],
+        onImageUpload: function (files, editor, welEditable) {
+          console.log("UPLOAD");
+          console.log("TOPIC: " + _this._var.id);
+          if (_this._var.id < 0) {
+            bootbox.alert("Bilder können erst nach Anlage des Themas hinzugefügt werden.<br>Bitte zunächst speichern.");
+          }
+          /*
+          data = new FormData();
+            
+          data.append("anhang", files[0]);
+          $.ajax({
+          data: data,
+          type: "POST",
+          url: '/dokusys/files',
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function(ret) {
+          editor.insertImage(welEditable, "/dokusys/files/"+ret.id);
+          }
+          });
+          */
+          // scheisse, topic_id ist bei neuen Topics -1 !!!!
+        }
       });
 
       $form.bootstrapValidator({
