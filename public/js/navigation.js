@@ -222,9 +222,11 @@ $(function () {
     });
   });
 
+  // Test Clipboard: geht nur in IE
+  //window.clipboardData.setData("Text","KopierterText");
+  
 
-
-  if (1) {
+  if (0) {
     $.post('/login', { user: "JensLeuschner", passwd: "mausi" }, function (data) {
       if (!data.err) {
         MainNavbar();

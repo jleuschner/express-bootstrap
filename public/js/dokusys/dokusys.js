@@ -311,6 +311,7 @@
       $("<h1  name='topic'>Thema</h1>").appendTo($show);
       $("<div class='topictext' name='topictext' style='background-color:#fbfbfb;'></div>").appendTo($show);
 
+
       // Editieren ID0: Kurzanleitung
       //$("<a href='#'>Edit</a>").click(function () { _this._editMode(true); }).appendTo($show);
 
@@ -371,13 +372,14 @@
           console.log("TOPIC: " + _this._var.id);
           if (_this._var.id < 0) {
             bootbox.alert("Bilder können erst nach Anlage des Themas hinzugefügt werden.<br>Bitte zunächst speichern.");
+            return;
           }
-          
-          data = new FormData();
+          var data = new FormData();
           data.append("topic_id", _this._var.id);
-          data.append("link_id", -1 );
-          data.append("titel", "Image" );
-          data.append("version", 1 );
+          data.append("link_id", -1);
+          data.append("titel", "Image");
+          data.append("version", 1);
+          data.append("typ", "EIMG");
           data.append("anhang", files[0]);
           $.ajax({
             data: data,
@@ -386,9 +388,8 @@
             cache: false,
             contentType: false,
             processData: false,
-            success: function(ret) {
-              console.log(ret.id)
-              editor.insertImage(welEditable, "/dokusys/files/"+ret.id);
+            success: function (ret) {
+              editor.insertImage(welEditable, "/dokusys/files/" + ret.id);
             }
           });
         }
@@ -528,6 +529,11 @@
               }
             });
           });
+
+          $(".topictext img").dblclick(function () {
+            window.open($(this).attr("src"), "DokuSys-Image", "toolbar=no,directories=no,menubar=no,copyhistory=no");
+          });
+
           $('[name=keywords]').tagsinput('removeAll');
           $('[name=keywords]').tagsinput('add', data.rows[0].keywords);
           $('.summernote[name=topictext]').code(data.rows[0].topictext);
@@ -551,7 +557,7 @@
           // Links:
           $("#links", _this.element).empty();
           $.each(data.rows[0].links, function (key, obj) {
-            if (obj.typ === "FILE") {
+            if (obj.typ === "FILE") {      // || obj.typ === "EIMG") {
               if ($("#lnk" + obj.id, _this.element).length < 1) {
                 $("<ul id='lnk" + obj.id + "'><li><span data-version='" + obj.version + "' data-titel='" + obj.bez + "' data-link_id='" + obj.id + "'> "
                   + "<a href='DokuSys/files/" + obj.file_id + "' target='_blank'><i class='fa " + fileIcon(obj.filename.split(".").pop()) + "'></i> " + obj.bez + "</a>"

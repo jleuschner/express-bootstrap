@@ -83,7 +83,7 @@ router.route("/topics/:ID")
           DBCon.query(req.session, qry,
             function (lnkdata) {
               for (var i = 0; i < lnkdata.rows.length; i++) {
-                if (lnkdata.rows[i].typ === "FILE") {
+                if (lnkdata.rows[i].typ === "FILE" || lnkdata.rows[i].typ === "EIMG") {
                   var ftime = moment.unix(lnkdata.rows[i].filetimestamp);
                   lnkdata.rows[i].filetime = ftime.format("DD.MM.YYYY HH:mm:ss");
                 }
@@ -181,8 +181,9 @@ router.route("/files")
         time: ts
       }]);
       qry = "insert into " + AppConfig.dokusys.tbl_uploads + qry;
-      DBCon.query(req.session, qry, function () {
-        send(res, { err: "", id: req.body.link_id });
+      DBCon.query(req.session, qry, function (data) {
+        //send(res, { err: "", id: req.body.link_id });
+        send(res, { err: "", id: data.rows.insertId });
       });
     }
     //req.setBodyEncoding("binary");
@@ -198,7 +199,7 @@ router.route("/files")
             topic_id: req.body.topic_id,
             bez: req.body.titel,
             version: req.body.version,
-            typ: 'FILE',
+            typ: req.body.typ ? req.body.typ : 'FILE',
             user: req.session.user,
             time: ts
           }]);
