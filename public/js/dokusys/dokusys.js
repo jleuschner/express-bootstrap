@@ -365,11 +365,9 @@
               ['color', ['color']],
               ['para', ['ul', 'ol', 'paragraph']],
               ['insert', ['table', 'picture', 'link', 'hr']],
-              ['misc', ['fullscreen', 'codeview']]
+              ['misc', ['fullscreen', 'codeview','help']]
               ],
         onImageUpload: function (files, editor, welEditable) {
-          console.log("UPLOAD");
-          console.log("TOPIC: " + _this._var.id);
           if (_this._var.id < 0) {
             bootbox.alert("Bilder können erst nach Anlage des Themas hinzugefügt werden.<br>Bitte zunächst speichern.");
             return;
@@ -531,7 +529,7 @@
           });
 
           $(".topictext img").dblclick(function () {
-            window.open($(this).attr("src"), "DokuSys-Image", "toolbar=no,directories=no,menubar=no,copyhistory=no");
+            window.open($(this).attr("src"), "DokuSys-Image", "resizable=yes,toolbar=no,directories=no,menubar=no,copyhistory=no");
           });
 
           $('[name=keywords]').tagsinput('removeAll');
