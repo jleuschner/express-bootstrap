@@ -11,7 +11,7 @@ require('../lib/functions');
 
 
 router.get('/', function (req, res) {
-  res.render('index',{ AppConfig: AppConfig });
+  res.render('index',{ AppConfig: AppConfig, call: "dokusys" });
 });
 
 router.get('/html', function (req, res) {
