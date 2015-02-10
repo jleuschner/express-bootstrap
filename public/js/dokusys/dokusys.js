@@ -122,7 +122,9 @@
       var _this = this;
       $.getJSON(this.options.datasource, function (data) {
         if (data.err) {
+          console.log("NOUSER")
           handleError(data.err);
+          return;
         }
         var tree = $("<ul class='root'></ul>");
         if (_this.options.showRoot) { $("<li id='topic0'><span><i class='fa fa-home text-info'></i></span></li>").appendTo(tree); }
@@ -365,7 +367,7 @@
               ['color', ['color']],
               ['para', ['ul', 'ol', 'paragraph']],
               ['insert', ['table', 'picture', 'link', 'hr']],
-              ['misc', ['fullscreen', 'codeview','help']]
+              ['misc', ['fullscreen', 'codeview', 'help']]
               ],
         onImageUpload: function (files, editor, welEditable) {
           if (_this._var.id < 0) {

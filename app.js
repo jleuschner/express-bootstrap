@@ -86,7 +86,7 @@ DB.connect(function (err) {
 });
 
 app.use('/', routes);
-app.use('/users',auth, users);
+app.use('/users', users);
 app.use('/dokusys', dokusys);
 app.use('/io', io);
 app.use('/templates', templates);

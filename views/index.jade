@@ -54,8 +54,6 @@ html
       script(type='text/javascript', src='/js/navigation.js')
       script(type='text/javascript', src='/js/unitree.js')
       script(type='text/javascript', src='/js/outlookList.js')
-      script(type='text/javascript').
-        MainWorkspace('dokusys/html');
   body
 
     nav#MainNavbar.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
@@ -156,3 +154,8 @@ html
               div
               - for (var x = 0; x < 30; x++)
                 | item#{x} 
+
+    script(type='text/javascript').
+      $(document).ready(function(){
+        setWorkspace('#{path}');
+      })

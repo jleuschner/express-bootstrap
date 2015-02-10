@@ -23,7 +23,12 @@ $(function () {
   };
   window.handleError = function (err) {
     // { code , text }
+    if (err.code === "NOUSER") {
+      MainLogin();
+      return;
+    }
     bootbox.alert("<span class='fa fa-frown-o inline-block' style='color:#f00;font-size:48px;margin-right:5px'></span><span class='inline-block'><h3 class='inline text-danger'>Fehlercode: " + err.code + "</h3><p>" + err.text + "</p></span>");
+
   };
 
 
@@ -32,6 +37,22 @@ $(function () {
       return ("Ungespeicherte Änderungen! Seite verlassen?");
     }
   };
+
+  window.setWorkspace = function (path, cb) {
+    if (path) {
+      $.get(path, function (data) {
+        $('#Workspace').html(data);
+        if (!$('#NavbarToggle').hasClass('collapsed')) {
+          $('#NavbarToggle').click();
+        }
+        checkWorkspace();
+        if (cb) { cb(); }
+      })
+      .fail(function () {
+        handleError({ code: "AJAX", text: window.location.host + "/" + path + " nicht erreichbar!" });
+      });
+    }
+  }
 
   // ------------------ MainNavbar -----------------------
   function MainWorkspace(url, cb) {
@@ -194,6 +215,9 @@ $(function () {
     $("#spinner").hide();
   }).bind("ajaxError", function () {
     $("#spinner").hide();
+  }).bind("ajaxComplete", function () {
+    console.log("COMP")
+    $("#spinner").hide();
   });
 
 
@@ -224,7 +248,7 @@ $(function () {
 
   // Test Clipboard: geht nur in IE
   //window.clipboardData.setData("Text","KopierterText");
-  
+
 
   if (0) {
     $.post('/login', { user: "JensLeuschner", passwd: "mausi" }, function (data) {

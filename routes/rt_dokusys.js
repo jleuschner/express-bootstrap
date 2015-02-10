@@ -11,7 +11,7 @@ require('../lib/functions');
 
 
 router.get('/', function (req, res) {
-  res.render('index',{ AppConfig: AppConfig, call: "dokusys" });
+  res.render('index',{ AppConfig: AppConfig, path: "dokusys/html" });
 });
 
 router.get('/html', function (req, res) {
@@ -136,12 +136,14 @@ router.route("/files/:ID")
         }
         if (data.rows.length) {
           // console.log(data.rows[0].filename);
-          res.sendFile(data.rows[0].filename, { root: AppConfig.dokusys.path });
+          //res.sendFile(data.rows[0].filename, { root: AppConfig.dokusys.path });
+          res.download(AppConfig.dokusys.path + data.rows[0].filename,data.rows[0].filename);cd
         } else {
           res.writeHead(404, {"Content-Type": "text/plain"});
           res.write("404 Not Found\n");
           res.end();
-          return;        }
+          return;
+        }
       });
   })
   .delete(function (req, res) {
