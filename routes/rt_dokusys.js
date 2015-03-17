@@ -47,14 +47,18 @@ router.route("/topics")
       });
   })
   .post( function (req, res) {
+    var ts = new Date() / 1000 | 0;
     var post = req.body;
     var qry = mysql.format(" set ?", [{
       parent: post.parent,
       topic: post.topic,
       keywords: post.keywords,
-      topictext: post.topictext
+      topictext: post.topictext,
+      user: req.session.user,
+      time: ts
     }]);
     qry = "insert into " + AppConfig.dokusys.tbl_topics + qry;
+    console.log(qry);
     DBCon.query(req.session, qry, function (data) {
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('charset', 'utf-8');
@@ -137,7 +141,7 @@ router.route("/files/:ID")
         if (data.rows.length) {
           // console.log(data.rows[0].filename);
           //res.sendFile(data.rows[0].filename, { root: AppConfig.dokusys.path });
-          res.download(AppConfig.dokusys.path + data.rows[0].filename,data.rows[0].filename);cd
+          res.download(AppConfig.dokusys.path + data.rows[0].filename,data.rows[0].filename);
         } else {
           res.writeHead(404, {"Content-Type": "text/plain"});
           res.write("404 Not Found\n");
@@ -191,6 +195,8 @@ router.route("/files")
     //req.setBodyEncoding("binary");
     var ts = new Date() / 1000 | 0;
     var filename = "T" + req.body.topic_id.lpad(0, 8) + "_" + ts + "." + req.files.anhang.extension.replace(/\\/, "\\\\");
+    console.log(req.files.anhang.path);
+    console.log(AppConfig.dokusys.path + filename);
     fs.rename(req.files.anhang.path, AppConfig.dokusys.path + filename, function (err) {
       if (err) {
         send(res, { err: err });
